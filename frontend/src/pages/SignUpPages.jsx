@@ -1,9 +1,14 @@
 import React from 'react'
 import { motion } from "framer-motion"
-import { Mail, Lock } from "lucide-react"
+import { Mail, Lock, MoveRight } from "lucide-react"
+import { useNavigate } from 'react-router-dom';
+
+
 
 function SignUpPages() {
     const loading = true;
+    const navigate = useNavigate();
+    const [switchPage, setSwitchPage] = React.useState(false);
     const [formData, setFormData] = React.useState({
         name: "",
         email: "",
@@ -16,29 +21,32 @@ function SignUpPages() {
         console.log(formData);
     }
     return (
-        <div className='min-h-screen flex items-center justify-center bg-green-500'>
-            <div className="bg-white rounded-lg p-8 flex w-full max-w-4xl mx-auto mb-20">
+        <div className='min-h-[calc(100vh-5rem)] flex items-center justify-center bg-emerald-500'>
+            <div className="bg-white rounded-lg p-8 flex w-11/12 max-w-4xl mx-auto">
+                {/*  mb-20 */}
                 {/* for logo */}
-                <motion.div className='hidden  bg-red-500 md:flex md:w-1/2 justify-center items-center '
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.8 }} //could include delay here to delay when it will show up
+                <motion.div className='hidden md:flex md:w-1/2 justify-center items-center '
+                    initial={!switchPage ? { opacity: 0, x: -20 } : { opacity: 1, x: 0 }}
+                    animate={!switchPage ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+                    transition={!switchPage ? { duration: 0.8 } : { duration: 0.8, delay: 1.0 }} //could include delay here to delay when it will show up
                 >
-                    a
+                    <img src="/images/sneakerSignUpPage.avif" alt="Sneakers" className="h-full object-cover rounded-2xl" />
                 </motion.div>
 
                 {/* for user sign up page */}
-          
-                    <form onSubmit={handleSubmit} className='w-full md:w-1/2 flex flex-col items-center justify-center p-4 '>
+
+                <form onSubmit={handleSubmit} className='w-full md:w-1/2 flex flex-col items-center justify-center p-4 '>
+                    <div className='w-full'>
                         <motion.div
-                            initial={{ opacity: 0, y: -20 }}
-                            animate={{ opacity: 1, y: 0 }}
+                            initial={!switchPage ? { opacity: 0, y: -20 } : { opacity: 1, y: 0 }}
+                            animate={!switchPage ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
                             transition={{ duration: 0.8, delay: 0.5 }}
                         >
-                            <h2 className='my-16 text-center text-3xl font-bold '>Create your account</h2>
+                            <h2 className='mt-36 mb-16 text-center text-3xl font-bold '>Create your account</h2>
+
 
                             <div className='space-y-4'>
-                                <div className='relative rounded-lg shadow-sm'>
+                                <div className='relative'>
                                     <div className='absolute inset-y-0 left-2 pl-3 flex items-center pointer-events-none'>
                                         <Mail className="h-5 w-4 text-gray-400" aria-hidden
                                             ="true" />
@@ -48,12 +56,12 @@ function SignUpPages() {
                                         required
                                         value={formData.name}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                        className='block w-full px-4 py-4 pl-12 bg-gray-200 border-white rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm'
+                                        className='block w-full py-4 pl-12 bg-gray-200 border border-white rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm'
                                         placeholder='Email'
                                     />
                                 </div>
 
-                                <div className='relative rounded-lg shadow-sm'>
+                                <div className='relative'>
                                     <div className='absolute inset-y-0 left-2 pl-3 flex items-center pointer-events-none'>
                                         <Lock className="h-5 w-4 text-gray-400" aria-hidden
                                             ="true" />
@@ -63,7 +71,7 @@ function SignUpPages() {
                                         required
                                         value={formData.password}
                                         onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                        className='block w-full px-4 py-4 pl-12 bg-gray-200 border-white rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm'
+                                        className='block w-full py-4 pl-12 bg-gray-200 border border-white rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm '
                                         placeholder='Password'
                                     />
                                 </div>
@@ -71,25 +79,37 @@ function SignUpPages() {
                         </motion.div>
 
                         <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8, delay: 1.0 }}
+                            initial={!switchPage ? { opacity: 0, y: 20 } : { opacity: 1, y: 0 }}
+                            animate={!switchPage ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                            transition={!switchPage ? { duration: 0.8, delay: 1.0 } : { duration: 0.8 }}
                         >
-                            <button className=''>Sign up</button>
-                            <div>
-                                <p>Forget username/password</p>
-
+                            <button className='block w-full py-4 text-white bg-green-400 rounded-3xl shadow-md hover:bg-gray-800 sm:text-sm mt-6 mb-3'>Sign up</button>
+                            {/* forget password and sign in */}
+                            <div className='h-36 flex flex-col justify-between items-center sm:text-sm'>
+                                <div className='text-gray-400'>Forgot Username / Password?</div>
+                                <div className='text-gray-400'>
+                                    <div
+                                        onClick={() => {
+                                            setSwitchPage(true);
+                                            setTimeout(() => navigate("/login"), 2000)
+                                        }}
+                                        className='text-gray-400 hover:text-green-500 cursor-pointer flex justify-center items-center gap-1'
+                                    >
+                                        Already have an account? Sign in <MoveRight size={20} />
+                                    </div>
+                                </div>
                             </div>
 
 
                         </motion.div>
-                    </form>
-                    
-              
-            </div>
+                    </div>
+                </form>
 
 
-        </div>
+            </div >
+
+
+        </div >
     )
 }
 
