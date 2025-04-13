@@ -11,6 +11,25 @@ export const useUserStore = create((set, get) => ({
     error: null,
     checkingAuth: true,
 
+    createNewAccount: async ({ name, email, password, confirmPassword }) => {
+        set({ loading: true, error: null });
+        try {
+            if (password !== confirmPassword) {
+                set({ error: "Password not matching!" });
+                throw error();
+            }
+            else {
+                const response = await axios.post("/auth/signup", { email, password, name });
+                set({ user: { email: response.data.data.email, userName: response.data.data.name } });
+            }
+
+        } catch (error) {
+            set({ error: error.response.data.message });
+
+        } finally {
+            set({ loading: false });
+        }
+    },
     signIn: async ({ email, password }) => {
         set({ loading: true, error: null });
         try {

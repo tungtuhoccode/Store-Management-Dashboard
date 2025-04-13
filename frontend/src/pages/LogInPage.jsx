@@ -86,7 +86,7 @@ function LogInPage() {
                                         <LoaderCircle size={20} className={loading && "animate-spin"} />
                                     </>
                                 ) : (
-                                    "Sign In"
+                                    "Log In"
                                 )}
                             </button>
 

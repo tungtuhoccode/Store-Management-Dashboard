@@ -52,7 +52,7 @@ export const userSignUp = async (req, res) => {
                     INSERT INTO active_user(email, password, role, name) VALUES(${email},${password}, ${"customer"}, ${name}) RETURNING *
                 `;
                     //create a cart assign to that user
-                    const newCart = await db`
+                    await db`
                     INSERT INTO cart(user_email) VALUES(${email})
                     `;
 

@@ -1,12 +1,14 @@
 import React from 'react'
 import { motion } from "framer-motion"
-import { Mail, Lock, MoveRight } from "lucide-react"
+import { Mail, Lock, MoveRight, User, LoaderCircle } from "lucide-react"
 import { useNavigate } from 'react-router-dom';
+import { useUserStore } from '../store/useUserStore';
 
 
 
 function SignUpPages() {
-    const loading = true;
+    const { loading, error, createNewAccount } = useUserStore();
+
     const navigate = useNavigate();
     const [switchPage, setSwitchPage] = React.useState(false);
     const [formData, setFormData] = React.useState({
@@ -18,7 +20,8 @@ function SignUpPages() {
 
     function handleSubmit(e) {
         e.preventDefault();
-        console.log(formData);
+        console.log(formData)
+        createNewAccount(formData);
     }
     return (
         <div className='min-h-[calc(100vh-5rem)] flex items-center justify-center bg-emerald-500'>
@@ -28,7 +31,7 @@ function SignUpPages() {
                 <motion.div className='hidden md:flex md:w-1/2 justify-center items-center '
                     initial={!switchPage ? { opacity: 0, x: -20 } : { opacity: 1, x: 0 }}
                     animate={!switchPage ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
-                    transition={!switchPage ? { duration: 0.8 } : { duration: 0.8, delay: 1.0 }} //could include delay here to delay when it will show up
+                    transition={!switchPage ? { duration: 0.8 } : { duration: 0.8, delay: 1.0 }}
                 >
                     <img src="/images/sneakerSignUpPage.avif" alt="Sneakers" className="h-full object-cover rounded-2xl" />
                 </motion.div>
@@ -42,10 +45,25 @@ function SignUpPages() {
                             animate={!switchPage ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
                             transition={{ duration: 0.8, delay: 0.5 }}
                         >
-                            <h2 className='mt-36 mb-16 text-center text-3xl font-bold '>Create your account</h2>
+                            <h2 className='mt-16 mb-16 text-center text-3xl font-bold '>Create your account</h2>
 
 
                             <div className='space-y-4'>
+                                <div className='relative'>
+                                    <div className='absolute inset-y-0 left-2 pl-3 flex items-center pointer-events-none'>
+                                        <User className="h-5 w-4 text-gray-400" aria-hidden
+                                            ="true" />
+                                    </div>
+                                    <input
+                                        type='text'
+                                        required
+                                        value={formData.name}
+                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                        className='block w-full py-4 pl-12 bg-gray-200 border border-white rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm'
+                                        placeholder='Full Name'
+                                    />
+                                </div>
+
                                 <div className='relative'>
                                     <div className='absolute inset-y-0 left-2 pl-3 flex items-center pointer-events-none'>
                                         <Mail className="h-5 w-4 text-gray-400" aria-hidden
@@ -54,8 +72,8 @@ function SignUpPages() {
                                     <input
                                         type='text'
                                         required
-                                        value={formData.name}
-                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                        value={formData.email}
+                                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                         className='block w-full py-4 pl-12 bg-gray-200 border border-white rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm'
                                         placeholder='Email'
                                     />
@@ -75,6 +93,21 @@ function SignUpPages() {
                                         placeholder='Password'
                                     />
                                 </div>
+
+                                <div className='relative'>
+                                    <div className='absolute inset-y-0 left-2 pl-3 flex items-center pointer-events-none'>
+                                        <Lock className="h-5 w-4 text-gray-400" aria-hidden
+                                            ="true" />
+                                    </div>
+                                    <input
+                                        type='text'
+                                        required
+                                        value={formData.confirmPassword}
+                                        onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                                        className='block w-full py-4 pl-12 bg-gray-200 border border-white rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm '
+                                        placeholder='Confirm Password'
+                                    />
+                                </div>
                             </div>
                         </motion.div>
 
@@ -83,9 +116,21 @@ function SignUpPages() {
                             animate={!switchPage ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                             transition={!switchPage ? { duration: 0.8, delay: 1.0 } : { duration: 0.8 }}
                         >
-                            <button className='block w-full py-4 text-white bg-green-400 rounded-3xl shadow-md hover:bg-gray-800 sm:text-sm mt-6 mb-3'>Sign up</button>
+                            <div className={`${!error && "hidden"} flex justify-center items-center pt-5 text-red-600`}>{error}</div>
+                            <button
+                                className={`block w-full py-4 text-white ${loading ? "bg-gray-800" : "bg-green-400"} rounded-3xl shadow-md hover:bg-gray-800 sm:text-sm mt-6 mb-3 flex justify-center items-center disabled:opacity-50 `}
+                                disabled={loading}
+                            >
+                                {loading ? (
+                                    <>
+                                        <LoaderCircle size={20} className={loading && "animate-spin"} />
+                                    </>
+                                ) : (
+                                    "Sign Up"
+                                )}
+                            </button>
                             {/* forget password and sign in */}
-                            <div className='h-36 flex flex-col justify-between items-center sm:text-sm'>
+                            <div className='h-[84px] flex flex-col justify-between items-center sm:text-sm'>
                                 <div className='text-gray-400'>Forgot Username / Password?</div>
                                 <div className='text-gray-400'>
                                     <div
