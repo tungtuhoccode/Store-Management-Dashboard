@@ -19,7 +19,11 @@ const PORT = process.env.PORT;
 
 app.use(express.json()); //for destructoring req.body
 app.use(cookieParser());
-app.use(cors());    //for not blocking request from different origin, need to research more to understand
+app.use(cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true
+
+}));    //for not blocking request from different origin, need to research more to understand
 app.use(helmet()); //basically provide extra security that helps you protect your app by setting various HTTP headers
 app.use(morgan("dev"));
 

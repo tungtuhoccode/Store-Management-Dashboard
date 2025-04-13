@@ -38,10 +38,6 @@ const setCookies = (res, accessToken, refreshToken) => {
 
 export const userSignUp = async (req, res) => {
 
-    //need to create new cart when create a new user as well
-    
-
-
     try {
         let { email, password, name } = req.body;
         const checkEmail = await db`
@@ -85,11 +81,6 @@ export const userSignUp = async (req, res) => {
         res.status(400).json({ success: false, message: error.message });
     }
 
-
-
-
-
-
 }
 export const userLogIn = async (req, res) => {
     const { email, password } = req.body;
@@ -110,7 +101,7 @@ export const userLogIn = async (req, res) => {
                 await storeRefreshToken(user[0].email, refreshToken);
                 setCookies(res, accessToken, refreshToken);
 
-                res.status(200).json({ success: true, data: { emai: user[0].email, name: user[0].name } })
+                res.status(200).json({ success: true, data: { email: user[0].email, name: user[0].name } })
             }
             else {
                 res.status(401).json({ success: false, message: "Incorrect password!" })
@@ -176,5 +167,9 @@ export const refreshToken = async (req, res) => {
 
 
 export const getProfile = async (req, res) => {
-
+    try {
+        res.status(200).json({ data: { name: req.userName, email: req.userEmail } });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message })
+    }
 }

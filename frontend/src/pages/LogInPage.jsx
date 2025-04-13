@@ -1,21 +1,25 @@
 import React from 'react'
 import { motion } from "framer-motion"
-import { Mail, Lock, MoveRight, MoveLeft } from "lucide-react"
-import { Link, useNavigate } from 'react-router-dom';
+import { Mail, Lock, MoveLeft, LoaderCircle } from "lucide-react"
+import { useNavigate } from 'react-router-dom';
+
+import { useUserStore } from '../store/useUserStore.js';
 
 function LogInPage() {
-    const loading = true;
     const navigate = useNavigate();
+    const { loading, error, signIn } = useUserStore();
+
     const [switchPage, setSwitchPage] = React.useState(false);
     const [formData, setFormData] = React.useState({
-        name: "",
         email: "",
         password: "",
     })
 
     function handleSubmit(e) {
         e.preventDefault();
-        console.log(formData);
+        signIn(formData);
+
+
     }
     return (
         <div className='min-h-[calc(100vh-5rem)] flex items-center justify-center bg-emerald-500'>
@@ -43,8 +47,8 @@ function LogInPage() {
                                     <input
                                         type='text'
                                         required
-                                        value={formData.name}
-                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                        value={formData.email}
+                                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                         className='block w-full py-4 pl-12 bg-gray-200 border border-white rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm'
                                         placeholder='Email'
                                     />
@@ -72,7 +76,20 @@ function LogInPage() {
                             animate={!switchPage ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                             transition={!switchPage ? { duration: 0.8, delay: 1.0 } : { duration: 0.8 }}
                         >
-                            <button className='block w-full py-4 text-white bg-green-400 rounded-3xl shadow-md hover:bg-gray-800 sm:text-sm mt-6 mb-3'>Sign up</button>
+                            <div className={`${!error && "hidden"} flex justify-center items-center pt-5 text-red-600`}>{error}</div>
+                            <button
+                                className={`block w-full py-4 text-white ${loading ? "bg-gray-800" : "bg-green-400"} rounded-3xl shadow-md hover:bg-gray-800 sm:text-sm mt-6 mb-3 flex justify-center items-center disabled:opacity-50 `}
+                                disabled={loading}
+                            >
+                                {loading ? (
+                                    <>
+                                        <LoaderCircle size={20} className={loading && "animate-spin"} />
+                                    </>
+                                ) : (
+                                    "Sign In"
+                                )}
+                            </button>
+
                             {/* forget password and sign in */}
                             <div className='h-36 flex flex-col justify-between items-center sm:text-sm'>
                                 <div className='text-gray-400'>Forgot Username / Password?</div>
@@ -93,7 +110,7 @@ function LogInPage() {
                         </motion.div>
                     </div>
                 </form>
-               
+
                 {/* for logo */}
                 <motion.div className='hidden md:flex md:w-1/2 justify-center items-center '
                     initial={!switchPage ? { opacity: 0, x: 20 } : { opacity: 1, x: 0 }}

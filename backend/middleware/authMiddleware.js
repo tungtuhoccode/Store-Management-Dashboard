@@ -12,13 +12,13 @@ export const protectRoute = async (req, res, next) => {
         try {
             const decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
             const user = await db`
-                SELECT email, role FROM active_user WHERE email = ${decoded.userEmail};
+                SELECT email, name, role FROM active_user WHERE email = ${decoded.userEmail};
             `;
             if (user.length === 0) {
                 return res.status(401).json({ message: "User not found!" });
             }
-            req.userEmail = decoded.userEmail;
-
+            req.userEmail = user[0].email;
+            req.userName = user[0].name;
             req.userRole = user[0].role;
             next();
         } catch (error) {

@@ -3,14 +3,18 @@ import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { ShoppingCart, Menu, X, User, LogOut, Signature, SearchSlash, Store, House } from "lucide-react"
 import ShoppingCartPanel from './ShoppingCartPanel';
+import { useUserStore } from '../store/useUserStore';
 
 function NavBar() {
-    const user = false;
+    const { user } = useUserStore();
     const location = useLocation();
     const currentLocation = location.pathname;
 
+    
+
     //for cart panel
     const [isOpen, setIsOpen] = React.useState(false);
+    //for menu button in mobile screen
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
     React.useEffect(() => {
@@ -26,7 +30,7 @@ function NavBar() {
     return (
         <header className="fixed top-0 left-0 w-full z-40 transition-all duration-300 bg-white text-black shadow-md border-b">
             <div className="max-w-7xl mx-auto flex justify-between items-center px-4 md:px-8 py-6">
-                <div className="text-xl font-bold items-center space-x-2 flex"><Link to="/">VNTT Shop</Link></div>
+                <div className="text-xl font-bold items-center space-x-2 flex text-green-500"><Link to="/">VNTT Shop</Link></div>
 
                 {/* Desktop Nav */}
 
@@ -35,7 +39,7 @@ function NavBar() {
                     <li className='hover:text-green-500'><Link to="/shop" className={`hover:text-green-500 ${currentLocation === '/shop' ? 'text-green-600' : 'text-black'}`} >Shop</Link></li>
                     <li className='hover:text-green-500'><Link to="/about" className={`hover:text-green-500 ${currentLocation === '/about' ? 'text-green-600' : 'text-black'}`} >About</Link></li>
                     <li className='hover:text-green-500'><Link to="/contact" className={`hover:text-green-500 ${currentLocation === '/contact' ? 'text-green-600' : 'text-black'}`} >Contact</Link></li>
-                    {user ?
+                    {(user.email && user.userName) ?
                         <>
                             <li>
                                 <button onClick={() => setIsOpen(true)} className="block hover:text-green-500 relative">
@@ -73,7 +77,7 @@ function NavBar() {
                         <li className='hover:text-green-500' onClick={() => setIsMenuOpen(false)}><Link to="/about" className={`hover:text-green-500 ${currentLocation === '/about' ? 'text-green-600' : 'text-black'} flex justify-start items-center gap-1`} ><SearchSlash size={20} /> About</Link></li>
                         <li className='hover:text-green-500' onClick={() => setIsMenuOpen(false)}><Link to="/contact" className={`hover:text-green-500 ${currentLocation === '/contact' ? 'text-green-600' : 'text-black'} flex justify-start items-center gap-1`} ><Signature size={20} /> Contact</Link></li>
 
-                        {user ?
+                        {(user.email && user.userName) ?
                             <>
                                 <li className='hover:text-green-500' onClick={() => setIsMenuOpen(false)}><Link to="/cart" className={`hover:text-green-500 ${currentLocation === '/cart' ? 'text-green-600' : 'text-black'} flex justify-start items-center gap-1`} ><ShoppingCart size={20} /> Cart</Link></li>
                                 <li className='hover:text-green-500 cursor-pointer flex justify-start items-center gap-1'><LogOut size={20} /> Log out</li>
