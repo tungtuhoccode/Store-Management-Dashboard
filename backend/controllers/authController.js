@@ -143,10 +143,10 @@ export const refreshToken = async (req, res) => {
             return res.status(401).json({ message: "Invalid refresh token" });
         }
 
-        // const storedToken = await redis.get(`refresh_token:${decoded.userEmail}`);
-        // if (storedToken !== refreshToken) {
-        //     return res.status(401).json({ message: "Invalid refresh token" });
-        // }
+        const storedToken = await redis.get(`refresh_token:${decoded.userEmail}`);
+        if (storedToken !== refreshToken) {
+            return res.status(401).json({ message: "Invalid refresh token" });
+        }
 
         const accessToken = jwt.sign({ userEmail: decoded.userEmail }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
 

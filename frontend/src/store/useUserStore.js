@@ -23,7 +23,18 @@ export const useUserStore = create((set, get) => ({
             set({ loading: false });
         }
     },
-   
+
+    logOut: async () => {
+        set({ checkingAuth: true });
+        try {
+            await axios.post("/auth/logout")
+            set({ user: { email: "", userName: "" } });
+        } catch (error) {
+            set({ error: error.response.data.message });
+        } finally {
+            set({ checkingAuth: false })
+        }
+    },
 
     checkAuth: async () => {
         set({ checkingAuth: true });

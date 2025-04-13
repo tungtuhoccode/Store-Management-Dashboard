@@ -6,7 +6,7 @@ import ShoppingCartPanel from './ShoppingCartPanel';
 import { useUserStore } from '../store/useUserStore';
 
 function NavBar() {
-    const { user } = useUserStore();
+    const { user, logOut } = useUserStore();
     const location = useLocation();
     const currentLocation = location.pathname;
 
@@ -49,7 +49,7 @@ function NavBar() {
                                     </span>
                                 </button>
                             </li>
-                            <li className='hover:text-green-500 cursor-pointer'><LogOut size={20} /></li>
+                            <li onClick={()=>logOut()} className='hover:text-green-500 cursor-pointer'><LogOut size={20} /></li>
                         </>
                         :
                         <li className='hover:text-green-500'><Link to="/signup" className={`hover:text-green-500 ${currentLocation === '/signup' ? 'text-green-600' : 'text-black'}`}><User size={20} /></Link></li>
@@ -80,7 +80,7 @@ function NavBar() {
                         {(user.email && user.userName) ?
                             <>
                                 <li className='hover:text-green-500' onClick={() => setIsMenuOpen(false)}><Link to="/cart" className={`hover:text-green-500 ${currentLocation === '/cart' ? 'text-green-600' : 'text-black'} flex justify-start items-center gap-1`} ><ShoppingCart size={20} /> Cart</Link></li>
-                                <li className='hover:text-green-500 cursor-pointer flex justify-start items-center gap-1'><LogOut size={20} /> Log out</li>
+                                <li onClick={()=>logOut()} className='hover:text-green-500 cursor-pointer flex justify-start items-center gap-1'><LogOut size={20} /> Log out</li>
                             </>
 
                             :
