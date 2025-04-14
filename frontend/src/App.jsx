@@ -32,7 +32,6 @@ function App() {
               <Route path="/login" element={(!user.email && !user.userName) ? <LogInPage /> : <Navigate to="/" replace />} />
             </Routes>
 
-
           </BrowserRouter>
         </div>
       </div>

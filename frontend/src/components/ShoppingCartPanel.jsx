@@ -22,9 +22,9 @@ function ShoppingCartPanel({ isOpen, setIsOpen }) {
             >
                 {/* Header */}
                 <div className="flex justify-between items-center px-6 py-4 border-b">
-                    <h2 className="text-lg font-semibold">Shopping Cart</h2>
+                    <h2 className="text-lg font-semibold text-black">Shopping Cart</h2>
                     <button onClick={() => setIsOpen(false)}>
-                        <X />
+                        <X color='black' />
                     </button>
                 </div>
 
