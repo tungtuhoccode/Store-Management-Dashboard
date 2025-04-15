@@ -25,7 +25,6 @@ function NavBar() {
             if (window.innerWidth >= 768) setIsMenuOpen(false);
             if (window.innerWidth < 768) setIsOpen(false);
         }
-
         window.addEventListener('resize', handleResize);
     }
     )

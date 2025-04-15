@@ -4,6 +4,18 @@ import { motion } from 'framer-motion';
 
 export default function FeaturedSlider({ products }) {
     const [index, setIndex] = React.useState(2);
+    const [isHovered, setIsHovered] = React.useState(false);
+    const isLargeScreen = useMediaQuery("(min-width: 640px)");
+
+    React.useEffect(() => {
+        if (isHovered) return; // Don't run if hovered
+
+        const intervalId = setInterval(() => {
+            nextSlide();
+        }, 4000);
+
+        return () => clearInterval(intervalId); // Clean up before setting a new one
+    }, [isHovered, isLargeScreen, products.length]);
 
     function useMediaQuery(query) {
         const [matches, setMatches] = React.useState(false);
@@ -17,7 +29,7 @@ export default function FeaturedSlider({ products }) {
         }, [matches, query])
         return matches;
     }
-    const isLargeScreen = useMediaQuery("(min-width: 1024px)");
+
 
 
     function prevSlide() {
@@ -31,7 +43,14 @@ export default function FeaturedSlider({ products }) {
 
 
     return (
-        <div className='relative max-w-[90%] overflow-hidden mx-auto mt-10 '>
+        <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+            className='relative max-w-[90%] overflow-hidden mx-auto mt-10'
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+        >
             <motion.div
                 className='flex'
                 animate={{ x: `-${isLargeScreen ? (index * (100 / 3)) : (index * 100)}%` }}
@@ -40,11 +59,17 @@ export default function FeaturedSlider({ products }) {
                 {products.map((product) => (
                     <div
                         key={product.id}
-                        className='w-full lg:w-1/3 flex-shrink-0 px-6 py-48 bg-white border rounded-lg shadow text-center mx-6'
+                        className='w-full sm:w-1/3 flex-shrink-0 border shadow-lg rounded-lg sm:mx-6'
                     >
-                        <div>{product.name}</div>
-                        <h2 className="text-xl font-semibold">{product.name}</h2>
-                        <p className="text-green-600 mt-2">{product.price}</p>
+
+                        <img src={product.image} alt={product.name} className='rounded-t-lg h-[75%] w-full object-cover' />
+
+
+                        <div className='mt-3 ml-3'>
+                            <h2 className="text-lg lg:text-xl truncate">{product.name}</h2>
+                            <p className='text-sm text-gray-500'>{product.categories}</p>
+                            <p className="text-green-600 mt-2">{product.price}</p>
+                        </div>
                     </div>
                 ))}
             </motion.div>
@@ -61,7 +86,7 @@ export default function FeaturedSlider({ products }) {
             >
                 →
             </button>
-        </div >
+        </motion.div >
     )
 }
 
