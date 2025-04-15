@@ -19,22 +19,34 @@ function NavBar() {
     const [isOpen, setIsOpen] = React.useState(false);
     //for menu button in mobile screen
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+    //to keep track if user scrolled past the wallpaper in the homepage
+    const [scrolled, setScrolled] = React.useState(false);
 
     React.useEffect(() => {
         const handleResize = () => {
             if (window.innerWidth >= 768) setIsMenuOpen(false);
             if (window.innerWidth < 768) setIsOpen(false);
+
+        }
+        const handleScroll = () => {
+            if (window.scrollY >= (window.innerHeight - 30)) {
+                setScrolled(true);
+            }
+            else {
+                setScrolled(false);
+            }
         }
         window.addEventListener('resize', handleResize);
-    }
+        window.addEventListener("scroll", handleScroll);
+    }, []
     )
-    if (currentLocation === "/") {
+    if (currentLocation === "/" && !scrolled) {
         textColor = "text-white";
     }
 
     return (
         <header className={`fixed top-0 left-0 w-full z-40 transition-all duration-300
-            ${currentLocation === "/" ? 'bg-transparent !text-white' : 'bg-white text-black shadow-md border-b'}`}>
+            ${currentLocation === "/" ? `${scrolled ? 'bg-white text-black shadow-md border-b' : 'bg-transparent text-white'} ` : 'bg-white text-black shadow-md border-b'}`}>
 
             <div className="max-w-7xl mx-auto flex justify-between items-center px-4 md:px-8 py-6">
                 <div className="text-xl font-bold items-center space-x-2 flex font-pacifico"><Link to="/">VNWear</Link></div>
