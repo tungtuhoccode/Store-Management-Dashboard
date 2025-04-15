@@ -1,12 +1,21 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion';
+import FeaturedSlider from '../components/FeaturedSlider';
 
 import { CreditCard, Truck, Box, Heart } from "lucide-react"
 
+import { useProductStore } from '../store/useProductStore';
+
 function HomePage() {
   const navigate = useNavigate();
-  // rgb(37, 150, 190)
+
+  const { products, fetchFeaturedProducts } = useProductStore();
+
+  React.useEffect(() => {
+    fetchFeaturedProducts();
+  }, [fetchFeaturedProducts])
+
   return (
     <>
       {/* Wallpaper / Intro */}
@@ -21,15 +30,13 @@ function HomePage() {
         <h1 className='font-pacifico md:text-3xl sm:text-2xl'> WELCOME TO VNWear
         </h1>
         <h1 className='font-pacifico'>Naturally Styled. Authentically You.</h1>
-        <button className='mt-5' onClick={() => navigate("/shop")}>Shop Now</button>
+        {/* <button className='mt-5' onClick={() => navigate("/shop")}>Shop Now</button> */}
       </section>
 
       {/* Actual content */}
 
 
-
-
-      <section className="max-w-7xl mx-auto py-16 flex flex-col gap-4 justify-evenly items-center md:flex-row">
+      <section className="max-w-7xl mx-auto py-16 flex flex-col gap-4 justify-evenly items-center lg:flex-row">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -79,6 +86,13 @@ function HomePage() {
             <div className='text-gray-500'>Blandit gravida viverra</div>
           </div>
         </motion.div>
+      </section>
+
+      <hr className='max-w-[80%] 2xl:max-w-7xl mx-auto border-t-emerald-500' />
+      <section className='max-w-7xl mx-auto py-16 flex flex-col justify-center items-center'>
+        <h1 className='font-pacifico md:text-3xl sm:text-2xl'>Feature Product</h1>
+        {/* slide featured section */}
+        <FeaturedSlider products={products} />
       </section>
 
     </>

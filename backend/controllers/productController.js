@@ -70,6 +70,59 @@ export const toggleDisplayedProduct = async (req, res) => {
     }
 }
 
+export const getFeaturedProduct = async (req, res) => {
+    try {
+        let featuredProduct = await redis.get("featured_product");
+
+        //if exists in redis
+        if (featuredProduct) {
+            return res.status(200).json({ success: true, data: JSON.parse(featuredProduct) });
+        }
+
+        //not exists in redis
+        featuredProduct = await db`
+        SELECT id, name, price, image, stock_quantity, categories FROM product WHERE slide_display = True;
+    `;
+        if (Object.keys(featuredProduct).length === 0) {
+            return res.status(404).json({ success: true, message: "No Featured Product" });
+        }
+
+        await redis.set(`featured_product`, JSON.stringify(featuredProduct))
+        res.status(201).json({ success: true, data: featuredProduct });
+
+    } catch (error) {
+        console.log("Error in getFeaturedProduct", error);
+        res.status(500).json({ message: "Server error", message: error.message });
+    }
+}
+export const toggleFeaturedProduct = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const findProduct = await db`
+            SELECT * FROM product WHERE id=${id};
+        `;
+        if (findProduct.length === 0) {
+            return res.status(404).json({ message: "No product found" });
+        }
+        const updatedProduct = await db`
+            UPDATE product SET slide_display = NOT slide_display WHERE id = ${id} RETURNING *
+        `;
+
+        const findDisplayedProduct = await db`
+            SELECT id, name, price, image, stock_quantity, categories FROM product WHERE displayed_product = TRUE;
+        `;
+
+        await redis.set("featured_product", JSON.stringify(findDisplayedProduct));
+
+
+        res.status(200).json({ success: true, data: updatedProduct[0] });
+    } catch (error) {
+        console.log("Error inside toggleFeaturedProduct ", error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+
+}
+
 export const createNewProduct = async (req, res) => {
 
     try {
