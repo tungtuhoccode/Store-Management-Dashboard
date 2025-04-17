@@ -44,9 +44,7 @@ export default function FeaturedSlider({ products }) {
 
     return (
         <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+            
             className='relative max-w-[90%] overflow-hidden mx-auto mt-10'
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}

@@ -2,6 +2,7 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion';
 import FeaturedSlider from '../components/FeaturedSlider';
+import CategoriesList from '../components/CategoriesList';
 
 import { CreditCard, Truck, Box, Heart } from "lucide-react"
 
@@ -89,10 +90,24 @@ function HomePage() {
       </section>
 
       <hr className='max-w-[80%] 2xl:max-w-7xl mx-auto border-t-emerald-500' />
+      <section className='max-w-7xl mx-auto py-16 '>
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+          className='flex flex-col justify-center items-center'
+        >
+          <h1 className='font-pacifico md:text-3xl sm:text-2xl'>Feature Product</h1>
+          {/* slide featured section */}
+          <FeaturedSlider products={products} />
+        </motion.div>
+
+
+      </section>
+
       <section className='max-w-7xl mx-auto py-16 flex flex-col justify-center items-center'>
-        <h1 className='font-pacifico md:text-3xl sm:text-2xl'>Feature Product</h1>
-        {/* slide featured section */}
-        <FeaturedSlider products={products} />
+        <h1 className='font-pacifico md:text-3xl sm:text-2xl'>Explore Our Categories</h1>
+        <CategoriesList />
       </section>
 
     </>
