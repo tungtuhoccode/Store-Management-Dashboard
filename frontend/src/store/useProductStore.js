@@ -6,15 +6,33 @@ export const useProductStore = create((set, get) => ({
     loading: false,
     error: null,
 
-
-    fetchFeaturedProducts: async () => {
-        set({ loading: true });
+    fetchDisplayedProducts: async () => {
+        set({ loading: true, error: null });
         try {
-            const response = await axios.get("/product/featuredProduct");
-            set({products: response.data.data})
+            const response = await axios.get("/product/displayedProduct");
+            set({ products: response.data.data });
 
         } catch (error) {
-            set({error: error.response.data.message});
+            if (error.response && error.response.status === 404) {
+                set({ error: "Currently no product being displayed" });
+            } else {
+                set({ error: error.response.data.message });
+
+            }
+        } finally {
+            set({ loading: false });
+        }
+        
+    },
+
+    fetchFeaturedProducts: async () => {
+        set({ loading: true, error: null });
+        try {
+            const response = await axios.get("/product/featuredProduct");
+            set({ products: response.data.data })
+
+        } catch (error) {
+            set({ error: error.response.data.message });
         } finally {
             set({ loading: false });
         }

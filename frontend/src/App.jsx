@@ -9,6 +9,7 @@ import HomePage from "./pages/HomePage"
 import SignUpPages from "./pages/SignUpPages"
 import LogInPage from "./pages/LogInPage"
 import LoadingScreen from "./components/LoadingScreen"
+import Shop from "./pages/Shop"
 
 import { useUserStore } from "./store/useUserStore"
 
@@ -30,6 +31,7 @@ function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/signup" element={(!user.email && !user.userName) ? <SignUpPages /> : <Navigate to="/" replace />} />
               <Route path="/login" element={(!user.email && !user.userName) ? <LogInPage /> : <Navigate to="/" replace />} />
+              <Route path="/shop" element={<Shop />} />
             </Routes>
 
           </BrowserRouter>

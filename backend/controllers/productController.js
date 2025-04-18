@@ -23,7 +23,7 @@ export const getDisplayedProduct = async (req, res) => {
 
         //if exists in redis
         if (displayedProducts) {
-            return res.status(200).json(JSON.parse(displayedProducts));
+            return res.status(200).json({ success: true, data: JSON.parse(displayedProducts) });
         }
 
         //not exists in redis
@@ -34,8 +34,8 @@ export const getDisplayedProduct = async (req, res) => {
             return res.status(404).json({ success: true, message: "Current no items is being sold! Come back later!" });
         }
 
-        await redis.set(`displayed_product`, JSON.stringify(displayedProducts[0]))
-        res.status(201).json({ success: true, data: displayedProducts[0] });
+        await redis.set(`displayed_product`, JSON.stringify(displayedProducts))
+        res.status(201).json({ success: true, data: displayedProducts });
 
     } catch (error) {
         console.log("Error in getDisplayedProduct ", error);
