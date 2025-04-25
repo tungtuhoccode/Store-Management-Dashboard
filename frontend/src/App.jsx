@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { Navigate } from "react-router-dom"
 
 import NavBar from "./components/NavBar"
+import ScrollToTop from "./components/ScrollToTop"
 
 
 import HomePage from "./pages/HomePage"
@@ -26,6 +27,7 @@ function App() {
       <div className="min-h-screen relative overflow-hidden">
         <div className="relative z-50 pt-20">
           <BrowserRouter>
+            <ScrollToTop />
             <NavBar />
             <Routes>
               <Route path="/" element={<HomePage />} />

@@ -3,6 +3,7 @@ import { useProductStore } from '../store/useProductStore'
 import LoadingScreen from '../components/LoadingScreen';
 import { motion } from 'framer-motion';
 
+//gotta add when use click on shop, it goes to the beginning of the page first
 export default function Shop() {
     const { products, fetchDisplayedProducts, loading } = useProductStore();
 
@@ -39,26 +40,24 @@ export default function Shop() {
                                     }}
                                     transition={{
                                         duration: 0.6,
-                                
-
                                         delay: 0.6 * delayIndex,
-                                        scale: { duration: 0 },       
-                                        boxShadow: { duration: 0 },  
+                                        scale: { duration: 0.6 },       
+                                        boxShadow: { duration: 0.6 },  
                                     }}
                                     viewport={{ once: true, amount: 0.5  }}
 
                                     key={product.id}
-                                    className='max-h-[530px] rounded-b-lg cursor-pointer'>
+                                    className='group max-h-[530px] rounded-b-lg cursor-pointer'>
                                     <img
                                         className='w-full max-w-[386px] h-[75%] rounded-t-lg'
                                         src={product.image}
                                         alt={product.name} />
-                                    <div className='pt-3'>
+                                    <div className='pt-3 transition-all  group-hover:translate-x-3 duration-600'>
                                         <h2 className="text-lg lg:text-xl truncate">{product.name}</h2>
 
                                         <div className='text-sm text-gray-500'>{product.categories}</div>
 
-                                        <div>${product.price}</div>
+                                        <div className='text-sm'>${product.price}</div>
 
                                         <div>{product.stock_quantity}
                                             <span className='text-sm text-gray-500'> in stocks
