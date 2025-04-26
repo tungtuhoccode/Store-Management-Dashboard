@@ -1,15 +1,20 @@
 import React from 'react'
 import { useProductStore } from '../store/useProductStore'
+import { useUserStore } from '../store/useUserStore';
 import LoadingScreen from '../components/LoadingScreen';
 import { motion } from 'framer-motion';
 
-//gotta add when use click on shop, it goes to the beginning of the page first
+import AddToCartIcon from '../components/AddToCartIcon';
+
+
 export default function Shop() {
+    const { user } = useUserStore();
     const { products, fetchDisplayedProducts, loading } = useProductStore();
 
     React.useEffect(() => {
         fetchDisplayedProducts();
     }, [fetchDisplayedProducts])
+
     return (
         <div>
             <div className='relative'>
@@ -27,13 +32,13 @@ export default function Shop() {
                 :
                 <section className='max-w-7xl mx-auto py-16'>
                     <div
-                        className='grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-16 mx-auto mt-10 max-w-[90%]'>
+                        className='grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-16 mx-auto mt-10 max-w-[90%]'>
                         {products.map((product, index) => {
                             const delayIndex = index % 3; // reset every 3 items
                             return (
                                 <motion.div
                                     initial={{ opacity: 0, y: -30 }}
-                                    whileInView={{ opacity: 1, y: [-30,0] }}
+                                    whileInView={{ opacity: 1, y: [-30, 0] }}
                                     whileHover={{
                                         scale: 1.05,
                                         boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
@@ -41,26 +46,30 @@ export default function Shop() {
                                     transition={{
                                         duration: 0.6,
                                         delay: 0.6 * delayIndex,
-                                        scale: { duration: 0.6 },       
-                                        boxShadow: { duration: 0.6 },  
+                                        scale: { duration: 0.6 },
+                                        boxShadow: { duration: 0.6 },
                                     }}
-                                    viewport={{ once: true, amount: 0.5  }}
+                                    viewport={{ once: true, amount: 0.5 }}
 
                                     key={product.id}
-                                    className='group max-h-[530px] rounded-b-lg cursor-pointer'>
+                                    className='relative group max-h-[530px] rounded-b-lg cursor-pointer'>
+
+                                    {(user.email && user.userName) && (
+                                        <AddToCartIcon />
+                                    )}
                                     <img
                                         className='w-full max-w-[386px] h-[75%] rounded-t-lg'
                                         src={product.image}
                                         alt={product.name} />
-                                    <div className='pt-3 transition-all  group-hover:translate-x-3 duration-600'>
-                                        <h2 className="text-lg lg:text-xl truncate">{product.name}</h2>
+                                    <div className='pt-3 transition-all group-hover:translate-x-2 lg:group-hover:translate-x-3 duration-600'>
+                                        <h2 className="text-sm sm:text-lg lg:text-xl truncate">{product.name}</h2>
 
-                                        <div className='text-sm text-gray-500'>{product.categories}</div>
+                                        <div className='text-xs lg:text-sm text-gray-500'>{product.categories}</div>
 
-                                        <div className='text-sm'>${product.price}</div>
+                                        <div className='text-xs lg:text-sm'>${product.price}</div>
 
                                         <div>{product.stock_quantity}
-                                            <span className='text-sm text-gray-500'> in stocks
+                                            <span className='text-xs lg:text-sm text-gray-500'> in stocks
                                             </span>
                                         </div>
                                     </div>
