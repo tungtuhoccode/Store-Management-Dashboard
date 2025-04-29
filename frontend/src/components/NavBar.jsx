@@ -4,11 +4,14 @@ import { Link, useLocation } from 'react-router-dom'
 import { ShoppingCart, Menu, X, User, LogOut, Signature, SearchSlash, Store, House } from "lucide-react"
 import ShoppingCartPanel from './ShoppingCartPanel';
 import { useUserStore } from '../store/useUserStore';
+import { useCartStore } from '../store/useCartStore';
+
 
 
 
 function NavBar() {
     const { user, logOut } = useUserStore();
+    const { cart, getCartItems, totalCartItem } = useCartStore();
     const location = useLocation();
     const currentLocation = location.pathname;
     let textColor = "text-black";
@@ -38,7 +41,14 @@ function NavBar() {
         }
         window.addEventListener('resize', handleResize);
         window.addEventListener("scroll", handleScroll);
-    }, []
+
+        const fetchCart = async () => {
+            if (user.email && user.userName) {
+                await getCartItems();
+            }
+        }
+        fetchCart();
+    }, [user, getCartItems]
     )
     if (currentLocation === "/" && !scrolled) {
         textColor = "text-white";
@@ -63,8 +73,8 @@ function NavBar() {
                             <li>
                                 <button onClick={() => setIsOpen(true)} className="block hover:text-green-500 relative">
                                     <ShoppingCart size={20} />
-                                    <span className='absolute -top-1 -right-1 bg-green-500 text-white text-xs w-3 h-3 rounded-full flex items-center justify-center'>
-                                        1
+                                    <span className='absolute -top-2 -right-1 bg-green-500 text-white text-xs w-[1.0rem] h-[1.0rem] rounded-full flex items-center justify-center'>
+                                        {totalCartItem}
                                     </span>
                                 </button>
                             </li>
@@ -108,7 +118,7 @@ function NavBar() {
                     </ul>
                 </div>
             )}
-            <ShoppingCartPanel isOpen={isOpen} setIsOpen={setIsOpen} />
+            <ShoppingCartPanel cartItem={cart} isOpen={isOpen} setIsOpen={setIsOpen} />
         </header>
     )
 }

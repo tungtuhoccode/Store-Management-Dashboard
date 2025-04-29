@@ -13,8 +13,9 @@ export default function Shop() {
 
     React.useEffect(() => {
         fetchDisplayedProducts();
+       
     }, [fetchDisplayedProducts])
-
+  
     return (
         <div>
             <div className='relative'>
@@ -55,7 +56,7 @@ export default function Shop() {
                                     className='relative group max-h-[530px] rounded-b-lg cursor-pointer'>
 
                                     {(user.email && user.userName) && (
-                                        <AddToCartIcon />
+                                        <AddToCartIcon productId={product.id} />
                                     )}
                                     <img
                                         className='w-full max-w-[386px] h-[75%] rounded-t-lg'
