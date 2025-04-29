@@ -42,7 +42,7 @@ export const addToCart = async (req, res) => {
             DO UPDATE SET quantity = cart_item.quantity + EXCLUDED.quantity
             RETURNING *
         `;
-        res.status(201).json({ success: true, addedProduct: productAdded });
+        res.status(201).json({ success: true, data: productAdded });
 
     } catch (error) {
         console.log("Error in addToCart ", error);
@@ -62,7 +62,7 @@ export const deleteCartProduct = async (req, res) => {
             product_id = ${productId}
             RETURNING *
         `;
-        res.status(200).json({ success: true, deletedProduct: productDeleted });
+        res.status(200).json({ success: true, data: productDeleted });
     } catch (error) {
         console.log("Error in deleteCartProduct ", error);
         res.status(500).json({ success: false, message: error.message });
