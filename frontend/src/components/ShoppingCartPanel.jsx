@@ -51,7 +51,7 @@ function ShoppingCartPanel({ cartItem, isOpen, setIsOpen }) {
 
                 ) :
                     <>
-                        <div className='flex flex-col p-[20px]'>
+                        <div className='flex flex-col p-[20px] h-[66%] overflow-y-auto '>
                             {cartItem.map((item, index) => (
                                 (loading && deleteingItemId === item.id)
                                     ?

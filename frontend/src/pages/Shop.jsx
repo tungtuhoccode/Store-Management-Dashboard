@@ -1,6 +1,7 @@
 import React from 'react'
 import { useProductStore } from '../store/useProductStore'
 import { useUserStore } from '../store/useUserStore';
+import { useCartStore } from '../store/useCartStore';
 import LoadingScreen from '../components/LoadingScreen';
 import { motion } from 'framer-motion';
 
@@ -13,9 +14,9 @@ export default function Shop() {
 
     React.useEffect(() => {
         fetchDisplayedProducts();
-       
+
     }, [fetchDisplayedProducts])
-  
+
     return (
         <div>
             <div className='relative'>
