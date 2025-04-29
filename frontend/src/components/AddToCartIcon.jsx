@@ -56,9 +56,9 @@ export default function AddToCartIcon({ productId }) {
             className='block sm:hidden absolute top-2 right-2 group-hover:block bg-white p-2 rounded-3xl group/inner'
             onClick={handleClick}
         >
-            {loading ? <LoaderCircle size={20} className='animate-spin' /> :
+            {loading ? <LoaderCircle size={20} className='animate-spin pointer-events-none' /> :
                 showCheck ? (
-                    <Check size={20} />
+                    <Check size={20} className='pointer-events-none'/>
                 ) : (
                     <>
                         <ShoppingBag size={20} onClick={(() => addToCart(productId))} />

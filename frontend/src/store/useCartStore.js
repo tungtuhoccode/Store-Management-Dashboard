@@ -22,12 +22,15 @@ export const useCartStore = create((set, get) => ({
                 cart: response.data.data,
                 totalCartItem: response.data.data.reduce((sum, item) => {
                     return sum + item.quantity;
-                }, 0)
+                }, 0),
+                total: response.data.data.reduce((sum, item) => {
+                    return sum + (item.quantity * item.price);
+                }, 0),
             });
 
         } catch (error) {
             if (error.response?.status === 404) {
-                set({ cart: [] });
+                set({ cart: [], totalCartItem: 0 });
             } else {
                 set({ error: error.response?.data?.message || "Something went wrong" });
             }
