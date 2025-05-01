@@ -23,7 +23,7 @@ export const useCartStore = create((set, get) => ({
                 totalCartItem: response.data.data.reduce((sum, item) => {
                     return sum + item.quantity;
                 }, 0),
-                total: response.data.data.reduce((sum, item) => {
+                subtotal: response.data.data.reduce((sum, item) => {
                     return sum + (item.quantity * item.price);
                 }, 0),
             });
@@ -61,5 +61,8 @@ export const useCartStore = create((set, get) => ({
         } finally {
             set({ loading: false });
         }
+    },
+    updateCart: async ({ productId, updateQuantity }) => {
+
     }
 }))

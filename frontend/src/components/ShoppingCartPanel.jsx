@@ -1,12 +1,13 @@
 import React from 'react';
 import { Trash2, X, LoaderCircle } from 'lucide-react'; // or any cart/close icons
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { useCartStore } from '../store/useCartStore';
 
 
 function ShoppingCartPanel({ cartItem, isOpen, setIsOpen }) {
-    const { loading, deleteFromCart, total } = useCartStore();
+    const navigate = useNavigate();
+    const { loading, deleteFromCart, subtotal } = useCartStore();
     const [deleteingItemId, setDeletingItemId] = React.useState(null);
 
 
@@ -43,8 +44,13 @@ function ShoppingCartPanel({ cartItem, isOpen, setIsOpen }) {
                         </div>
                         {/* Continue Button */}
                         <div className="absolute bottom-4 w-full px-6">
-                            <button onClick={() => setIsOpen(false)} className="w-full bg-lime-600 text-white font-medium py-3 rounded-full">
-                                <Link to="/shop">Continue Shopping</Link>
+                            <button onClick={() => {
+                                setIsOpen(false);
+                                navigate("/shop");
+                            }}
+                                className="w-full bg-lime-600 text-white font-medium py-3 rounded-full hover:bg-lime-700 transition-all duration-500"
+                            >
+                                Continue Shopping
                             </button>
                         </div>
                     </>
@@ -86,9 +92,9 @@ function ShoppingCartPanel({ cartItem, isOpen, setIsOpen }) {
                                                     <div className='flex gap-1 items-center'>{item.quantity} <span className='text-sm'>x</span> ${item.price}</div>
                                                     <div>
                                                         ${(item.quantity * item.price).toLocaleString('en-US', {
-                                                        minimumFractionDigits: 2,
-                                                        maximumFractionDigits: 2,
-                                                    })}
+                                                            minimumFractionDigits: 2,
+                                                            maximumFractionDigits: 2,
+                                                        })}
                                                     </div>
                                                 </div>
 
@@ -109,7 +115,7 @@ function ShoppingCartPanel({ cartItem, isOpen, setIsOpen }) {
                                 <hr className="-mx-6 border-t border-gray-300" />
                                 <div className='flex justify-between items-center my-2 text-gray-800'>
                                     <div>Subtotal:</div>
-                                    <div>${total.toLocaleString('en-US', {
+                                    <div>${subtotal.toLocaleString('en-US', {
                                         minimumFractionDigits: 2,
                                         maximumFractionDigits: 2,
                                     })}</div>
@@ -121,19 +127,21 @@ function ShoppingCartPanel({ cartItem, isOpen, setIsOpen }) {
                             <button
                                 onClick={() => {
                                     setIsOpen(false);
+                                    navigate("/cart");
                                 }}
-                                className="w-full bg-lime-600 text-white font-medium py-3 rounded-full"
+                                className="w-full bg-lime-600 text-white font-medium py-3 rounded-full hover:bg-lime-700 transition-all duration-500"
                             >
-                                <Link to="/cart">View cart</Link>
+                                View cart
                             </button>
 
                             <button
                                 onClick={() => {
                                     setIsOpen(false);
+                                    navigate("/checkout");
                                 }}
-                                className="w-full bg-lime-600 text-white font-medium py-3 rounded-full"
+                                className="w-full bg-lime-600 text-white font-medium py-3 rounded-full hover:bg-lime-700 transition-all duration-500"
                             >
-                                <Link to="/checkout">Checkout</Link>
+                                Checkout
                             </button>
 
                         </div>
