@@ -12,11 +12,14 @@ export default function AddToCartIcon({ productId }) {
     const controls = useAnimation();
     const [clicked, setClicked] = React.useState(false);
     const [showCheck, setShowCheck] = React.useState(false);
+    const [isLoading, setIsLoading] = React.useState(false);
 
     async function handleClick() {
+        if (isLoading) return;
+        setIsLoading(true);
         setClicked(true);
 
-        if (!loading) {
+        try {
             await addToCart(productId);
             await Promise.all([
                 controls.start({
@@ -45,8 +48,9 @@ export default function AddToCartIcon({ productId }) {
 
                 })
             ])
-
+        } finally {
             setClicked(false);
+            setIsLoading(false);
         }
 
     }
@@ -57,9 +61,11 @@ export default function AddToCartIcon({ productId }) {
             className='block sm:hidden absolute top-2 right-2 group-hover:block bg-white p-2 rounded-3xl group/inner'
             onClick={handleClick}
         >
-            {loading ? <LoaderCircle size={20} className='animate-spin pointer-events-none' /> :
+            {isLoading ?
+                <LoaderCircle size={20} className='animate-spin pointer-events-none' />
+                :
                 showCheck ? (
-                    <Check size={20} className='pointer-events-none'/>
+                    <Check size={20} className='pointer-events-none' />
                 ) : (
                     <>
                         <ShoppingBag size={20} />
