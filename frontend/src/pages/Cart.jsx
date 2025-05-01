@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 export default function Cart() {
     const { cart, loading, getCartItems, subtotal, deleteFromCart, updateCart } = useCartStore();
+    const [initialQuantities, setInitialQuantities] = React.useState({});
     const [quantities, setQuantities] = React.useState({});
     const navigate = useNavigate();
 
@@ -16,9 +17,19 @@ export default function Cart() {
     }, [getCartItems])
 
     React.useEffect(() => {
-        setQuantities(Object.fromEntries(cart.map(item => [item.id, item.quantity])))
+        const map = Object.fromEntries(cart.map(item => [item.id, item.quantity]));
+        setQuantities(map);
+        setInitialQuantities(map);
     }, [cart])
 
+    function quantitiesChange() {
+        for (const id in quantities) {
+            if (quantities[id] !== initialQuantities[id]) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 
     return (
@@ -30,7 +41,7 @@ export default function Cart() {
                     <div>
                         <div className='bg-gray-100 p-5 border-t-2 border-t-green-500 flex justify-start items-center gap-2'><ShoppingBasket className='text-green-500' />Your cart is currently empty.</div>
                         <button
-                            onClick={(()=>navigate("/shop"))}
+                            onClick={(() => navigate("/shop"))}
                             className='bg-lime-600 text-white font-medium py-3 px-7 rounded-full hover:bg-lime-700 transition-all duration-500 mt-3'>Return to shop</button>
                     </div>
                     :
@@ -107,8 +118,8 @@ export default function Cart() {
                                                             onChange={(e) => {
                                                                 setQuantities(prev => ({ ...prev, [cartItem.id]: Number(e.target.value) }))
                                                             }}
-                                                            className="w-16 border border-gray-300 p-1 rounded" 
-                                                            />
+                                                            className="w-16 border border-gray-300 p-1 rounded"
+                                                        />
                                                     </td>
 
 
@@ -141,8 +152,12 @@ export default function Cart() {
                                     <button className='flex-1 sm:w-auto sm:flex-none bg-lime-600 text-white font-medium py-3 px-7 rounded-full ml-3 hover:bg-lime-700 transition-all duration-500'>Apply Coupon</button>
                                 </div>
                                 <button
-                                    onClick={(()=>updateCart(quantities))} 
-                                    className='w-full sm:w-auto bg-lime-600 text-white font-medium py-3 px-7 rounded-full hover:bg-lime-700 transition-all duration-500'>Update Cart</button>
+                                    onClick={(() => updateCart(quantities))}
+                                    className={`w-full sm:w-auto bg-lime-600 text-white font-medium py-3 px-7 rounded-full hover:bg-lime-700 transition-all duration-500 ${!quantitiesChange() ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                    disabled={!quantitiesChange()}
+                                >
+                                    Update Cart
+                                </button>
                             </div>
                         </div>
 

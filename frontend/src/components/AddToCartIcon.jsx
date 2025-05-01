@@ -62,10 +62,10 @@ export default function AddToCartIcon({ productId }) {
             onClick={handleClick}
         >
             {isLoading ?
-                <LoaderCircle size={20} className='animate-spin pointer-events-none' />
+                <LoaderCircle size={20} className='animate-spin cursor-default' />
                 :
                 showCheck ? (
-                    <Check size={20} className='pointer-events-none' />
+                    <Check size={20} className='cursor-default' />
                 ) : (
                     <>
                         <ShoppingBag size={20} />
