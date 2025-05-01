@@ -6,7 +6,7 @@ import { CircleX, LoaderCircle, ShoppingBasket } from "lucide-react"
 import { useNavigate } from 'react-router-dom';
 
 export default function Cart() {
-    const { cart, loading, getCartItems, subtotal, deleteFromCart } = useCartStore();
+    const { cart, loading, getCartItems, subtotal, deleteFromCart, updateCart } = useCartStore();
     const [quantities, setQuantities] = React.useState({});
     const navigate = useNavigate();
 
@@ -107,7 +107,8 @@ export default function Cart() {
                                                             onChange={(e) => {
                                                                 setQuantities(prev => ({ ...prev, [cartItem.id]: Number(e.target.value) }))
                                                             }}
-                                                            className="w-16 border border-gray-300 p-1 rounded" />
+                                                            className="w-16 border border-gray-300 p-1 rounded" 
+                                                            />
                                                     </td>
 
 
@@ -139,7 +140,9 @@ export default function Cart() {
                                     />
                                     <button className='flex-1 sm:w-auto sm:flex-none bg-lime-600 text-white font-medium py-3 px-7 rounded-full ml-3 hover:bg-lime-700 transition-all duration-500'>Apply Coupon</button>
                                 </div>
-                                <button className='w-full sm:w-auto bg-lime-600 text-white font-medium py-3 px-7 rounded-full hover:bg-lime-700 transition-all duration-500'>Update Cart</button>
+                                <button
+                                    onClick={(()=>updateCart(quantities))} 
+                                    className='w-full sm:w-auto bg-lime-600 text-white font-medium py-3 px-7 rounded-full hover:bg-lime-700 transition-all duration-500'>Update Cart</button>
                             </div>
                         </div>
 

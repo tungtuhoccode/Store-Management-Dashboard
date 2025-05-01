@@ -73,35 +73,36 @@ export const deleteCartProduct = async (req, res) => {
 
 export const updateQuantity = async (req, res) => {
     try {
-        const { id: productId } = req.params;
-        const { updateQuantity } = req.body;
-
-        if (updateQuantity <= 0) {
-            try {
-                const productDeleted = await db`
-                    DELETE FROM cart_item WHERE 
-                    cart_id = (SELECT id FROM cart WHERE user_email = ${req.userEmail})
-                    AND
-                    product_id = ${productId}
-                    RETURNING *
+        const { updates } = req.body;
+        const results = [];
+        for (const { productId, updateQuantity } of updates) {
+            if (updateQuantity <= 0) {
+                try {
+                    const productDeleted = await db`
+                        DELETE FROM cart_item WHERE 
+                        cart_id = (SELECT id FROM cart WHERE user_email = ${req.userEmail})
+                        AND
+                        product_id = ${productId}
+                        RETURNING *
+                    `;
+                    results.push({ productId, action: "deleted", data: productDeleted })
+                } catch (error) {
+                    console.log("Error in updateQuantity trying to delete the product ", error);
+                    return res.status(500).json({ success: false, message: error.message });
+                }
+            } else {
+                const updateResult = await db`
+                UPDATE cart_item 
+                SET quantity = ${updateQuantity}
+                WHERE product_id = ${productId}
+                AND cart_id = (SELECT id FROM cart WHERE user_email = ${req.userEmail})
+                RETURNING *;
                 `;
-                return res.status(200).json({ success: true, deletedProduct: productDeleted });
-            } catch (error) {
-                console.log("Error in updateQuantity trying to delete the product ", error);
-                return res.status(500).json({ success: false, message: error.message });
+                results.push({productId, action: "updated", data: updateResult});
             }
         }
-        const updateResult = await db`
-        UPDATE cart_item 
-        SET quantity = ${updateQuantity}
-        WHERE product_id = ${productId}
-        AND cart_id = (SELECT id FROM cart WHERE user_email = ${req.userEmail})
-        RETURNING *;
-    `;
-        if (updateResult.length === 0) {
-            return res.status(404).json({ success: false, message: "Product does not exist" });
-        }
-        res.status(200).json({ success: true, data: updateResult });
+
+        res.status(200).json({ success: true, data: results });
     } catch (error) {
         console.log("Error in updateQuantity ", error);
         res.status(500).json({ success: false, message: error.message });

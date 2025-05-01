@@ -62,7 +62,19 @@ export const useCartStore = create((set, get) => ({
             set({ loading: false });
         }
     },
-    updateCart: async ({ productId, updateQuantity }) => {
-
+    updateCart: async (updates) => {
+        set({ loading: true, error: null });
+        try {
+            const updatesArray = Object.entries(updates).map(([id, quantity]) => ({
+                productId: id,
+                updateQuantity: quantity
+            }))
+            await axios.put(`cart`, { updates: updatesArray });
+            get().getCartItems();
+        } catch (error) {
+            set({ error: error.response?.data.message });
+        } finally {
+            set({ loading: false });
+        }
     }
 }))
