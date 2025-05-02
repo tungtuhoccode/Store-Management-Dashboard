@@ -6,9 +6,10 @@ import { CircleX, LoaderCircle, ShoppingBasket } from "lucide-react"
 import { useNavigate } from 'react-router-dom';
 
 export default function Cart() {
-    const { cart, loading, getCartItems, subtotal, deleteFromCart, updateCart } = useCartStore();
+    const { cart, loading, getCartItems, subtotal, deleteFromCart, updateCart, applyCoupon, couponError, discountPercentage } = useCartStore();
     const [initialQuantities, setInitialQuantities] = React.useState({});
     const [quantities, setQuantities] = React.useState({});
+    const [couponCode, setCouponCode] = React.useState("");
     const navigate = useNavigate();
 
     React.useEffect(() => {
@@ -114,7 +115,7 @@ export default function Cart() {
                                                         <div className='lg:hidden font-medium text-gray-900'>Quantity:</div>
                                                         <input
                                                             type="number"
-                                                            value={quantities[cartItem.id] || ""}
+                                                            value={quantities[cartItem.id] || 0}
                                                             onChange={(e) => {
                                                                 setQuantities(prev => ({ ...prev, [cartItem.id]: Number(e.target.value) }))
                                                             }}
@@ -146,10 +147,20 @@ export default function Cart() {
                                 <div className='w-full sm:w-[60%] flex'>
                                     <input
                                         type="text"
-                                        placeholder='Coupon code'
-                                        className='sm:w-[40%] border border-gray-300 rounded p-2'
+                                        placeholder={couponError || `Coupon code`}
+                                        value={couponCode}
+                                        onChange={(e) => setCouponCode(e.target.value)}
+                                        className={`sm:w-[40%] border border-gray-300 rounded p-2 ${couponError && 'placeholder-red-500'}`}
                                     />
-                                    <button className='flex-1 sm:w-auto sm:flex-none bg-lime-600 text-white font-medium py-3 px-7 rounded-full ml-3 hover:bg-lime-700 transition-all duration-500'>Apply Coupon</button>
+                                    <button
+                                        className='flex-1 sm:w-auto sm:flex-none bg-lime-600 text-white font-medium py-3 px-7 rounded-full ml-3 hover:bg-lime-700 transition-all duration-500'
+                                        onClick={(() => {
+                                            applyCoupon(couponCode);
+                                            setCouponCode("");
+                                        })}
+                                    >
+                                        Apply Coupon
+                                    </button>
                                 </div>
                                 <button
                                     onClick={(() => updateCart(quantities))}
@@ -161,37 +172,71 @@ export default function Cart() {
                             </div>
                         </div>
 
-                        <div className='col-span-2 lg:col-span-1 lg:col-start-2 border w-full h-[340px] p-7 text-gray-600'>
-                            <h1 className='text-[42px] font-medium text-gray-700'>Cart totals</h1>
-                            <hr className='-mx-7 my-4' />
-                            <div className='flex flex-col gap-2 '>
-                                <div className='w-full lg:w-[55%] flex justify-between items-center'>
-                                    <div>Subtotal</div>
-                                    <div>${subtotal.toLocaleString('en-US', {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2,
-                                    })}</div>
-                                </div>
-                                <div className='w-full lg:w-[55%] flex justify-between items-center'>
-                                    <div>HST (13%)</div>
-                                    <div>${(subtotal * 0.13).toLocaleString('en-US', {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2,
-                                    })
-                                    }</div>
-                                </div>
-                                <hr className='-mx-3' />
-                                <div className='w-full lg:w-[55%] flex justify-between items-center'>
-                                    <div>Total</div>
-                                    <div>${(subtotal + (subtotal * 0.13)).toLocaleString('en-US', {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2,
-                                    })}</div>
-                                </div>
-                                <hr className='-mx-3 mb-3' />
-                                <button className='bg-lime-600 text-white font-medium py-5 rounded-full hover:bg-lime-700 transition-all duration-500'>Proceed to checkout</button>
+                        {loading ?
+                            <div className='flex justify-center items-center col-span-2 lg:col-span-1 lg:col-start-2 border w-full h-[340px] p-7 text-gray-600'>
+                                <LoaderCircle className="animate-spin text-green-500" size={40} />
                             </div>
-                        </div>
+                            :
+                            <div className='col-span-2 lg:col-span-1 lg:col-start-2 border w-full h-[360px] p-7 text-gray-600'>
+                                <h1 className='text-[42px] font-medium text-gray-700'>Cart totals</h1>
+                                <hr className='-mx-7 my-4' />
+                                <div className='flex flex-col gap-2'>
+                                    <div className='w-full lg:w-[55%] flex justify-between items-center'>
+                                        <div>Subtotal</div>
+                                        <div>${subtotal.toLocaleString('en-US', {
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2,
+                                        })}</div>
+                                    </div>
+                                    {discountPercentage !== 0
+                                        &&
+                                        <div className='w-full lg:w-[55%] flex justify-between items-center'>
+                                            <div>Discount ({discountPercentage}%)</div>
+                                            <div className='text-green-500'>-${(subtotal * (discountPercentage / 100)).toLocaleString('en-US', {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2,
+                                            })
+                                            }</div>
+                                        </div>
+                                    }
+                                    <div className='w-full lg:w-[55%] flex justify-between items-center'>
+                                        <div>HST (13%)</div>
+                                        <div>${discountPercentage === 0 ?
+                                            (subtotal * 0.13).toLocaleString('en-US', {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2,
+                                            })
+                                            :
+                                            ((subtotal - (subtotal * (discountPercentage / 100))) * 0.13).toLocaleString('en-US', {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2,
+                                            })
+                                        }
+                                        </div>
+                                    </div>
+
+
+                                    <hr className='-mx-3' />
+                                    <div className='w-full lg:w-[55%] flex justify-between items-center'>
+                                        <div>Total</div>
+                                        <div>
+                                            ${(
+                                                (
+                                                    subtotal - (discountPercentage === 0 ? 0 : (subtotal * (discountPercentage / 100)))
+                                                ) + ((subtotal - (discountPercentage === 0 ? 0 : (subtotal * (discountPercentage / 100)))) * 0.13)
+                                            ).toLocaleString('en-US', {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2,
+                                            })}
+                                        </div>
+
+                                    </div>
+                                    <hr className='-mx-3 mb-3' />
+                                    <button className='w-full bg-lime-600 text-white font-medium py-5 rounded-full hover:bg-lime-700 transition-all duration-500'>Proceed to checkout</button>
+                                </div>
+                            </div>}
+
+
                     </div>
                 }
             </div>

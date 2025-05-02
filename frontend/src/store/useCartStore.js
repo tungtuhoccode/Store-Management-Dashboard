@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import axios from "../lib/axios.js";
+import { useForceUpdate } from "framer-motion";
 
 
 
@@ -9,8 +10,10 @@ export const useCartStore = create((set, get) => ({
     totalCartItem: 0,
     total: 0,
     subtotal: 0,
+    discountPercentage: 0,
     loading: false,
     error: null,
+    couponError: null,
 
     getCartItems: async () => {
 
@@ -73,6 +76,20 @@ export const useCartStore = create((set, get) => ({
             get().getCartItems();
         } catch (error) {
             set({ error: error.response?.data.message });
+        } finally {
+            set({ loading: false });
+        }
+    },
+    applyCoupon: async (couponCode) => {
+        set({ loading: true, error: null, couponError: null });
+        try {
+            const updatedPrice = await axios.post("/coupon", { couponCode });
+            set({
+                discountPercentage: updatedPrice.data.discountAmount,
+                total: updatedPrice.data.newPrice
+            });
+        } catch (error) {
+            set({ couponError: error.response?.data.message });
         } finally {
             set({ loading: false });
         }
