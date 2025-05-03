@@ -15,12 +15,14 @@ export default function AddToCartIcon({ productId }) {
     const [isLoading, setIsLoading] = React.useState(false);
 
     async function handleClick() {
-        if (isLoading) return;
+        if (isLoading && showCheck) return;
         setIsLoading(true);
         setClicked(true);
 
         try {
             await addToCart(productId);
+            setIsLoading(false);
+            setShowCheck(true)
             await Promise.all([
                 controls.start({
                     y: -20,
@@ -34,23 +36,24 @@ export default function AddToCartIcon({ productId }) {
                     color: "#00FF00", // Turn green
                     transition: { duration: 0.3 }
                 }),
-                setShowCheck(true)
+              
             ]);
 
 
 
             await Promise.all([
-                setShowCheck(false),
+                
                 await controls.start({
                     y: 0,
                     color: "rgba(0, 0, 0, 1)", // Back to normal
                     transition: { duration: 0.3 },
 
                 })
-            ])
-        } finally {
+            ]),
+            setShowCheck(false)
+        } finally {         
             setClicked(false);
-            setIsLoading(false);
+    
         }
 
     }
@@ -61,7 +64,7 @@ export default function AddToCartIcon({ productId }) {
             className='block sm:hidden absolute top-2 right-2 group-hover:block bg-white p-2 rounded-3xl group/inner'
             onClick={handleClick}
         >
-            {isLoading ?
+            {(isLoading && clicked) ?
                 <LoaderCircle size={20} className='animate-spin cursor-default' />
                 :
                 showCheck ? (

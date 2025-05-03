@@ -1,6 +1,7 @@
 import React from "react"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { Navigate } from "react-router-dom"
+import { Toaster } from "react-hot-toast"
 
 import NavBar from "./components/NavBar"
 import ScrollToTop from "./components/ScrollToTop"
@@ -12,6 +13,7 @@ import LogInPage from "./pages/LogInPage"
 import LoadingScreen from "./components/LoadingScreen"
 import Shop from "./pages/Shop"
 import Cart from "./pages/Cart"
+import ProductPage from "./pages/ProductPage"
 
 import { useUserStore } from "./store/useUserStore"
 
@@ -36,10 +38,12 @@ function App() {
               <Route path="/login" element={(!user.email && !user.userName) ? <LogInPage /> : <Navigate to="/" replace />} />
               <Route path="/shop" element={<Shop />} />
               <Route path="/cart" element={<Cart />} />
+              <Route path="/product/:id" element={<ProductPage />} />
             </Routes>
 
           </BrowserRouter>
         </div>
+        <Toaster />
       </div>
     )
   }

@@ -3,6 +3,7 @@ import axios from "../lib/axios.js";
 
 export const useProductStore = create((set, get) => ({
     products: [],
+    product: {},
     loading: false,
     error: null,
 
@@ -22,7 +23,7 @@ export const useProductStore = create((set, get) => ({
         } finally {
             set({ loading: false });
         }
-        
+
     },
 
     fetchFeaturedProducts: async () => {
@@ -31,6 +32,18 @@ export const useProductStore = create((set, get) => ({
             const response = await axios.get("/product/featuredProduct");
             set({ products: response.data.data })
 
+        } catch (error) {
+            set({ error: error.response.data.message });
+        } finally {
+            set({ loading: false });
+        }
+    },
+
+    fetchAProduct: async (productId) => {
+        set({ loading: true, error: null });
+        try {
+            const response = await axios.get(`product/${productId}`)
+            set({ product: response.data.data[0] })
         } catch (error) {
             set({ error: error.response.data.message });
         } finally {

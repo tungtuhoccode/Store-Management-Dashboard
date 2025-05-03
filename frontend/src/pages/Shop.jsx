@@ -1,16 +1,16 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
 import { useProductStore } from '../store/useProductStore'
 import { useUserStore } from '../store/useUserStore';
-import { useCartStore } from '../store/useCartStore';
 import LoadingScreen from '../components/LoadingScreen';
 import { motion } from 'framer-motion';
-
 import AddToCartIcon from '../components/AddToCartIcon';
 
 
 export default function Shop() {
     const { user } = useUserStore();
     const { products, fetchDisplayedProducts, loading } = useProductStore();
+    const navigate = useNavigate();
 
     React.useEffect(() => {
         fetchDisplayedProducts();
@@ -54,7 +54,9 @@ export default function Shop() {
                                     viewport={{ once: true, amount: 0.5 }}
 
                                     key={product.id}
-                                    className='relative group max-h-[530px] rounded-b-lg cursor-pointer'>
+                                    className='relative group max-h-[530px] rounded-b-lg cursor-pointer'
+                                    onClick={() =>navigate(`/product/${product.id}`)}
+                                >
 
                                     {(user.email && user.userName) && (
                                         <AddToCartIcon productId={product.id} />
