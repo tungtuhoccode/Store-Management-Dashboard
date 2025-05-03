@@ -16,7 +16,6 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT;
 
-
 app.use(express.json()); //for destructoring req.body
 app.use(cookieParser());
 app.use(cors({
@@ -32,6 +31,8 @@ app.use("/api/product", productRoute);
 app.use("/api/cart", cartRoute);
 app.use("/api/coupon", couponRoute);
 app.use("/api/payment", paymentRoute);
+
+console.log('Hello world')
 
 app.listen(PORT, () => {
     console.log(`Server is currently running on ${PORT}`)
