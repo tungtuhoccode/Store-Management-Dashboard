@@ -12,7 +12,7 @@ export default function Footer() {
                     style={{ objectPosition: "center 20%" }}
                     src="/images/footerWallPaper.avif"
                     alt="Footer Wallpaper" />
-                <div className='flex flex-col gap-4 w-full absolute top-[20%] :top-[20%] text-center text-white'>
+                <div className='flex flex-col gap-4 w-full absolute top-[20%] sm:top-[30%] text-center text-white'>
                     <h1 className='text-4xl font-bold'>Ready to Find your Perfect Clothes?</h1>
                     <div className='max-w-[400px] mx-auto'>
                         Browse our online store or visit us in person to experience the beauty of fashion.
@@ -34,7 +34,7 @@ export default function Footer() {
                     VNWear
                 </Link>
 
-                <div className='w-[50%] sm:w-[25%] flex gap-4 justify-between items-center'>
+                <div className='w-[50%] sm:w-[25%] flex gap-4 justify-center items-center'>
                     <Link to="/" className='hover:text-lime-600'>Home</Link>
                     <Link to="/shop" className='hover:text-lime-600'>Shop</Link>
                     <Link to="/about" className='hover:text-lime-600'>About</Link>
