@@ -11,6 +11,7 @@ export default function CategoriesList() {
             {categories.map((category, index) => {
                 return (
                     <motion.div
+                        key={category.name}
                         initial={{ opacity: 0, y: 30, x: index % 2 === 0 ? -30 : 30 }}
                         whileInView={{ opacity: 1, y: [30, -30, 0], x: index % 2 === 0 ? [30, 0] : [-30, 0] }}
                         transition={{ duration: 0.4, delay: 0.2 * index }}

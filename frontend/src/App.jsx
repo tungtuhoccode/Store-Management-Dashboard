@@ -5,6 +5,7 @@ import { Toaster } from "react-hot-toast"
 
 import NavBar from "./components/NavBar"
 import ScrollToTop from "./components/ScrollToTop"
+import Footer from "./components/Footer"
 
 
 import HomePage from "./pages/HomePage"
@@ -42,7 +43,7 @@ function App() {
               <Route path="/product/:id" element={<ProductPage />} />
               <Route path="/category/:category" element={<Categories />} />
             </Routes>
-
+            <Footer />
           </BrowserRouter>
         </div>
         <Toaster />

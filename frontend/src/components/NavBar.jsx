@@ -59,7 +59,7 @@ function NavBar() {
             ${currentLocation === "/" ? `${scrolled ? 'bg-white text-black shadow-md border-b' : 'bg-transparent text-white'} ` : 'bg-white text-black shadow-md border-b'}`}>
 
             <div className="max-w-7xl mx-auto flex justify-between items-center px-4 md:px-8 py-6">
-                <div className="text-xl font-bold items-center space-x-2 flex font-pacifico"><Link to="/">VNWear</Link></div>
+                <div className="text-xl font-bold items-center space-x-2 flex font-pacifico hover:text-green-500"><Link to="/">VNWear</Link></div>
 
                 {/* Desktop Nav */}
 

@@ -1,11 +1,15 @@
 import React from 'react'
 import { motion } from 'framer-motion';
+import { useNavigate } from "react-router-dom"
+
+import AddToCartIcon from './AddToCartIcon';
 
 
 export default function FeaturedSlider({ products }) {
     const [index, setIndex] = React.useState(2);
     const [isHovered, setIsHovered] = React.useState(false);
     const isLargeScreen = useMediaQuery("(min-width: 640px)");
+    const navigate = useNavigate();
 
     React.useEffect(() => {
         if (isHovered) return; // Don't run if hovered
@@ -44,7 +48,7 @@ export default function FeaturedSlider({ products }) {
 
     return (
         <motion.div
-            
+
             className='relative max-w-[90%] overflow-hidden mx-auto mt-10'
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
@@ -57,8 +61,10 @@ export default function FeaturedSlider({ products }) {
                 {products.map((product) => (
                     <div
                         key={product.id}
-                        className='w-full sm:w-1/3 flex-shrink-0 border shadow-lg rounded-lg sm:mx-6'
+                        className='group relative w-full sm:w-1/3 flex-shrink-0 border shadow-lg rounded-lg sm:mx-6 cursor-pointer'
+                        onClick={() => navigate(`product/${product.id}`)}
                     >
+                        <AddToCartIcon productId={product.id} />
 
                         <img src={product.image} alt={product.name} className='rounded-t-lg h-[75%] w-full object-cover' />
 
@@ -66,7 +72,7 @@ export default function FeaturedSlider({ products }) {
                         <div className='mt-3 ml-3'>
                             <h2 className="text-lg lg:text-xl truncate">{product.name}</h2>
                             <p className='text-sm text-gray-500'>{product.categories}</p>
-                            <p className="text-green-600 mt-2">{product.price}</p>
+                            <p className="text-green-600 mt-2">${product.price}</p>
                         </div>
                     </div>
                 ))}

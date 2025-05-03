@@ -31,7 +31,13 @@ function HomePage() {
         <h1 className='font-pacifico md:text-3xl sm:text-2xl'> WELCOME TO VNWear
         </h1>
         <h1 className='font-pacifico'>Naturally Styled. Authentically You.</h1>
-        {/* <button className='mt-5' onClick={() => navigate("/shop")}>Shop Now</button> */}
+        <button
+          onClick={() => navigate("/shop")}
+          className={`w-[150px] mt-5 mx-auto bg-lime-600 text-white py-3 px-4 rounded-full hover:bg-lime-700 transition-all duration-500 flex justify-center items-center text-sm`}
+        >
+          Shop Now
+        </button>
+
       </section>
 
       {/* Actual content */}

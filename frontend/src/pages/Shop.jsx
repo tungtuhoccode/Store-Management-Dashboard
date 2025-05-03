@@ -1,7 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useProductStore } from '../store/useProductStore'
-import { useUserStore } from '../store/useUserStore';
 import LoadingScreen from '../components/LoadingScreen';
 import { motion } from 'framer-motion';
 import AddToCartIcon from '../components/AddToCartIcon';
