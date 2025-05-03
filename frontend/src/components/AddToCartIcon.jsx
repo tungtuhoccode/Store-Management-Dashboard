@@ -4,9 +4,12 @@ import { motion, useAnimation } from 'framer-motion';
 import { ShoppingBag, Check, LoaderCircle } from "lucide-react"
 
 import { useCartStore } from '../store/useCartStore';
+import { useUserStore } from '../store/useUserStore';
+import toast from 'react-hot-toast';
 
 export default function AddToCartIcon({ productId }) {
-    const { loading, addToCart } = useCartStore();
+    const { user } = useUserStore();
+    const { addToCart } = useCartStore();
 
 
     const controls = useAnimation();
@@ -15,6 +18,10 @@ export default function AddToCartIcon({ productId }) {
     const [isLoading, setIsLoading] = React.useState(false);
 
     async function handleClick() {
+        if (!(user.email && user.userName)) {
+            toast.error("Please log in to continue adding to cart!");
+            return;
+        }
         if (isLoading && showCheck) return;
         setIsLoading(true);
         setClicked(true);
@@ -36,13 +43,13 @@ export default function AddToCartIcon({ productId }) {
                     color: "#00FF00", // Turn green
                     transition: { duration: 0.3 }
                 }),
-              
+
             ]);
 
 
 
             await Promise.all([
-                
+
                 await controls.start({
                     y: 0,
                     color: "rgba(0, 0, 0, 1)", // Back to normal
@@ -50,10 +57,10 @@ export default function AddToCartIcon({ productId }) {
 
                 })
             ]),
-            setShowCheck(false)
-        } finally {         
+                setShowCheck(false)
+        } finally {
             setClicked(false);
-    
+
         }
 
     }
@@ -62,7 +69,10 @@ export default function AddToCartIcon({ productId }) {
         <motion.div
             animate={controls}
             className='block sm:hidden absolute top-2 right-2 group-hover:block bg-white p-2 rounded-3xl group/inner'
-            onClick={handleClick}
+            onClick={(e) => {
+                e.stopPropagation();
+                handleClick()
+            }}
         >
             {(isLoading && clicked) ?
                 <LoaderCircle size={20} className='animate-spin cursor-default' />

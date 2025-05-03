@@ -14,6 +14,7 @@ import LoadingScreen from "./components/LoadingScreen"
 import Shop from "./pages/Shop"
 import Cart from "./pages/Cart"
 import ProductPage from "./pages/ProductPage"
+import Categories from "./pages/Categories"
 
 import { useUserStore } from "./store/useUserStore"
 
@@ -39,6 +40,7 @@ function App() {
               <Route path="/shop" element={<Shop />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/product/:id" element={<ProductPage />} />
+              <Route path="/category/:category" element={<Categories />} />
             </Routes>
 
           </BrowserRouter>

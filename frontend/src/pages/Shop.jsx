@@ -8,7 +8,6 @@ import AddToCartIcon from '../components/AddToCartIcon';
 
 
 export default function Shop() {
-    const { user } = useUserStore();
     const { products, fetchDisplayedProducts, loading } = useProductStore();
     const navigate = useNavigate();
 
@@ -55,12 +54,11 @@ export default function Shop() {
 
                                     key={product.id}
                                     className='relative group max-h-[530px] rounded-b-lg cursor-pointer'
-                                    onClick={() =>navigate(`/product/${product.id}`)}
+                                    onClick={() => navigate(`/product/${product.id}`)}
                                 >
 
-                                    {(user.email && user.userName) && (
-                                        <AddToCartIcon productId={product.id} />
-                                    )}
+                                    <AddToCartIcon productId={product.id} />
+
                                     <img
                                         className='w-full max-w-[386px] h-[75%] rounded-t-lg'
                                         src={product.image}

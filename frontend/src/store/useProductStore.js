@@ -49,5 +49,17 @@ export const useProductStore = create((set, get) => ({
         } finally {
             set({ loading: false });
         }
+    },
+    fetchCategory: async (category) => {
+        set({ loading: true, error: null });
+        try {
+            const response = await axios.get(`product/category/${category}`);
+            set({ products: response.data.data })
+        } catch (error) {
+            set({ error: error.response.data.message });
+        } finally {
+            set({ loading: false });
+
+        }
     }
 }))
