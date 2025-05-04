@@ -21,7 +21,6 @@ app.use(cookieParser());
 app.use(cors({
     origin: process.env.CLIENT_URL,
     credentials: true
-
 }));    //for not blocking request from different origin, need to research more to understand
 app.use(helmet()); //basically provide extra security that helps you protect your app by setting various HTTP headers
 app.use(morgan("dev"));
