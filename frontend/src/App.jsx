@@ -16,6 +16,7 @@ import Shop from "./pages/Shop"
 import Cart from "./pages/Cart"
 import ProductPage from "./pages/ProductPage"
 import Categories from "./pages/Categories"
+import PurchaseSuccess from "./pages/PurchaseSuccess"
 
 import { useUserStore } from "./store/useUserStore"
 
@@ -42,6 +43,7 @@ function App() {
               <Route path="/cart" element={<Cart />} />
               <Route path="/product/:id" element={<ProductPage />} />
               <Route path="/category/:category" element={<Categories />} />
+              <Route path="/purchase-success" element={<PurchaseSuccess />} />
             </Routes>
             <Footer />
           </BrowserRouter>

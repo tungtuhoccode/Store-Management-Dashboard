@@ -91,5 +91,16 @@ export const useCartStore = create((set, get) => ({
         } finally {
             set({ loading: false });
         }
+    },
+    clearCart: async () => {
+        set({ loading: true, error: null });
+        try {
+            set({ cart: [] });
+            get().getCartItems();
+        } catch (error) {
+            set({ error: error.response?.data.message });
+        } finally {
+            set({ loading: false });
+        }
     }
 }))

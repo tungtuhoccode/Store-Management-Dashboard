@@ -1,16 +1,25 @@
 import React from 'react'
 import { useCartStore } from '../store/useCartStore'
 
-import { CircleX, LoaderCircle, ShoppingBasket } from "lucide-react"
+import { CircleX, Loader, LoaderCircle, ShoppingBasket } from "lucide-react"
 
 import { useNavigate } from 'react-router-dom';
+import { loadStripe } from "@stripe/stripe-js";
+import axios from "../lib/axios.js"
+
+
+
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 export default function Cart() {
     const { cart, loading, getCartItems, subtotal, deleteFromCart, updateCart, applyCoupon, couponError, discountPercentage } = useCartStore();
     const [initialQuantities, setInitialQuantities] = React.useState({});
     const [quantities, setQuantities] = React.useState({});
     const [couponCode, setCouponCode] = React.useState("");
+    const [stripeCouponCode, setStripeCouponCode] = React.useState("");
+    const [checkoutLoading, setCheckoutLoading] = React.useState(false);
     const navigate = useNavigate();
+
 
     React.useEffect(() => {
         getCartItems();
@@ -30,6 +39,23 @@ export default function Cart() {
             }
         }
         return false;
+    }
+
+    async function handlePayment() {
+        setCheckoutLoading(true);
+        const stripe = await stripePromise;
+        const response = await axios.post(`/payment/create-checkout-session`, {
+            couponInfor: discountPercentage ?
+                {
+                    couponCode: stripeCouponCode,
+                    discountAmount: discountPercentage
+                }
+                :
+                null
+        })
+        const session = response.data;
+        setCheckoutLoading(false);
+        window.location = session.url;
     }
 
 
@@ -156,7 +182,9 @@ export default function Cart() {
                                         className='flex-1 sm:w-auto sm:flex-none bg-lime-600 text-white font-medium py-3 px-7 rounded-full ml-3 hover:bg-lime-700 transition-all duration-500'
                                         onClick={(() => {
                                             applyCoupon(couponCode);
+                                            setStripeCouponCode(couponCode);
                                             setCouponCode("");
+
                                         })}
                                     >
                                         Apply Coupon
@@ -232,7 +260,17 @@ export default function Cart() {
 
                                     </div>
                                     <hr className='-mx-3 mb-3' />
-                                    <button className='w-full bg-lime-600 text-white font-medium py-5 rounded-full hover:bg-lime-700 transition-all duration-500'>Proceed to checkout</button>
+                                    <button
+                                        onClick={handlePayment}
+                                        className=' bg-lime-600 text-white font-medium py-5 rounded-full hover:bg-lime-700 transition-all duration-500 flex justify-center items-center'
+                                    >
+                                        {checkoutLoading ?
+                                            <LoaderCircle className='animate-spin' />
+                                            :
+                                            "Proceed to checkout"
+                                        }
+
+                                    </button>
                                 </div>
                             </div>}
 
