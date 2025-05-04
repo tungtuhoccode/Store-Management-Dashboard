@@ -5,15 +5,44 @@ import LoadingScreen from '../components/LoadingScreen';
 import { motion } from 'framer-motion';
 import AddToCartIcon from '../components/AddToCartIcon';
 
+import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
+
 
 export default function Shop() {
     const { products, fetchDisplayedProducts, loading } = useProductStore();
     const navigate = useNavigate();
+    const [sortMenu, setSortMenu] = React.useState(false);
+    const [activeHover, setActiveHover] = React.useState("default")
+    const dropdownRef = React.useRef(null);
 
     React.useEffect(() => {
-        fetchDisplayedProducts();
+        const query = new URLSearchParams(location.search);
+        const sort = query.get('sort');
+        if (sort === "price_desc") {
+            setActiveHover("high-to-low");
+        } else if (sort === "price_asc") {
+            setActiveHover("low-to-high");
+        }
+        fetchDisplayedProducts(sort);
 
-    }, [fetchDisplayedProducts])
+    }, [fetchDisplayedProducts, location.search])
+
+    React.useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (!dropdownRef.current.contains(event.target)) {
+                setSortMenu(false);
+            }
+        }
+        const handleScroll = () => {
+            setSortMenu(false);
+        }
+        document.addEventListener('mousedown', handleClickOutside);
+        window.addEventListener('scroll', handleScroll);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('scroll', handleScroll);
+        };
+    }, [])
 
     return (
         <div>
@@ -31,6 +60,67 @@ export default function Shop() {
                 <LoadingScreen />
                 :
                 <section className='max-w-7xl mx-auto py-16'>
+                    <div className='max-w-[90%] mx-auto flex justify-between items-center'>
+                        <div>Showing all {products.length} results</div>
+                        <div>
+                            <div
+                                ref={dropdownRef}
+                                onClick={() => setSortMenu(!sortMenu)}
+                                className='relative cursor-pointer select-none'
+                            >
+                                <div className={`w-[200px] sm:w-[250px] flex items-center justify-between ${sortMenu ? 'border border-black border-dotted' : "border border-white"} py-1`}>
+                                    <div className='pl-4'>
+                                        {activeHover === "default"
+                                            ? "Default sorting"
+                                            : activeHover === "low-to-high"
+                                                ? "Sort by price: low to high"
+                                                : activeHover === "high-to-low"
+                                                    ? "Sort by price: high to low"
+                                                    : ""}
+                                    </div>
+                                    {sortMenu ?
+                                        <IoIosArrowUp className='' />
+                                        :
+                                        <IoIosArrowDown className='' />
+                                    }
+                                </div>
+
+                                <div className={`w-[200px] sm:w-[250px] bg-white ${!sortMenu && "hidden"} absolute z-50 border border-gray-500 rounded-lg `}>
+                                    <ul>
+                                        <li
+                                            onMouseEnter={() => setActiveHover('default')}
+                                            onClick={() => {
+                                                navigate("/shop")
+                                            }}
+                                            className={`block w-full px-4 rounded-t-lg cursor-pointer ${activeHover === 'default' ? 'bg-lime-600 text-white' : 'hover:bg-lime-600 hover:text-white'}`}
+                                        >
+                                            Default sorting
+                                        </li>
+                                        <li
+                                            onMouseEnter={() => setActiveHover('low-to-high')}
+                                            onClick={() => {
+                                                navigate("/shop?sort=price_asc")
+                                            }}
+                                            className={`block w-full px-4 cursor-pointer ${activeHover === 'low-to-high' ? 'bg-lime-600 text-white' : 'hover:bg-lime-600 hover:text-white'}`}
+                                        >
+                                            Sort by price: low to high
+                                        </li>
+                                        <li
+                                            onMouseEnter={() => setActiveHover('high-to-low')}
+                                            onClick={() => {
+                                                navigate("/shop?sort=price_desc")
+                                            }}
+                                            className={`block w-full px-4 rounded-b-lg cursor-pointer ${activeHover === 'high-to-low' ? 'bg-lime-600 text-white' : 'hover:bg-lime-600 hover:text-white'}`}
+                                        >
+                                            Sort by price: high to low
+                                        </li>
+
+                                    </ul>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
                     <div
                         className='grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-16 mx-auto mt-10 max-w-[90%]'>
                         {products.map((product, index) => {
@@ -83,7 +173,6 @@ export default function Shop() {
                     </div>
                 </section>
             }
-
 
         </div>
     )

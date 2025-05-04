@@ -1,7 +1,5 @@
 import { create } from "zustand";
 import axios from "../lib/axios.js";
-import { useForceUpdate } from "framer-motion";
-
 
 
 export const useCartStore = create((set, get) => ({

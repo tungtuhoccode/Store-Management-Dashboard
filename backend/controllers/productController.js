@@ -17,19 +17,42 @@ export const getAllProducts = async (req, res) => {
 }
 
 export const getDisplayedProduct = async (req, res) => {
+    const sort = req.query.sort;
+    let orderBy = "";
+
+    if (sort === "price_asc") {
+        orderBy = "price ASC";
+    } else if (sort === "price_desc") {
+        orderBy = "price DESC";
+    }
     // will store display product inside redis for faster 
     try {
         let displayedProducts = await redis.get("displayed_product");
 
         //if exists in redis
         if (displayedProducts) {
-            return res.status(200).json({ success: true, data: JSON.parse(displayedProducts) });
+            const products = JSON.parse(displayedProducts);
+            if (sort === "price_asc") {
+                products.sort((a, b) => a.price - b.price);
+            }
+            else if (sort === "price_desc") {
+                products.sort((a, b) => b.price - a.price);
+            }
+            return res.status(200).json({ success: true, data: products });
         }
 
         //not exists in redis
-        displayedProducts = await db`
-        SELECT id, name, price, image, stock_quantity, categories FROM product WHERE displayed_product = True;
-    `;
+        let query = `
+            SELECT id, name, price, image, stock_quantity, categories
+            FROM product
+            WHERE displayed_product = True
+        `;
+
+        if (orderBy) {
+            query += ` ORDER BY ${orderBy}`;
+        }
+
+        displayedProducts = await db(query);
         if (Object.keys(displayedProducts).length === 0) {
             return res.status(404).json({ success: true, message: "Current no items is being sold! Come back later!" });
         }
@@ -241,11 +264,13 @@ export const getCategoryProducts = async (req, res) => {
 }
 
 export const getProduct = async (req, res) => {
+
+
     try {
         const { id } = req.params;
 
         const product = await db`
-            SELECT * from product WHERE id = ${id}
+            SELECT * from product WHERE id = ${id} 
         `;
 
         if (Object.keys(product).length === 0) { //No product found
