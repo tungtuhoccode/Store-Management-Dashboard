@@ -27,6 +27,10 @@ function App() {
     checkAuth();
   }, [checkAuth])
 
+  if (location.pathname.startsWith("/admin")) {
+    return <AdminPage />;
+  }
+  
   if (checkingAuth) return <LoadingScreen />
   else {
     return (
