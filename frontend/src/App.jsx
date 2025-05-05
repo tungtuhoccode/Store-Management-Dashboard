@@ -20,64 +20,13 @@ import AdminPage from "./pages/AdminPage/Admin"
 
 import { useUserStore } from "./store/useUserStore"
 
-export default function App() {
-  const { user, checkAuth, checkingAuth } = useUserStore()
+function App() {
+  const { user, checkAuth, checkingAuth } = useUserStore();
 
   React.useEffect(() => {
-    checkAuth()
+    checkAuth();
   }, [checkAuth])
 
-  return (
-    <>
-      <BrowserRouter>
-        <ScrollToTop />
-        <Routes>
-          {/* Admin route uses its own layout */}
-          <Route path="/admin" element={<AdminPage />} />
-
-          {/* Main site routes with NavBar + Footer */}
-          <Route
-            path="/"
-            element={
-              <>
-                <NavBar />
-                <Outlet />
-                <Footer />
-              </>
-            }
-          >
-            <Route index element={<HomePage />} />
-            <Route
-              path="signup"
-              element={
-                !user.email && !user.userName ? (
-                  <SignUpPages />
-                ) : (
-                  <Navigate to="/" replace />
-                )
-              }
-            />
-            <Route
-              path="login"
-              element={
-                !user.email && !user.userName ? (
-                  <LogInPage />
-                ) : (
-                  <Navigate to="/" replace />
-                )
-              }
-            />
-            <Route path="shop" element={<Shop />} />
-            <Route path="cart" element={<Cart />} />
-            <Route path="product/:id" element={<ProductPage />} />
-            <Route path="category/:category" element={<Categories />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-      <Toaster />
-    </>
-  )
-}
   if (checkingAuth) return <LoadingScreen />
   else {
     return (
@@ -112,7 +61,6 @@ export default function App() {
                     :
                     <Navigate to="/login" replace />
                 }
-
               />
             </Routes>
             <Footer />
@@ -127,3 +75,4 @@ export default function App() {
 }
 
 export default App
+
