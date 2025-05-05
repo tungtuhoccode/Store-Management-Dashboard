@@ -25,10 +25,6 @@ export default function App() {
     checkAuth()
   }, [checkAuth])
 
-  if (checkingAuth) {
-    return <LoadingScreen />
-  }
-
   return (
     <>
       <BrowserRouter>
