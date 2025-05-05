@@ -1,4 +1,15 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
+import {   
+  Bell,
+  CircleUser,
+  LineChart,
+  Menu,
+  Package,
+  Package2,
+  ShoppingCart,
+  Users,
+  Calendar, Home, Inbox, Search, Settings,
+  ChevronsUpDown
+} from "lucide-react"
 
 import {
   Sidebar,
@@ -12,28 +23,20 @@ import {
   SidebarHeader
 } from "@/components/ui/sidebar"
 
+
 // Menu items.
 const items = [
   {
-    title: "Home",
+    title: "Products",
     url: "#",
-    icon: Home,
+    icon: Package,
   },
   {
-    title: "Inbox",
+    title: "Orders",
     url: "#",
-    icon: Inbox,
+    icon: ShoppingCart,
   },
-  {
-    title: "Calendar",
-    url: "#",
-    icon: Calendar,
-  },
-  {
-    title: "Search",
-    url: "#",
-    icon: Search,
-  },
+
   {
     title: "Settings",
     url: "#",
@@ -43,13 +46,38 @@ const items = [
 
 export default function AppSidebar() {
   return (
-    <Sidebar>
-      <SidebarHeader>
-        Hello world
+    <Sidebar 
+    collapsible="icon"
+    >
+
+      <SidebarHeader className="">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              size="lg"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+            >
+              {/* Icon container */}
+              <div className="flex aspect-square w-8 h-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                <Package2 className="w-4 h-4" />
+              </div>
+
+              {/* Two-line text */}
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-semibold">VNTT Ware</span>
+                <span className="truncate text-xs">Enterprise</span>
+              </div>
+
+              {/* Chevron indicator */}
+              <ChevronsUpDown className="ml-auto" />
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarHeader>
+
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
+          <SidebarGroupLabel>Admin Dashboard</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
