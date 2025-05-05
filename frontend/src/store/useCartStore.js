@@ -1,7 +1,5 @@
 import { create } from "zustand";
 import axios from "../lib/axios.js";
-import { useForceUpdate } from "framer-motion";
-
 
 
 export const useCartStore = create((set, get) => ({
@@ -90,6 +88,17 @@ export const useCartStore = create((set, get) => ({
             });
         } catch (error) {
             set({ couponError: error.response?.data.message });
+        } finally {
+            set({ loading: false });
+        }
+    },
+    clearCart: async () => {
+        set({ loading: true, error: null });
+        try {
+            set({ cart: [] });
+            get().getCartItems();
+        } catch (error) {
+            set({ error: error.response?.data.message });
         } finally {
             set({ loading: false });
         }

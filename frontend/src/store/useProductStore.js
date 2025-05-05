@@ -7,10 +7,12 @@ export const useProductStore = create((set, get) => ({
     loading: false,
     error: null,
 
-    fetchDisplayedProducts: async () => {
+    fetchDisplayedProducts: async (sort) => {
         set({ loading: true, error: null });
         try {
-            const response = await axios.get("/product/displayedProduct");
+            const response = await axios.get(`/product/displayedProduct`, {
+                params: sort ? { sort } : {}
+            });
             set({ products: response.data.data });
 
         } catch (error) {

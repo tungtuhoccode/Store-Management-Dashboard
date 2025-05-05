@@ -1,17 +1,19 @@
-import React, { use } from 'react'
+import React from 'react'
 import { useProductStore } from '../store/useProductStore'
 import { useParams } from 'react-router-dom';
 import LoadingScreen from '../components/LoadingScreen';
 import { motion } from 'framer-motion';
 import AddToCartIcon from '../components/AddToCartIcon';
+import { useNavigate } from 'react-router-dom';
 
-import {  FaBoxOpen } from "react-icons/fa6";
+import { FaBoxOpen } from "react-icons/fa6";
 
 
 export default function Categories() {
   const { category } = useParams();
-
   const { fetchCategory, loading, products } = useProductStore();
+  const navigate = useNavigate();
+
   React.useEffect(() => {
     fetchCategory(category);
   }, [fetchCategory]);

@@ -6,8 +6,11 @@ dotenv.config();
 export const createCheckoutSession = async (req, res) => {
     try {
         //inside couponInfor should have .couponCode, .discountAmount
-        const { products, couponInfor } = req.body;
+        const { couponInfor } = req.body;
+        const products = await db`
+            SELECT product.id, product.name, product.price, product.image, cart_item.quantity FROM product JOIN cart_item ON product.id = cart_item.product_id JOIN cart ON cart_item.cart_id = cart.id WHERE cart.user_email = ${req.userEmail}
 
+        `;
         let totalAmount = 0;
         const lineItems = products.map((product) => {
             const amount = Math.round(product.price * 100); //stripe recieve in cents
@@ -34,6 +37,7 @@ export const createCheckoutSession = async (req, res) => {
             payment_method_types: ["card",],
             line_items: lineItems,
             mode: "payment",
+            automatic_tax: { enabled: true },
             success_url: `${process.env.CLIENT_URL}/purchase-success?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${process.env.CLIENT_URL}/purchase-cancel`,
             discounts: couponInfor ?
@@ -49,13 +53,12 @@ export const createCheckoutSession = async (req, res) => {
                 [],
             metadata: {
                 userEmail: req.userEmail,
-                couponCode: couponInfor?.couponCode || null,
+                couponCode: couponInfor ? JSON.stringify(couponInfor) : null,
                 products: JSON.stringify(
                     products.map((product) => ({
                         id: product.id,
-                        name: product.name,
-                        quantity: product.quantity,
                         price: product.price,
+                        quantity: product.quantity
                     }))
                 )
             }
@@ -73,60 +76,73 @@ export const checkoutSuccessfull = async (req, res) => {
     try {
         const { sessionId } = req.body;
         const session = await stripe.checkout.sessions.retrieve(sessionId);
+        const couponCode = session?.metadata?.couponCode
+            ? JSON.parse(session.metadata.couponCode)
+            : null;
+
+
 
         if (session.payment_status === "paid") {
             console.log("user paid")
-            if (session.metadata.couponCode) {    //make sure that user can't use the same coupon again
+            if (couponCode) {
                 await db`
-                    INSERT INTO user_coupon(user_email, coupon_id)
-                    VALUES
-                    (
-                        ${req.userEmail},
-                        (SELECT id FROM coupon WHERE code = ${session.metadata.couponCode})
+                INSERT INTO user_coupon(user_email, coupon_id)
+                VALUES
+                (
+                    ${req.userEmail},
+                    (SELECT id FROM coupon WHERE code = ${couponCode.couponCode})
+                )
+            `;
+            }
+            //create user order for permanent store order history
+            let products = JSON.parse(session.metadata.products);
+
+            let subtotal = products.reduce((total, current) => {
+                return total + (parseFloat(current.price) * parseInt(current.quantity));
+            }, 0);
+
+            // Discount: % off from metadata
+            const discountPercentage = parseFloat(couponCode?.discountAmount) || 0;
+            const discountValue = subtotal * (discountPercentage / 100);
+
+            // Tax from Stripe (in cents → dollars)
+            const taxAmount = (session.total_details?.amount_tax || 0) / 100;
+
+            // Final total
+            const total = (subtotal - discountValue) + taxAmount;
+
+            // for user orders history
+            const insertOrders = await db`
+                INSERT INTO orders(user_email, total_amount, stripe_payment_id)
+                VALUES
+                (
+                    ${req.userEmail},
+                    ${total},
+                    ${sessionId}
+                )
+                RETURNING *
+                `;
+
+            for (const product of products) {
+                await db`
+                    INSERT INTO order_items(order_id, product_id, quantity, price)
+                    VALUES (
+                    ${insertOrders[0].id},
+                    ${product.id},
+                    ${product.quantity},
+                    ${product.price}
                     )
                 `;
             }
-        }
-
-        //create user order for permanent store order history
-        const products = JSON.parse(session.metadata.products);
-        const sum = products.reduce((total, current) => {
-            return total + ((parseFloat(current.price) * parseInt(current.quantity)))
-
-        }, 0);
-        // for user orders history
-        const insertOrders = await db`
-            INSERT INTO orders(user_email, total_amount, stripe_payment_id)
-            VALUES
-            (
-                ${req.userEmail},
-                ${sum},
-                ${sessionId}
-            )
-            RETURNING *
-        `;
-
-        for (const product of products) {
+            // Delte existing cart items
             await db`
-              INSERT INTO order_items(order_id, product_id, quantity, price)
-              VALUES (
-                ${insertOrders[0].id},
-                ${product.id},
-                ${product.quantity},
-                ${product.price}
-              )
-            `;
+                DELETE FROM cart_item
+                WHERE cart_id = 
+                (SELECT id FROM cart WHERE user_email = ${req.userEmail});
+                `;
+            res.status(200).json({ success: true, message: "Purchase completed successfully." })
+
         }
-        // Delte existing cart items
-        await db`
-            DELETE FROM cart_item
-            WHERE cart_id = 
-            (SELECT id FROM cart WHERE user_email = ${req.userEmail});
-        `;
-
-
-        res.status(200).json({ success: true, message: "Purchase completed successfully." })
-
     } catch (error) {
         console.log("Error inside checkoutSucessfull", error);
         res.status(500).json({ success: false, message: error.message });
