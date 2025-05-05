@@ -17,6 +17,7 @@ import Cart from "./pages/Cart"
 import ProductPage from "./pages/ProductPage"
 import Categories from "./pages/Categories"
 import PurchaseSuccess from "./pages/PurchaseSuccess"
+import PurchaseCancel from "./pages/PurchaseCancel"
 
 import { useUserStore } from "./store/useUserStore"
 
@@ -43,7 +44,26 @@ function App() {
               <Route path="/cart" element={<Cart />} />
               <Route path="/product/:id" element={<ProductPage />} />
               <Route path="/category/:category" element={<Categories />} />
-              <Route path="/purchase-success" element={<PurchaseSuccess />} />
+              <Route
+                path="/purchase-success"
+                element={
+                  (user.email && user.userName) ?
+                    <PurchaseSuccess />
+                    :
+                    <Navigate to="/login" replace />
+                }
+
+              />
+              <Route
+                path="/purchase-cancel"
+                element={
+                  (user.email && user.userName) ?
+                    <PurchaseCancel />
+                    :
+                    <Navigate to="/login" replace />
+                }
+
+              />
             </Routes>
             <Footer />
           </BrowserRouter>
