@@ -5,7 +5,8 @@ import { toast } from "react-hot-toast"
 export const useUserStore = create((set, get) => ({
     user: {
         email: "",
-        userName: ""
+        userName: "",
+        userRole: ""
     },
     loading: false,
     error: null,
@@ -34,7 +35,7 @@ export const useUserStore = create((set, get) => ({
         set({ loading: true, error: null });
         try {
             const response = await axios.post("/auth/login", { email, password });
-            set({ user: { email: response.data.data.email, userName: response.data.data.name } })
+            set({ user: { email: response.data.data.email, userName: response.data.data.name, userRole: response.data.data.userRole } })
 
         } catch (error) {
             set({ error: error.response.data.message });
@@ -47,7 +48,7 @@ export const useUserStore = create((set, get) => ({
         set({ checkingAuth: true });
         try {
             await axios.post("/auth/logout")
-            set({ user: { email: "", userName: "" } });
+            set({ user: { email: "", userName: "", userRole: "" } });
         } catch (error) {
             set({ error: error.response.data.message });
         } finally {
@@ -58,8 +59,15 @@ export const useUserStore = create((set, get) => ({
     checkAuth: async () => {
         set({ checkingAuth: true });
         try {
-            const response = await axios.get("/auth/profile");
-            set({ user: { email: response.data.data.email, userName: response.data.data.name } });
+            const response = await axios.get("/auth/profile", {
+                headers: {
+                    "Cache-Control": "no-cache",
+                    "Pragma": "no-cache",
+                    "Expires": "0",
+                }
+            });
+            set({ user: { email: response.data.data.email, userName: response.data.data.name, userRole: response.data.data.userRole } });
+
         } catch (error) {
             set({ error: error.response.data.message });
         } finally {
@@ -67,6 +75,4 @@ export const useUserStore = create((set, get) => ({
             set({ error: null })
         }
     }
-
-
 }))

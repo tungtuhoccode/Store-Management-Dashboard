@@ -6,6 +6,7 @@ import ShoppingCartPanel from './ShoppingCartPanel';
 import { useUserStore } from '../store/useUserStore';
 import { useCartStore } from '../store/useCartStore';
 
+import { RiAdminFill } from "react-icons/ri";
 
 
 
@@ -15,7 +16,6 @@ function NavBar() {
     const location = useLocation();
     const currentLocation = location.pathname;
     let textColor = "text-black";
-
 
 
     //for cart panel
@@ -70,6 +70,13 @@ function NavBar() {
                     <li className='hover:text-green-500'><Link to="/contact" className={`hover:text-green-500 ${currentLocation === '/contact' ? 'text-green-600' : textColor}`} >Contact</Link></li>
                     {(user.email && user.userName) ?
                         <>
+                            {user.userRole === "admin" &&
+                                <li>
+                                    <Link
+                                        to="/admin"
+                                        className="hover:text-green-500 transition duration-200"><RiAdminFill size={20} /></Link>
+                                </li>
+                            }
                             <li>
                                 <button onClick={() => setIsOpen(true)} className="block hover:text-green-500 relative">
                                     <ShoppingCart size={20} />
@@ -97,29 +104,31 @@ function NavBar() {
             </div>
 
             {/* Mobile Nav Panel */}
-            {isMenuOpen && (
-                <div className={`md:hidden px-6 pb-6 pt-4 shadow-lg ${currentLocation === "/" ? 'bg-transparent' : 'bg-white'}`}>
-                    <ul className="space-y-4">
+            {
+                isMenuOpen && (
+                    <div className={`md:hidden px-6 pb-6 pt-4 shadow-lg ${currentLocation === "/" ? 'bg-transparent' : 'bg-white'}`}>
+                        <ul className="space-y-4">
 
-                        <li className='hover:text-green-500' onClick={() => setIsMenuOpen(false)}><Link to="/" className={`hover:text-green-500 ${currentLocation === '/' ? 'text-green-600' : textColor} flex justify-start items-center gap-1`} ><House size={20} />Home</Link></li>
-                        <li className='hover:text-green-500' onClick={() => setIsMenuOpen(false)}><Link to="/shop" className={`hover:text-green-500 ${currentLocation === '/shop' ? 'text-green-600' : textColor} flex justify-start items-center gap-1`} ><Store size={20} /> Shop</Link></li>
-                        <li className='hover:text-green-500' onClick={() => setIsMenuOpen(false)}><Link to="/about" className={`hover:text-green-500 ${currentLocation === '/about' ? 'text-green-600' : textColor} flex justify-start items-center gap-1`} ><SearchSlash size={20} /> About</Link></li>
-                        <li className='hover:text-green-500' onClick={() => setIsMenuOpen(false)}><Link to="/contact" className={`hover:text-green-500 ${currentLocation === '/contact' ? 'text-green-600' : textColor} flex justify-start items-center gap-1`} ><Signature size={20} /> Contact</Link></li>
+                            <li className='hover:text-green-500' onClick={() => setIsMenuOpen(false)}><Link to="/" className={`hover:text-green-500 ${currentLocation === '/' ? 'text-green-600' : textColor} flex justify-start items-center gap-1`} ><House size={20} />Home</Link></li>
+                            <li className='hover:text-green-500' onClick={() => setIsMenuOpen(false)}><Link to="/shop" className={`hover:text-green-500 ${currentLocation === '/shop' ? 'text-green-600' : textColor} flex justify-start items-center gap-1`} ><Store size={20} /> Shop</Link></li>
+                            <li className='hover:text-green-500' onClick={() => setIsMenuOpen(false)}><Link to="/about" className={`hover:text-green-500 ${currentLocation === '/about' ? 'text-green-600' : textColor} flex justify-start items-center gap-1`} ><SearchSlash size={20} /> About</Link></li>
+                            <li className='hover:text-green-500' onClick={() => setIsMenuOpen(false)}><Link to="/contact" className={`hover:text-green-500 ${currentLocation === '/contact' ? 'text-green-600' : textColor} flex justify-start items-center gap-1`} ><Signature size={20} /> Contact</Link></li>
 
-                        {(user.email && user.userName) ?
-                            <>
-                                <li className='hover:text-green-500' onClick={() => setIsMenuOpen(false)}><Link to="/cart" className={`hover:text-green-500 ${currentLocation === '/cart' ? 'text-green-600' : textColor} flex justify-start items-center gap-1`} ><ShoppingCart size={20} /> Cart</Link></li>
-                                <li onClick={() => logOut()} className='hover:text-green-500 cursor-pointer flex justify-start items-center gap-1'><LogOut size={20} /> Log out</li>
-                            </>
+                            {(user.email && user.userName) ?
+                                <>
+                                    <li className='hover:text-green-500' onClick={() => setIsMenuOpen(false)}><Link to="/cart" className={`hover:text-green-500 ${currentLocation === '/cart' ? 'text-green-600' : textColor} flex justify-start items-center gap-1`} ><ShoppingCart size={20} /> Cart</Link></li>
+                                    <li onClick={() => logOut()} className='hover:text-green-500 cursor-pointer flex justify-start items-center gap-1'><LogOut size={20} /> Log out</li>
+                                </>
 
-                            :
-                            <li className='hover:text-green-500' onClick={() => setIsMenuOpen(false)}><Link to="/signup" className={`hover:text-green-500 ${currentLocation === '/signup' ? 'text-green-600' : textColor} flex justify-start items-center gap-1`} ><User /> Sign up</Link></li>
-                        }
-                    </ul>
-                </div>
-            )}
+                                :
+                                <li className='hover:text-green-500' onClick={() => setIsMenuOpen(false)}><Link to="/signup" className={`hover:text-green-500 ${currentLocation === '/signup' ? 'text-green-600' : textColor} flex justify-start items-center gap-1`} ><User /> Sign up</Link></li>
+                            }
+                        </ul>
+                    </div>
+                )
+            }
             <ShoppingCartPanel cartItem={cart} isOpen={isOpen} setIsOpen={setIsOpen} />
-        </header>
+        </header >
     )
 }
 
