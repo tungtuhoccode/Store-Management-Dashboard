@@ -87,7 +87,7 @@ export const userLogIn = async (req, res) => {
 
     try {       //check email
         const user = await db`
-        SELECT email,password,name FROM active_user WHERE email = ${email}
+        SELECT email, password, name, role FROM active_user WHERE email = ${email}
         `
         if (user.length === 0) {
             res.status(404).json({ success: false, message: "No account with that email" })
@@ -101,7 +101,7 @@ export const userLogIn = async (req, res) => {
                 await storeRefreshToken(user[0].email, refreshToken);
                 setCookies(res, accessToken, refreshToken);
 
-                res.status(200).json({ success: true, data: { email: user[0].email, name: user[0].name } })
+                res.status(200).json({ success: true, data: { email: user[0].email, name: user[0].name, userRole: user[0].role } })
             }
             else {
                 res.status(401).json({ success: false, message: "Incorrect password!" })
@@ -124,7 +124,7 @@ export const userLogOut = async (req, res) => {
         res.clearCookie("refreshToken");
         res.json({ message: "Logged out successfully" });
     } catch (error) {
-        res.status.json({ message: error.message })
+        res.status(500).json({ message: error.message });
     }
 }
 
@@ -168,7 +168,8 @@ export const refreshToken = async (req, res) => {
 
 export const getProfile = async (req, res) => {
     try {
-        res.status(200).json({ data: { name: req.userName, email: req.userEmail } });
+        res.setHeader("Cache-Control", "no-store");
+        res.status(200).json({ data: { name: req.userName, email: req.userEmail, userRole: req.userRole } });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message })
     }

@@ -1,10 +1,8 @@
 import React from "react"
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { Toaster } from "react-hot-toast"
 
-import NavBar from "./components/NavBar"
-import ScrollToTop from "./components/ScrollToTop"
-import Footer from "./components/Footer"
+import MainLayout from "./layout/MainLayout"
 
 import HomePage from "./pages/HomePage"
 import SignUpPages from "./pages/SignUpPages"
@@ -25,57 +23,61 @@ function App() {
 
   React.useEffect(() => {
     checkAuth();
-  }, [checkAuth])
+  }, [checkAuth]);
 
-  if (location.pathname.startsWith("/admin")) {
-    return <AdminPage />;
-  }
-  
+
   if (checkingAuth) return <LoadingScreen />
   else {
     return (
       <div className="min-h-screen relative overflow-hidden">
         <div className="relative z-50 pt-20">
           <BrowserRouter>
-            <ScrollToTop />
-            <NavBar />
+            {/* Common route */}
             <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/signup" element={(!user.email && !user.userName) ? <SignUpPages /> : <Navigate to="/" replace />} />
-              <Route path="/login" element={(!user.email && !user.userName) ? <LogInPage /> : <Navigate to="/" replace />} />
-              <Route path="/shop" element={<Shop />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/product/:id" element={<ProductPage />} />
-              <Route path="/category/:category" element={<Categories />} />
-              <Route
-                path="/purchase-success"
-                element={
-                  (user.email && user.userName) ?
-                    <PurchaseSuccess />
-                    :
-                    <Navigate to="/login" replace />
-                }
+              <Route element={<MainLayout />}>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/signup" element={(!user.email && !user.userName) ? <SignUpPages /> : <Navigate to="/" replace />} />
+                <Route path="/login" element={(!user.email && !user.userName) ? <LogInPage /> : <Navigate to="/" replace />} />
+                <Route path="/shop" element={<Shop />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/product/:id" element={<ProductPage />} />
+                <Route path="/category/:category" element={<Categories />} />
+                <Route
+                  path="/purchase-success"
+                  element={
+                    (user.email && user.userName) ?
+                      <PurchaseSuccess />
+                      :
+                      <Navigate to="/login" replace />
+                  }
+                />
+                <Route
+                  path="/purchase-cancel"
+                  element={
+                    (user.email && user.userName) ?
+                      <PurchaseCancel />
+                      :
+                      <Navigate to="/login" replace />
+                  }
+                />
+              </Route>
 
-              />
+              {/* admin route */}
               <Route
-                path="/purchase-cancel"
+                path="/admin"
                 element={
-                  (user.email && user.userName) ?
-                    <PurchaseCancel />
-                    :
+                  (user && user.userRole === "admin") ?
+                    <AdminPage /> :
                     <Navigate to="/login" replace />
                 }
               />
             </Routes>
-            <Footer />
           </BrowserRouter>
         </div>
         <Toaster />
       </div>
     )
   }
-
-
 }
 
 export default App
