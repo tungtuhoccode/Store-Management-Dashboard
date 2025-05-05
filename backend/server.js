@@ -16,13 +16,11 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT;
 
-
 app.use(express.json()); //for destructoring req.body
 app.use(cookieParser());
 app.use(cors({
     origin: process.env.CLIENT_URL,
     credentials: true
-
 }));    //for not blocking request from different origin, need to research more to understand
 app.use(helmet()); //basically provide extra security that helps you protect your app by setting various HTTP headers
 app.use(morgan("dev"));
@@ -32,6 +30,8 @@ app.use("/api/product", productRoute);
 app.use("/api/cart", cartRoute);
 app.use("/api/coupon", couponRoute);
 app.use("/api/payment", paymentRoute);
+
+console.log('Hello world')
 
 app.listen(PORT, () => {
     console.log(`Server is currently running on ${PORT}`)

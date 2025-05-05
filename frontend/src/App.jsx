@@ -1,12 +1,10 @@
 import React from "react"
-import { BrowserRouter, Routes, Route } from "react-router-dom"
-import { Navigate } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom"
 import { Toaster } from "react-hot-toast"
 
 import NavBar from "./components/NavBar"
 import ScrollToTop from "./components/ScrollToTop"
 import Footer from "./components/Footer"
-
 
 import HomePage from "./pages/HomePage"
 import SignUpPages from "./pages/SignUpPages"
@@ -18,6 +16,7 @@ import ProductPage from "./pages/ProductPage"
 import Categories from "./pages/Categories"
 import PurchaseSuccess from "./pages/PurchaseSuccess"
 import PurchaseCancel from "./pages/PurchaseCancel"
+import AdminPage from "./pages/AdminPage/Admin"
 
 import { useUserStore } from "./store/useUserStore"
 
@@ -28,6 +27,10 @@ function App() {
     checkAuth();
   }, [checkAuth])
 
+  if (location.pathname.startsWith("/admin")) {
+    return <AdminPage />;
+  }
+  
   if (checkingAuth) return <LoadingScreen />
   else {
     return (
@@ -62,7 +65,6 @@ function App() {
                     :
                     <Navigate to="/login" replace />
                 }
-
               />
             </Routes>
             <Footer />
@@ -77,3 +79,4 @@ function App() {
 }
 
 export default App
+

@@ -7,6 +7,7 @@ import CategoriesList from '../components/CategoriesList';
 import { CreditCard, Truck, Box, Heart } from "lucide-react"
 
 import { useProductStore } from '../store/useProductStore';
+import { Button } from '@/components/ui/button';
 
 function HomePage() {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ function HomePage() {
           alt='wallpaper'
           className='object-cover w-full h-full' />
       </div>
-
+      
       <section className="min-h-[calc(100vh-5rem)] flex flex-col items-center justify-center text-white transition-all duration-300 ease-in-out -translate-y-16">
         <h1 className='font-pacifico md:text-3xl sm:text-2xl'> WELCOME TO VNWear
         </h1>
