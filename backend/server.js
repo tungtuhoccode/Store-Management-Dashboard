@@ -18,8 +18,16 @@ const PORT = process.env.PORT;
 
 app.use(express.json()); //for destructoring req.body
 app.use(cookieParser());
+
 app.use(cors({
-    origin: process.env.CLIENT_URL,
+    origin: (origin, callback) => {
+        const allowedOrigins = [process.env.CLIENT_URL, 'http://10.0.0.135:5173'];
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true
 }));    //for not blocking request from different origin, need to research more to understand
 app.use(helmet()); //basically provide extra security that helps you protect your app by setting various HTTP headers
