@@ -18,7 +18,7 @@ export const getAllProducts = async (req, res) => {
 
 export const getDisplayedProduct = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
-    const PAGE_LIMIT = 2;
+    const PAGE_LIMIT = 6;
     const offset = (page - 1) * PAGE_LIMIT;
     const sort = req.query.sort;
     let orderBy = "";
@@ -26,7 +26,6 @@ export const getDisplayedProduct = async (req, res) => {
     const [{ count }] = await db`
         SELECT COUNT(*) AS count FROM product WHERE displayed_product = TRUE
     `
-    console.log(typeof (count))
     if (sort === "price_asc") {
         orderBy = "price ASC";
     } else if (sort === "price_desc") {
