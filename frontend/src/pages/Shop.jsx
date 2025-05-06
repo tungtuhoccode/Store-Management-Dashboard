@@ -17,6 +17,7 @@ export default function Shop() {
 
     React.useEffect(() => {
         const query = new URLSearchParams(location.search);
+        const page = query.get('page');
         const sort = query.get('sort');
         if (sort === "price_desc") {
             setActiveHover("high-to-low");
@@ -166,11 +167,11 @@ export default function Shop() {
                                     </div>
 
                                 </motion.div>
-
                             )
 
                         })}
                     </div>
+                    
                 </section>
             }
 

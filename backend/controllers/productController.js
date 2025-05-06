@@ -17,48 +17,43 @@ export const getAllProducts = async (req, res) => {
 }
 
 export const getDisplayedProduct = async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const PAGE_LIMIT = 2;
+    const offset = (page - 1) * PAGE_LIMIT;
     const sort = req.query.sort;
     let orderBy = "";
 
+    const [{ count }] = await db`
+        SELECT COUNT(*) AS count FROM product WHERE displayed_product = TRUE
+    `
+    console.log(typeof (count))
     if (sort === "price_asc") {
         orderBy = "price ASC";
     } else if (sort === "price_desc") {
         orderBy = "price DESC";
     }
-    // will store display product inside redis for faster 
+
     try {
-        let displayedProducts = await redis.get("displayed_product");
-
-        //if exists in redis
-        if (displayedProducts) {
-            const products = JSON.parse(displayedProducts);
-            if (sort === "price_asc") {
-                products.sort((a, b) => a.price - b.price);
-            }
-            else if (sort === "price_desc") {
-                products.sort((a, b) => b.price - a.price);
-            }
-            return res.status(200).json({ success: true, data: products });
-        }
-
-        //not exists in redis
         let query = `
             SELECT id, name, price, image, stock_quantity, categories
             FROM product
             WHERE displayed_product = True
+        
         `;
-
         if (orderBy) {
             query += ` ORDER BY ${orderBy}`;
         }
+        query += ` 
+                OFFSET ${offset}
+                LIMIT ${PAGE_LIMIT}`
 
-        displayedProducts = await db(query);
-        if (Object.keys(displayedProducts).length === 0) {
-            return res.status(404).json({ success: true, message: "Current no items is being sold! Come back later!" });
+        const displayedProducts = await db(query);
+        if (displayedProducts.length === 0) {
+            return res.status(404).json({ success: false, message: "Current no items is being sold! Come back later!" });
         }
 
-        await redis.set(`displayed_product`, JSON.stringify(displayedProducts))
-        res.status(201).json({ success: true, data: displayedProducts });
+        res.status(200).json({ success: true, data: displayedProducts, totalPages: Math.ceil(count / PAGE_LIMIT) });
+
 
     } catch (error) {
         console.log("Error in getDisplayedProduct ", error);
@@ -79,13 +74,6 @@ export const toggleDisplayedProduct = async (req, res) => {
             UPDATE product SET displayed_product = NOT displayed_product WHERE id = ${id} RETURNING *
         `;
 
-        const findDisplayedProduct = await db`
-            SELECT id, name, price, image, stock_quantity, categories FROM product WHERE displayed_product = TRUE;
-        `;
-
-        await redis.set("displayed_product", JSON.stringify(findDisplayedProduct));
-
-
         res.status(200).json({ success: true, data: updatedProduct[0] });
     } catch (error) {
         console.log("Error inside toggleDisplayedProduct ", error);
@@ -105,9 +93,10 @@ export const getFeaturedProduct = async (req, res) => {
         //not exists in redis
         featuredProduct = await db`
         SELECT id, name, price, image, stock_quantity, categories FROM product WHERE slide_display = True;
-    `;
-        if (Object.keys(featuredProduct).length === 0) {
-            return res.status(404).json({ success: true, message: "No Featured Product" });
+        `;
+
+        if (featuredProduct.length === 0) {
+            return res.status(404).json({ success: false, message: "No Featured Product" });
         }
 
         await redis.set(`featured_product`, JSON.stringify(featuredProduct))
@@ -131,11 +120,11 @@ export const toggleFeaturedProduct = async (req, res) => {
             UPDATE product SET slide_display = NOT slide_display WHERE id = ${id} RETURNING *
         `;
 
-        const findDisplayedProduct = await db`
-            SELECT id, name, price, image, stock_quantity, categories FROM product WHERE displayed_product = TRUE;
+        const findFeatureProduct = await db`
+            SELECT id, name, price, image, stock_quantity, categories FROM product WHERE slide_display = TRUE;
         `;
 
-        await redis.set("featured_product", JSON.stringify(findDisplayedProduct));
+        await redis.set("featured_product", JSON.stringify(findFeatureProduct));
 
 
         res.status(200).json({ success: true, data: updatedProduct[0] });
@@ -160,7 +149,7 @@ export const createNewProduct = async (req, res) => {
             SELECT * FROM product WHERE name = ${name};
             `;
 
-            if (Object.keys(searchForProduct).length > 0) {
+            if (searchForProduct.length > 0) {
                 console.log("Product already existed")
                 return res.status(409).json({ success: false, message: "Product with that name already existed!", existedProduct: searchForProduct[0] });
             }
@@ -198,14 +187,11 @@ export const deleteProduct = async (req, res) => {
     try {
         const { id } = req.params;
 
-        // search to see if the product is existed
-        //check if user request product already existed or not
-
         const searchForProduct = await db`
             SELECT * FROM product WHERE id = ${id};
             `;
 
-        if (Object.keys(searchForProduct).length === 0) {
+        if (searchForProduct.length === 0) {
             console.log("No product found")
             return res.status(404).json({ success: false, message: "No Product found" });
         }
@@ -222,18 +208,9 @@ export const deleteProduct = async (req, res) => {
             const deletedProduct = await db`
                 DELETE FROM product WHERE id = ${id} RETURNING *;
             `;
-            //update redis
-
-            const findDisplayedProduct = await db`
-            SELECT id, name, price, image, stock_quantity, categories FROM product WHERE displayed_product = TRUE;
-            `;
-
-            await redis.set("displayed_product", JSON.stringify(findDisplayedProduct));
 
             res.status(200).json({ success: true, data: deletedProduct });
         }
-
-
 
     } catch (error) {
         console.log("Error inside deleteProduct", error);
@@ -264,8 +241,6 @@ export const getCategoryProducts = async (req, res) => {
 }
 
 export const getProduct = async (req, res) => {
-
-
     try {
         const { id } = req.params;
 
@@ -273,7 +248,7 @@ export const getProduct = async (req, res) => {
             SELECT * from product WHERE id = ${id} 
         `;
 
-        if (Object.keys(product).length === 0) { //No product found
+        if (product.length === 0) { //No product found
             return res.status(404).json({ success: false, message: "No product found!" })
         }
 

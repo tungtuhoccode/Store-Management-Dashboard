@@ -7,7 +7,7 @@ export const useProductStore = create((set, get) => ({
     loading: false,
     error: null,
 
-    fetchDisplayedProducts: async (sort) => {
+    fetchDisplayedProducts: async (page, sort) => {
         set({ loading: true, error: null });
         try {
             const response = await axios.get(`/product/displayedProduct`, {
