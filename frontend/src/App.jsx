@@ -25,9 +25,6 @@ function App() {
     checkAuth();
   }, [checkAuth]);
 
-  if (location.pathname == "/admin") 
-    return <AdminPage/>
-
   if (checkingAuth) return <LoadingScreen />
   else {
     return (
