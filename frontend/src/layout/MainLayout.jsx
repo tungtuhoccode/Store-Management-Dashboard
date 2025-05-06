@@ -8,10 +8,14 @@ import ScrollToTop from '../components/ScrollToTop';
 export default function MainLayout() {
     return (
         <>
-            <ScrollToTop />
-            <NavBar />
-            <Outlet />
-            <Footer />
+            <div className="min-h-screen relative overflow-hidden">
+                <div className="relative z-50 pt-20">
+                    <ScrollToTop />
+                    <NavBar />
+                    <Outlet />
+                    <Footer />
+                </div>
+            </div>
         </>
     );
 }
