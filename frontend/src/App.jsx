@@ -1,5 +1,5 @@
 import React from "react"
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Navigate} from "react-router-dom"
 import { Toaster } from "react-hot-toast"
 
 import MainLayout from "./layout/MainLayout"
@@ -25,59 +25,57 @@ function App() {
     checkAuth();
   }, [checkAuth]);
 
+  if (location.pathname == "/admin") 
+    return <AdminPage/>
 
   if (checkingAuth) return <LoadingScreen />
   else {
     return (
-      <div className="min-h-screen relative overflow-hidden">
-        <div className="relative z-50 pt-20">
-          <BrowserRouter>
-            {/* Common route */}
-            <Routes>
-              <Route element={<MainLayout />}>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/signup" element={(!user.email && !user.userName) ? <SignUpPages /> : <Navigate to="/" replace />} />
-                <Route path="/login" element={(!user.email && !user.userName) ? <LogInPage /> : <Navigate to="/" replace />} />
-                <Route path="/shop" element={<Shop />} />
-                <Route path="/cart" element={<Cart />} />
-                <Route path="/about" element={<HomePage />} />
-                <Route path="/contact" element={<HomePage />} />
-                <Route path="/product/:id" element={<ProductPage />} />
-                <Route path="/category/:category" element={<Categories />} />
-                <Route
-                  path="/purchase-success"
-                  element={
-                    (user.email && user.userName) ?
-                      <PurchaseSuccess />
-                      :
-                      <Navigate to="/login" replace />
-                  }
-                />
-                <Route
-                  path="/purchase-cancel"
-                  element={
-                    (user.email && user.userName) ?
-                      <PurchaseCancel />
-                      :
-                      <Navigate to="/login" replace />
-                  }
-                />
-              </Route>
-
-              {/* admin route */}
+        <BrowserRouter>
+          {/* Common route */}
+          <Routes>
+            <Route element={<MainLayout />}>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/signup" element={(!user.email && !user.userName) ? <SignUpPages /> : <Navigate to="/" replace />} />
+              <Route path="/login" element={(!user.email && !user.userName) ? <LogInPage /> : <Navigate to="/" replace />} />
+              <Route path="/shop" element={<Shop />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/about" element={<HomePage />} />
+              <Route path="/contact" element={<HomePage />} />
+              <Route path="/product/:id" element={<ProductPage />} />
+              <Route path="/category/:category" element={<Categories />} />
               <Route
-                path="/admin"
+                path="/purchase-success"
                 element={
-                  (user && user.userRole === "admin") ?
-                    <AdminPage /> :
+                  (user.email && user.userName) ?
+                    <PurchaseSuccess />
+                    :
                     <Navigate to="/login" replace />
                 }
               />
-            </Routes>
-          </BrowserRouter>
-        </div>
-        <Toaster />
-      </div>
+              <Route
+                path="/purchase-cancel"
+                element={
+                  (user.email && user.userName) ?
+                    <PurchaseCancel />
+                    :
+                    <Navigate to="/login" replace />
+                }
+              />
+            </Route>
+
+            {/* admin route */}
+            <Route
+              path="/admin"
+              element={
+                (user && user.userRole === "admin") ?
+                  <AdminPage /> :
+                  <Navigate to="/login" replace />
+              }
+            />
+          </Routes>
+          <Toaster />
+        </BrowserRouter>
     )
   }
 }
