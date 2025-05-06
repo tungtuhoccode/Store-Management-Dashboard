@@ -4,26 +4,30 @@ import { useProductStore } from '../store/useProductStore'
 import LoadingScreen from '../components/LoadingScreen';
 import { motion } from 'framer-motion';
 import AddToCartIcon from '../components/AddToCartIcon';
+import MyPagination from '@/components/Pagination';
 
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 
 
 export default function Shop() {
-    const { products, fetchDisplayedProducts, loading } = useProductStore();
+    const { products, fetchDisplayedProducts, loading, totalPages } = useProductStore();
     const navigate = useNavigate();
     const [sortMenu, setSortMenu] = React.useState(false);
     const [activeHover, setActiveHover] = React.useState("default")
     const dropdownRef = React.useRef(null);
+    const [page, setPage] = React.useState(0);
 
     React.useEffect(() => {
         const query = new URLSearchParams(location.search);
+        const page = query.get('page') || 1;
+        if (page) setPage(parseInt(page));
         const sort = query.get('sort');
         if (sort === "price_desc") {
             setActiveHover("high-to-low");
         } else if (sort === "price_asc") {
             setActiveHover("low-to-high");
         }
-        fetchDisplayedProducts(sort);
+        fetchDisplayedProducts(parseInt(page), sort);
 
     }, [fetchDisplayedProducts, location.search])
 
@@ -166,13 +170,18 @@ export default function Shop() {
                                     </div>
 
                                 </motion.div>
-
                             )
 
                         })}
                     </div>
                 </section>
             }
+            <div className='w-full flex justify-center items-center'>
+                <MyPagination
+                    currentPage={page}
+                    totalPages={totalPages}
+                />
+            </div>
 
         </div>
     )
