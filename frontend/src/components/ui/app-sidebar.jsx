@@ -50,7 +50,7 @@ export default function AppSidebar() {
     collapsible="icon"
     >
 
-      <SidebarHeader className="">
+      <SidebarHeader className="mt-2">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
