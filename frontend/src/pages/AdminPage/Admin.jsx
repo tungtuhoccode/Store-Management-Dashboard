@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button } from "../../components/ui/button"
+import { Separator } from "@/components/ui/separator"
 import { SidebarProvider, SidebarTrigger } from "../../components/ui/sidebar"
 import AppSidebar from "../../components/ui/app-sidebar"
 import AdminProductPage from './AdminProductPage/AdminProductPage'

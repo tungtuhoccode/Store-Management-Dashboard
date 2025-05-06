@@ -1,7 +1,7 @@
 const AdminProductPage = () => {
     return (
-        <div>
-            Hello world
+        <div className="p-10">
+            <
         </div>
     )
 }
