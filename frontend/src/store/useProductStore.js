@@ -4,16 +4,20 @@ import axios from "../lib/axios.js";
 export const useProductStore = create((set, get) => ({
     products: [],
     product: {},
+    totalPages: 0,
     loading: false,
     error: null,
 
-    fetchDisplayedProducts: async (sort) => {
+    fetchDisplayedProducts: async (page, sort) => {
         set({ loading: true, error: null });
         try {
             const response = await axios.get(`/product/displayedProduct`, {
-                params: sort ? { sort } : {}
+                params: {
+                    page: page,
+                    ...(sort && { sort })
+                }
             });
-            set({ products: response.data.data });
+            set({ products: response.data.data, totalPages: response.data.totalPages });
 
         } catch (error) {
             if (error.response && error.response.status === 404) {

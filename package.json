@@ -14,6 +14,9 @@
   "dependencies": {
     "@arcjet/inspect": "^1.0.0-beta.4",
     "@arcjet/node": "^1.0.0-beta.4",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/material": "^7.0.2",
     "@neondatabase/serverless": "^0.10.4",
     "bcryptjs": "^3.0.2",
     "cloudinary": "^2.6.0",
