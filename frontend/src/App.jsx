@@ -40,6 +40,8 @@ function App() {
                 <Route path="/login" element={(!user.email && !user.userName) ? <LogInPage /> : <Navigate to="/" replace />} />
                 <Route path="/shop" element={<Shop />} />
                 <Route path="/cart" element={<Cart />} />
+                <Route path="/about" element={<HomePage />} />
+                <Route path="/contact" element={<HomePage />} />
                 <Route path="/product/:id" element={<ProductPage />} />
                 <Route path="/category/:category" element={<Categories />} />
                 <Route
