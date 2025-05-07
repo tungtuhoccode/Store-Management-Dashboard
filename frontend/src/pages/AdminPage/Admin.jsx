@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button } from "../../components/ui/button"
 import { Separator } from "@/components/ui/separator"
-<<<<<<< HEAD
+
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,10 +13,7 @@ import {
 
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import AppSidebar from "@/components/ui/app-sidebar"
-=======
-import { SidebarProvider, SidebarTrigger } from "../../components/ui/sidebar"
-import AppSidebar from "../../components/ui/app-sidebar"
->>>>>>> main
+
 import AdminProductPage from './AdminProductPage/AdminProductPage'
 
 function AdminPage() {

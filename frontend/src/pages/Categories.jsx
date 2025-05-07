@@ -65,15 +65,14 @@ export default function Categories() {
                     viewport={{ once: true, amount: 0.5 }}
 
                     key={product.id}
-                    className='relative group max-h-[530px] rounded-b-lg cursor-pointer'
+                    className='relative group max-w-[386px] rounded-b-lg cursor-pointer pb-3'
                     onClick={() => navigate(`/product/${product.id}`)}
                   >
-
 
                     <AddToCartIcon productId={product.id} />
 
                     <img
-                      className='w-full max-w-[386px] h-[75%] rounded-t-lg'
+                      className='w-full max-w-[386px] aspect-[5/6] rounded-t-lg'
                       src={product.image}
                       alt={product.name} />
                     <div className='pt-3 transition-all group-hover:translate-x-2 lg:group-hover:translate-x-3 duration-600'>
