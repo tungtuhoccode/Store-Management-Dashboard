@@ -1,0 +1,1 @@
+1. Display all products in a table
