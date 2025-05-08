@@ -355,15 +355,38 @@ const columns = [
   },
   {
     accessorKey: "displayed_product",
-    header: "Display Status"
+    header: "Display Status",
+    cell: ({column, row, getValue, table}) => {
+      return(
+        <Checkbox
+        checked={getValue()}
+        onCheckedChange={val =>
+          table.options.meta.updateData(
+            row.original.id,
+            column.id,
+            val
+          )
+        }
+      />
+      )
+    }
   }
 ]
 
 export default function DataTableDemo() {
   const [sorting, setSorting] = React.useState([])
+  const [tableData, setTableData] = React.useState(data)
 
+  const updateData = (rowIndex, columnIndex, value) => {
+    console.log(rowIndex, columnIndex, value)
+    setTableData(      tableData.map( row => {
+      return (row.id == rowIndex) ? {...row, [columnIndex]:value} : row 
+    }))
+
+
+  }
   const table = useReactTable({
-    data,
+    data: tableData,
     columns,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
@@ -371,6 +394,7 @@ export default function DataTableDemo() {
     state: {
       sorting,
     },
+    meta: {updateData}
   })
 
   return (
