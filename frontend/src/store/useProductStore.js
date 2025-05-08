@@ -56,11 +56,16 @@ export const useProductStore = create((set, get) => ({
             set({ loading: false });
         }
     },
-    fetchCategory: async (category) => {
+    fetchCategory: async (category, page, sort) => {
         set({ loading: true, error: null });
         try {
-            const response = await axios.get(`product/category/${category}`);
-            set({ products: response.data.data })
+            const response = await axios.get(`product/category/${category}`, {
+                params: {
+                    page: page,
+                    ...(sort && { sort })
+                }
+            });
+            set({ products: response.data.data, totalPages: response.data.totalPages })
         } catch (error) {
             if (error.response && error.response.status === 404) {
                 set({ products: [] });

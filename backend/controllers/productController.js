@@ -220,18 +220,43 @@ export const deleteProduct = async (req, res) => {
 }
 
 export const getCategoryProducts = async (req, res) => {
+    const { category } = req.params;
+    const page = parseInt(req.query.page) || 1;
+    const PAGE_LIMIT = 6;
+    const offset = (page - 1) * PAGE_LIMIT;
+    const sort = req.query.sort;
+    let orderBy = "";
+
+    const [{ count }] = await db`
+        SELECT COUNT(*) AS count FROM product WHERE categories ILIKE ${category} AND displayed_product = TRUE;
+    `
+    if (count === 0) return res.status(404).json({ success: false, message: `No Product found with ${category}` });
+
+    if (sort === "price_asc") {
+        orderBy = "price ASC";
+    } else if (sort === "price_desc") {
+        orderBy = "price DESC";
+    }
+
+
     try {
-        const { category } = req.params;
-        const categoryProduct = await db`
-            SELECT id, name, price, image, stock_quantity, categories FROM product WHERE categories ILIKE ${category} AND displayed_product = TRUE;
+        let query = `
+            SELECT id, name, price, image, stock_quantity, categories FROM product WHERE categories ILIKE '${category}' AND displayed_product = TRUE
         `;
 
-        if (categoryProduct.length === 0) {
-            console.log(`No displayed product found with ${category}`);
-            return res.status(404).json({ success: false, message: `No Product found with ${category}` });
+
+        if (orderBy) {
+            query += ` ORDER BY ${orderBy}`;
         }
 
-        res.status(200).json({ success: true, data: categoryProduct });
+
+        query += ` 
+            OFFSET ${offset}
+            LIMIT ${PAGE_LIMIT}`
+
+
+        const categoryProduct = await db(query);
+        res.status(200).json({ success: true, data: categoryProduct, totalPages: Math.ceil(count / PAGE_LIMIT) });
     } catch (error) {
         console.log("Error in getCategoryProducts ", error);
         res.status(500).json({ success: false, message: "Internal Server Error", error: error.message });
