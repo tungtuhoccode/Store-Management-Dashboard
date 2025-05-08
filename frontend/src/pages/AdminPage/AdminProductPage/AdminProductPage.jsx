@@ -313,7 +313,7 @@ const columns = [
         >
           Price
 
-          {isSorted === false && <ArrowUpDown className=""/>}
+          {isSorted === false && <ArrowUpDown className="text-gray-400"/>}
           {isSorted === 'asc' && <ArrowDown className=""/>}
           {isSorted === 'desc' && <ArrowUp className=""/>}
         </Button>
@@ -339,7 +339,7 @@ const columns = [
       return (
         <Button variant="ghost" onClick={column.getToggleSortingHandler()}>
           Quantity
-          {isSorted === false && <ArrowUpDown className=""/>}
+          {isSorted === false && <ArrowUpDown className="text-gray-400"/>}
           {isSorted === 'asc' && <ArrowDown className=""/>}
           {isSorted === 'desc' && <ArrowUp className=""/>}
         </Button>
