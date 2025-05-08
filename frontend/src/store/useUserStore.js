@@ -74,5 +74,56 @@ export const useUserStore = create((set, get) => ({
             set({ checkingAuth: false });
             set({ error: null })
         }
+    },
+
+    refreshToken: async () => {
+        if (get().checkingAuth) return;
+
+        set({ checkingAuth: true });
+        try {
+            await axios.post("/auth/refresh-token", {
+                headers: {
+                    "Cache-Control": "no-cache",
+                    "Pragma": "no-cache",
+                    "Expires": "0",
+                }
+            })
+        } catch (error) {
+            set({ error: error.response.data.message });
+        } finally {
+            set({ checkingAuth: false });
+            set({ error: null })
+        }
     }
-}))
+}));
+
+let refreshPromise = null;
+
+axios.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+
+        const originalRequest = error.config;
+        if (error.response?.status === 401 && !originalRequest._retry) {
+
+            originalRequest._retry = true;
+
+            try {
+                if (refreshPromise) {
+                    await refreshPromise;
+                    return axios(originalRequest)
+                }
+
+                refreshPromise = useUserStore.getState().refreshToken();
+                await refreshPromise;
+                refreshPromise = null;
+
+                return axios(originalRequest);
+            } catch (refreshError) {
+                useUserStore.getState().logout();
+                return Promise.reject(refreshError);
+            }
+        }
+        return Promise.reject(error);
+    }
+)
