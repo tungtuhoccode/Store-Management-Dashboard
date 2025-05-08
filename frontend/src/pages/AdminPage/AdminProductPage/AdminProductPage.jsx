@@ -8,7 +8,7 @@ import {
     getSortedRowModel,
     flexRender,
   } from "@tanstack/react-table"
-  import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
+  import { ArrowUpDown, ChevronDown, MoreHorizontal, ArrowUp, ArrowDown} from "lucide-react"
    
   import { Button } from "@/components/ui/button"
   import { Checkbox } from "@/components/ui/checkbox"
@@ -303,16 +303,51 @@ const columns = [
   },
   {
     accessorKey: "price",
-    header: "Price"
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted(); // 'asc' | 'desc' | false
+  
+      return (
+        <Button
+          variant="ghost"
+          onClick={column.getToggleSortingHandler()}
+        >
+          Price
+
+          {isSorted === false && <ArrowUpDown className=""/>}
+          {isSorted === 'asc' && <ArrowDown className=""/>}
+          {isSorted === 'desc' && <ArrowUp className=""/>}
+        </Button>
+      );
+    },
+    enableSorting: true,
+    enableSortingRemoval: true,
   },
+
   {
     accessorKey: "image",
     header: "Image", 
-    cell: (props) => <img src={props.getValue()}/>  //props.getValue() to get value, wrapped in <p> tag for the style
+    cell: (props) => (
+      <div className='w-full flex justify-center'>
+        <img src={props.getValue()} className="max-w-20"/> 
+      </div>
+  ) //props.getValue() to get value, wrapped in <p> tag for the style
   },
   {
     accessorKey: "stock_quantity",
-    header: "Quantity"
+    header: ({column}) => {
+      const isSorted = column.getIsSorted();
+      return (
+        <Button variant="ghost" onClick={column.getToggleSortingHandler()}>
+          Quantity
+          {isSorted === false && <ArrowUpDown className=""/>}
+          {isSorted === 'asc' && <ArrowDown className=""/>}
+          {isSorted === 'desc' && <ArrowUp className=""/>}
+        </Button>
+      )
+
+    }, 
+    enableSorting: true, 
+    enableSortingRemoval: true
   },
   {
     accessorKey: "categories",
@@ -325,24 +360,29 @@ const columns = [
 ]
 
 export default function DataTableDemo() {
+  const [sorting, setSorting] = React.useState([])
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    state: {
+      sorting,
+    },
   })
 
   return (
     <div className = "p-2">
-      <div className="overflow-x-auto">
-
-          <div className="rounded-sm border max-h-[85vh] overflow-y-auto relative">
+<div className="overflow-auto max-h-[85vh] rounded-sm border">
           <Table className="table-fixed w-full">
             <TableHeader className="">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead key={header.id} className = "sticky top-0 bg-white z-10 text-center">
+                  <TableHead key={header.id} className = "sticky top-0 bg-white z-10 text-center font-bold text-black text-sm">
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -380,7 +420,6 @@ export default function DataTableDemo() {
       </Table>
     </div>
 
-    </div>
     </div>
   )
 }
