@@ -10,6 +10,14 @@ import toast from 'react-hot-toast';
 export default function AddToCartIcon({ productId }) {
     const { user } = useUserStore();
     const { addToCart } = useCartStore();
+    const hasMounted = React.useRef(false);
+
+    React.useEffect(() => {
+        hasMounted.current = true;
+        return () => {
+            hasMounted.current = false;
+        };
+    }, []);
 
 
     const controls = useAnimation();
@@ -28,6 +36,7 @@ export default function AddToCartIcon({ productId }) {
 
         try {
             await addToCart(productId);
+            if (!hasMounted.current) return;
             setIsLoading(false);
             setShowCheck(true)
             await Promise.all([
