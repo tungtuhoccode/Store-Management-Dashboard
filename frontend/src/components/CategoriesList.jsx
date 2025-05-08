@@ -20,7 +20,7 @@ export default function CategoriesList() {
 
                     >
                         <div
-                            className='relative text-white hover:text-black cursor-pointer sm:hover:z-50 transition-transform duration-300 ease-in-out sm:hover:scale-150 rounded-lg hover:shadow-2xl'
+                            className='relative text-white hover:text-black cursor-pointer sm:hover:z-50 transition-transform duration-300 ease-in-out sm:hover:scale-125 rounded-lg hover:shadow-2xl'
                         >
                             <img className='object-cover rounded-lg' src={category.image} />
                             <div className={`absolute top-[90%] left-[40%] font-pacifico `}>{category.name}</div>

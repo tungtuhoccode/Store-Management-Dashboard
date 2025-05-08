@@ -31,7 +31,7 @@ function SignUpPages() {
                 <motion.div className='hidden md:flex md:w-1/2 justify-center items-center '
                     initial={!switchPage ? { opacity: 0, x: -20 } : { opacity: 1, x: 0 }}
                     animate={!switchPage ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
-                    transition={!switchPage ? { duration: 0.8 } : { duration: 0.8, delay: 1.0 }}
+                    transition={!switchPage ? { duration: 0.4 } : { duration: 0.4, delay: 1.0 }}
                 >
                     <img src="/images/sneakerSignUpPage.avif" alt="Sneakers" className="h-full object-cover rounded-2xl" />
                 </motion.div>
@@ -43,7 +43,7 @@ function SignUpPages() {
                         <motion.div
                             initial={!switchPage ? { opacity: 0, y: -20 } : { opacity: 1, y: 0 }}
                             animate={!switchPage ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
-                            transition={{ duration: 0.8, delay: 0.5 }}
+                            transition={{ duration: 0.4, delay: 0.5 }}
                         >
                             <h2 className='mt-16 mb-16 text-center text-3xl font-bold '>Create your account</h2>
 
@@ -114,7 +114,7 @@ function SignUpPages() {
                         <motion.div
                             initial={!switchPage ? { opacity: 0, y: 20 } : { opacity: 1, y: 0 }}
                             animate={!switchPage ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                            transition={!switchPage ? { duration: 0.8, delay: 1.0 } : { duration: 0.8 }}
+                            transition={!switchPage ? { duration: 0.4, delay: 1.0 } : { duration: 0.4 }}
                         >
                             <div className={`${!error && "hidden"} flex justify-center items-center pt-5 text-red-600`}>{error}</div>
                             <button
