@@ -1,3 +1,5 @@
+import {Link, useLocation} from "react-router-dom"
+
 import {   
   Bell,
   CircleUser,
@@ -53,24 +55,27 @@ export default function AppSidebar() {
       <SidebarHeader className="mt-2">
         <SidebarMenu>
           <SidebarMenuItem>
+          <Link to="/">
             <SidebarMenuButton
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               {/* Icon container */}
-              <div className="flex aspect-square w-8 h-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                <Package2 className="w-4 h-4" />
-              </div>
 
-              {/* Two-line text */}
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">VNTT Ware</span>
-                <span className="truncate text-xs">Enterprise</span>
-              </div>
+                <div className="flex aspect-square w-8 h-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                  <Package2 className="w-4 h-4" />
+                </div>
+
+                {/* Two-line text */}
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-semibold">VNTT Ware</span>
+                  <span className="truncate text-xs">Enterprise</span>
+                </div>
 
               {/* Chevron indicator */}
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
+              </Link>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
