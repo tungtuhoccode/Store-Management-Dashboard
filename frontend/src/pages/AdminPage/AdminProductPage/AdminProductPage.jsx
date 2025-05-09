@@ -8,7 +8,20 @@ import {
     getSortedRowModel,
     flexRender,
   } from "@tanstack/react-table"
-  import { ArrowUpDown, ChevronDown, MoreHorizontal, ArrowUp, ArrowDown, ListFilter, Funnel} from "lucide-react"
+  import { Label } from "@/components/ui/label"
+  import { ArrowUpDown, ChevronDown, MoreHorizontal, ArrowUp, ArrowDown, ListFilter, Funnel,  CheckCircle2Icon,
+    CheckCircleIcon,
+    ChevronDownIcon,
+    ChevronLeftIcon,
+    ChevronRightIcon,
+    ChevronsLeftIcon,
+    ChevronsRightIcon,
+    ColumnsIcon,
+    GripVerticalIcon,
+    LoaderIcon,
+    MoreVerticalIcon,
+    PlusIcon,
+    TrendingUpIcon} from "lucide-react"
   import { Button } from "@/components/ui/button"
   import { Checkbox } from "@/components/ui/checkbox"
   import {
@@ -29,7 +42,13 @@ import {
     TableHeader,
     TableRow,
   } from "@/components/ui/table"
-
+  import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+  } from "@/components/ui/select"
 import { generateUniqueValues } from '@/pages/Utils/filterHelper'
   
 const data = [
@@ -329,7 +348,7 @@ const columns = [
     header: "Image", 
     cell: (props) => (
       <div className='w-full flex justify-center'>
-        <img src={props.getValue()} className="max-w-20"/> 
+        <img src={props.getValue()} className="max-w-10"/> 
       </div>
   ) //props.getValue() to get value, wrapped in <p> tag for the style
   },
@@ -362,12 +381,20 @@ const columns = [
           </span>
           <span>
             <DropdownMenu>
-              <DropdownMenuTrigger onClick={console.log("clicked")}>
-                <Funnel variant="" className='w-4 mt-1 text-gray-400'/>
-                </DropdownMenuTrigger>
+            <DropdownMenuTrigger onClick={() => console.log("clicked")}>
+            <div className="flex items-center relative">
+              <Funnel variant="" className={`w-4 mt-1 ${filterValues.length >= 1 ? "text-black":"text-gray-400" }`}/>
+              {filterValues.length > 0 && (
+                <span className="absolute left-[10px] bottom-3 bg-black text-white text-xs rounded-full w-3 h-3 text-xs  flex items-center justify-center">
+                  {filterValues.length}
+                </span>
+              )}
+            </div>
+          </DropdownMenuTrigger>
                 <DropdownMenuContent className="mt-2">
                   <DropdownMenuLabel>Filter By</DropdownMenuLabel>
-                  
+                    {/* Clear all filters */}
+
                   <DropdownMenuSeparator />
                     {generateUniqueValues(data, "categories").map( (category, id) =>
                         <DropdownMenuCheckboxItem key={id} 
@@ -382,6 +409,14 @@ const columns = [
                           {category}
                           </DropdownMenuCheckboxItem>
                     )}
+                  <DropdownMenuSeparator/>
+              <DropdownMenuItem
+                className="flex justify-center font-bold cursor-pointer"
+                onSelect={() => column.setFilterValue([])}
+              >
+                Clear All
+              </DropdownMenuItem>
+                    
                 </DropdownMenuContent>
             </DropdownMenu>
           </span>
@@ -395,7 +430,63 @@ const columns = [
   },
   {
     accessorKey: "displayed_product",
-    header: "Display Status",
+    header: ({column}) => {
+      const filterValues = column.getFilterValue();
+      return (
+        <div className='flex justify-center items-center'>
+          <span className='mr-2'>
+            Display Status
+          </span>
+          <span>
+            <DropdownMenu>
+            <DropdownMenuTrigger onClick={() => console.log("clicked")}>
+            <div className="flex items-center relative">
+              <Funnel variant="" className={`w-4 mt-1 ${filterValues.length >= 1 ? "text-black":"text-gray-400" }`}/>
+              {filterValues.length > 0 && (
+                <span className="absolute left-[10px] bottom-3 bg-black text-white text-xs rounded-full w-3 h-3 text-xs  flex items-center justify-center">
+                  {filterValues.length}
+                </span>
+              )}
+            </div>
+          </DropdownMenuTrigger>
+                <DropdownMenuContent className="mt-2">
+                  <DropdownMenuLabel>Filter By</DropdownMenuLabel>
+                    {/* Clear all filters */}
+
+                  <DropdownMenuSeparator />
+                    {generateUniqueValues(data, "displayed_product").map( (display_status, id) =>{
+
+                      return(
+                        <DropdownMenuCheckboxItem key={id} 
+                        checked={filterValues.includes(display_status)}
+                        onCheckedChange={(checked) => {
+                          const newValues = checked
+                          ? [...filterValues, display_status]
+                          : filterValues.filter((v) => v !== display_status);
+                          column.setFilterValue(newValues);
+                        }}
+                        className="cursor-pointer">
+
+                            {display_status ? "Display":"Not Display"}
+                          
+                          </DropdownMenuCheckboxItem>
+                        )
+                      }
+                    )}
+                  <DropdownMenuSeparator/>
+              <DropdownMenuItem
+                className="flex justify-center font-bold cursor-pointer"
+                onSelect={() => column.setFilterValue([])}
+              >
+                Clear All
+              </DropdownMenuItem>
+                    
+                </DropdownMenuContent>
+            </DropdownMenu>
+          </span>
+        </div>
+      )  
+    }, 
     cell: ({column, row, getValue, table}) => {
       return(
         <Checkbox
@@ -409,24 +500,30 @@ const columns = [
         }
       />
       )
+    }, 
+    filterFn: (row, columnId, filterValues) => {
+      if (!filterValues?.length) return true;
+      return filterValues.includes(row.getValue(columnId));
     }
   }
 ]
+
+
 
 export default function DataTableDemo() {
   const [sorting, setSorting] = React.useState([])
   const [tableData, setTableData] = React.useState(data)
   const [columnFilters, setColumnFilters] = useState([
-    {id:"categories", value:["Hoodies"]}
+    {id:"categories", value:[]}, 
+    {id:"displayed_product", value: []}
   ])
 
   const updateData = (rowIndex, columnIndex, value) => {
-    setTableData(      tableData.map( row => {
+    setTableData(tableData.map(row => {
       return (row.id == rowIndex) ? {...row, [columnIndex]:value} : row 
     }))
-
-
   }
+
   const table = useReactTable({
     data: tableData,
     columns,
@@ -439,57 +536,152 @@ export default function DataTableDemo() {
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-
+    getPaginationRowModel: getPaginationRowModel(),
     meta: {updateData}
   })
 
   return (
-    <div className = "p-2">
-<div className="overflow-auto max-h-[85vh] rounded-sm border">
-          <Table className="table-fixed w-full">
-            <TableHeader className="">
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id} className = "sticky top-0 bg-white z-10 text-center font-bold text-black text-sm">
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                )
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className=" text-center">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </div>
+    <div className="p-2">
+      {/* Table */}
+      <div className="border rounded-sm">
+        <div className="w-full">
+          <Table className="w-full table-fixed">
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <TableHead 
+                      key={header.id} 
+                      className="py-1 z-10 text-center text-black text-sm"
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              ))}
+            </TableHeader>
+          </Table>
+        </div>
 
+        {/* Scrollable Body */}
+        <div className="overflow-auto max-h-[75vh]">
+          <Table className="w-full table-fixed">
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell 
+                        key={cell.id} 
+                        className="text-center"
+                        style={{ width: cell.column.getSize() }}
+                      >
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={columns.length} className="h-24 text-center">
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+          <div className="flex items-center justify-end space-x-2 py-4">
+
+      </div>
+        </div>
+      </div>
+
+      {/* Table Pagination Buttons */}
+      <div className="flex items-center justify-between px-4 mt-2">
+          <div className="hidden flex-1 text-sm text-muted-foreground lg:flex">
+            {table.getFilteredSelectedRowModel().rows.length} of{" "}
+            {table.getFilteredRowModel().rows.length} row(s) selected.
+          </div>
+          <div className="flex w-full items-center gap-8 lg:w-fit">
+            <div className="hidden items-center gap-2 lg:flex">
+              <Label htmlFor="rows-per-page" className="text-sm font-medium">
+                Rows per page
+              </Label>
+              <Select
+                value={`${table.getState().pagination.pageSize}`}
+                onValueChange={(value) => {
+                  table.setPageSize(Number(value))
+                }}
+              >
+                <SelectTrigger className="w-20" id="rows-per-page">
+                  <SelectValue
+                    placeholder={table.getState().pagination.pageSize}
+                  />
+                </SelectTrigger>
+                <SelectContent side="top">
+                  {[10, 20, 30, 40, 50].map((pageSize) => (
+                    <SelectItem key={pageSize} value={`${pageSize}`}>
+                      {pageSize}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex w-fit items-center justify-center text-sm font-medium">
+              Page {table.getState().pagination.pageIndex + 1} of{" "}
+              {table.getPageCount()}
+            </div>
+            <div className="ml-auto flex items-center gap-2 lg:ml-0">
+              <Button
+                variant="outline"
+                className="hidden h-8 w-8 p-0 lg:flex"
+                onClick={() => table.setPageIndex(0)}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <span className="sr-only">Go to first page</span>
+                <ChevronsLeftIcon />
+              </Button>
+              <Button
+                variant="outline"
+                className="size-8"
+                size="icon"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <span className="sr-only">Go to previous page</span>
+                <ChevronLeftIcon />
+              </Button>
+              <Button
+                variant="outline"
+                className="size-8"
+                size="icon"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                <span className="sr-only">Go to next page</span>
+                <ChevronRightIcon />
+              </Button>
+              <Button
+                variant="outline"
+                className="hidden size-8 lg:flex"
+                size="icon"
+                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                disabled={!table.getCanNextPage()}
+              >
+                <span className="sr-only">Go to last page</span>
+                <ChevronsRightIcon />
+              </Button>
+            </div>
+          </div>
+        </div>
     </div>
   )
 }
