@@ -53,7 +53,8 @@ import { generateUniqueValues } from '@/pages/Utils/filterHelper'
   
 
 // Custom Component
-import CategoryHeaderWithFilter from "./TableComponents/CategoryHeaderWithFilter"
+import CategoryHeaderWithFilter from "./TableComponents/TableHeaderWithMutiSelectFilter"
+
 const data = [
         {
             "id": "c57c288c-a26d-452e-9945-a5c44ca6dc6b",
@@ -308,18 +309,6 @@ const data = [
 ]
 
 
-
-  // "id": "c57c288c-a26d-452e-9945-a5c44ca6dc6b",
-  // "name": "Nike Air Max Hoodie",
-  // "price": "75.00",
-  // "image": "https://cloutcloset.com/cdn/shop/files/A2CFCF1B-60DB-4020-9F3B-EAD78A074EDC.jpg?v=1722376618&width=1946",
-  // "stock_quantity": 40,
-  // "categories": "Hoodies",
-  // "slide_display": true,
-  // "displayed_product": true
-
-
-
 const columns = [
 
   {
@@ -453,11 +442,31 @@ const columns = [
   }
 ]
 
+// Helper function to optimize any image URL to width=150px
+function optimizeImageUrl(url) {
+  // Cloudinary URLs: insert c_scale,w_150 after /upload/
+  if (url.includes("res.cloudinary.com")) {
+    return url.replace(/\/upload\//, "/upload/c_scale,w_150/");
+  }
+  // CloutCloset URLs: replace width=<digits> query param with width=150
+  if (url.includes("cloutcloset.com")) {
+    return url.replace(/width=\d+/, "width=100");
+  }
+  // Otherwise return the original URL
+  return url;
+}
 
+// Given your existing `data` array, produce a new array with optimized image URLs:
+const optimizedData = data.map(item => ({
+  ...item,
+  image: optimizeImageUrl(item.image),
+}));
+
+// Now use `optimizedData` in your table instead of the original `data`
 
 export default function DataTableDemo() {
   const [sorting, setSorting] = React.useState([])
-  const [tableData, setTableData] = React.useState(data)
+  const [tableData, setTableData] = React.useState(optimizedData)
   const [columnFilters, setColumnFilters] = useState([
     {id:"categories", value:[]}, 
     {id:"displayed_product", value: []}
@@ -484,6 +493,8 @@ export default function DataTableDemo() {
     getPaginationRowModel: getPaginationRowModel(),
     meta: {updateData}
   })
+
+  
 
   return (
     <div className="p-2">
