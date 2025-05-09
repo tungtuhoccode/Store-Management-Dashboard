@@ -430,81 +430,70 @@ const columns = [
   },
   {
     accessorKey: "displayed_product",
-    header: ({column}) => {
-      const filterValues = column.getFilterValue();
+    header: ({ column }) => {
+      const filterValues = column.getFilterValue() ?? []
+      // grab the single boolean, if any
+      const current = filterValues[0]
+  
       return (
-        <div className='flex justify-center items-center'>
-          <span className='mr-2'>
-            Display Status
-          </span>
-          <span>
-            <DropdownMenu>
-            <DropdownMenuTrigger onClick={() => console.log("clicked")}>
-            <div className="flex items-center relative">
-              <Funnel variant="" className={`w-4 mt-1 ${filterValues.length >= 1 ? "text-black":"text-gray-400" }`}/>
-              {filterValues.length > 0 && (
-                <span className="absolute left-[10px] bottom-3 bg-black text-white text-xs rounded-full w-3 h-3 text-xs  flex items-center justify-center">
-                  {filterValues.length}
-                </span>
-              )}
-            </div>
-          </DropdownMenuTrigger>
-                <DropdownMenuContent className="mt-2">
-                  <DropdownMenuLabel>Filter By</DropdownMenuLabel>
-                    {/* Clear all filters */}
-
-                  <DropdownMenuSeparator />
-                    {generateUniqueValues(data, "displayed_product").map( (display_status, id) =>{
-
-                      return(
-                        <DropdownMenuCheckboxItem key={id} 
-                        checked={filterValues.includes(display_status)}
-                        onCheckedChange={(checked) => {
-                          const newValues = checked
-                          ? [...filterValues, display_status]
-                          : filterValues.filter((v) => v !== display_status);
-                          column.setFilterValue(newValues);
-                        }}
-                        className="cursor-pointer">
-
-                            {display_status ? "Display":"Not Display"}
-                          
-                          </DropdownMenuCheckboxItem>
-                        )
-                      }
-                    )}
-                  <DropdownMenuSeparator/>
+        <div className="flex justify-center items-center">
+          <span className="mr-2">Display Status</span>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <div className="flex items-center relative">
+                <Funnel
+                  className={`w-4 ${
+                    filterValues.length ? "text-black" : "text-gray-400"
+                  }`}
+                />
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="mt-2">
+              <DropdownMenuLabel>Filter By</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+  
+              <DropdownMenuCheckboxItem
+                checked={current === true}
+                onCheckedChange={(checked) =>
+                  column.setFilterValue(checked ? [true] : [])
+                }
+              >
+                Display
+              </DropdownMenuCheckboxItem>
+  
+              <DropdownMenuCheckboxItem
+                checked={current === false}
+                onCheckedChange={(checked) =>
+                  column.setFilterValue(checked ? [false] : [])
+                }
+              >
+                Not Display
+              </DropdownMenuCheckboxItem>
+  
+              <DropdownMenuSeparator />
               <DropdownMenuItem
-                className="flex justify-center font-bold cursor-pointer"
+                className="flex justify-center font-bold"
                 onSelect={() => column.setFilterValue([])}
               >
                 Clear All
               </DropdownMenuItem>
-                    
-                </DropdownMenuContent>
-            </DropdownMenu>
-          </span>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
-      )  
-    }, 
-    cell: ({column, row, getValue, table}) => {
-      return(
-        <Checkbox
+      )
+    },
+    cell: ({ getValue, row, table, column }) => (
+      <Checkbox
         checked={getValue()}
-        onCheckedChange={val =>
-          table.options.meta.updateData(
-            row.original.id,
-            column.id,
-            val
-          )
+        onCheckedChange={(val) =>
+          table.options.meta.updateData(row.original.id, column.id, val)
         }
       />
-      )
-    }, 
+    ),
     filterFn: (row, columnId, filterValues) => {
-      if (!filterValues?.length) return true;
-      return filterValues.includes(row.getValue(columnId));
-    }
+      if (!filterValues.length) return true
+      return filterValues[0] === row.getValue(columnId)
+    },
   }
 ]
 
