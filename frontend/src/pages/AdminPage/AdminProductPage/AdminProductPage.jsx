@@ -1,5 +1,14 @@
-// src/components/AdminDataTable/DataTableDemo.jsx
 import React, { useState } from 'react'
+import axios from "../../../lib/axios.js"
+
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
+import { ErrorAlert } from './TableComponents/error-alert.jsx'
 import {
     useReactTable,
     getCoreRowModel,
@@ -11,6 +20,7 @@ import {
   import { Label } from "@/components/ui/label"
   import { ArrowUpDown, ChevronDown, MoreHorizontal, ArrowUp, ArrowDown, ListFilter, Funnel,  CheckCircle2Icon,
     CheckCircleIcon,
+    AlertCircle,
     ChevronDownIcon,
     ChevronLeftIcon,
     ChevronRightIcon,
@@ -308,7 +318,6 @@ const data = [
         }
 ]
 
-
 const columns = [
 
   {
@@ -442,6 +451,74 @@ const columns = [
   }
 ]
 
+
+function TableLoadingSkeleton({ columns, rows = 5 }) {
+  return (
+    <div>
+      {/* Table Header + Body */}
+      <div className="overflow-auto">
+        <Table className="table-fixed w-full">
+          <TableHeader>
+            <TableRow>
+              {columns.map((col) => (
+                <TableHead
+                  key={col.accessorKey}
+                  className="px-4 py-2 bg-gray-200 animate-pulse"
+                />
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {Array.from({ length: rows }).map((_, rowIdx) => (
+              <TableRow key={rowIdx} className="animate-pulse">
+                {columns.map((col) => (
+                  <TableCell key={col.accessorKey} className="p-2">
+                    {col.accessorKey === "image" ? (
+                      <div className="w-12 h-12 bg-gray-200 justify-center" />
+                    ) : (
+                      <div className="h-4 bg-gray-200 rounded w-3/4" />
+                    )}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* Footer / Pagination Skeleton */}
+      <div className="flex items-center justify-between px-4 py-2 mt-2 animate-pulse">
+        {/* Left: “0 of XX row(s) selected” */}
+        <div className="hidden lg:flex">
+          <div className="h-4 bg-gray-200 rounded w-32" />
+        </div>
+
+        {/* Right: rows-per-page + page info + buttons */}
+        <div className="flex items-center gap-4">
+          {/* Rows per page label */}
+          <div className="hidden lg:block">
+            <div className="h-4 bg-gray-200 rounded w-24" />
+          </div>
+
+          {/* Select dropdown placeholder */}
+          <div className="h-8 w-16 bg-gray-200 rounded" />
+
+          {/* Page info placeholder */}
+          <div className="h-4 bg-gray-200 rounded w-20" />
+
+          {/* Nav buttons placeholders */}
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 bg-gray-200 rounded" />
+            <div className="h-8 w-8 bg-gray-200 rounded" />
+            <div className="h-8 w-8 bg-gray-200 rounded" />
+            <div className="h-8 w-8 bg-gray-200 rounded" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // Helper function to optimize any image URL to width=150px
 function optimizeImageUrl(url) {
   // Cloudinary URLs: insert c_scale,w_150 after /upload/
@@ -462,21 +539,29 @@ const optimizedData = data.map(item => ({
   image: optimizeImageUrl(item.image),
 }));
 
-// Now use `optimizedData` in your table instead of the original `data`
+const fetchProductsData = async () => {
+  const response = await axios.get("/product")
+  return response.data
+}
 
 export default function DataTableDemo() {
+  const queryClient = useQueryClient();
+
+  const { isPending, isError, data, error } = useQuery({ queryKey: ['products'], queryFn: fetchProductsData })
+
   const [sorting, setSorting] = React.useState([])
   const [tableData, setTableData] = React.useState(optimizedData)
   const [columnFilters, setColumnFilters] = useState([
     {id:"categories", value:[]}, 
     {id:"displayed_product", value: []}
   ])
-
+  
   const updateData = (rowIndex, columnIndex, value) => {
     setTableData(tableData.map(row => {
       return (row.id == rowIndex) ? {...row, [columnIndex]:value} : row 
     }))
   }
+  
 
   const table = useReactTable({
     data: tableData,
@@ -494,7 +579,34 @@ export default function DataTableDemo() {
     meta: {updateData}
   })
 
-  
+  //Loading
+  if (isPending) {
+    return (
+      <div className="p-2">
+        <div className="border rounded-sm">
+          <TableLoadingSkeleton columns={columns} rows={9} />
+        </div>
+      </div>
+    );
+  }
+
+  //Error
+  if (isError) {
+    return (
+      <div className="flex h-[75vh] items-center justify-center p-4">
+        <ErrorAlert
+          title="Failed to load products"
+          message={
+            error?.message ||
+            "We couldn't retrieve the product data. Please try again or contact support if the problem persists."
+          }
+          onRetry={() => {queryClient.invalidateQueries({ queryKey: ["products"] })}
+          }
+        />
+      </div>
+    )
+  }
+
 
   return (
     <div className="p-2">
