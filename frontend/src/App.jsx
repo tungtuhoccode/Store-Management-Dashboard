@@ -15,6 +15,7 @@ import Categories from "./pages/Categories"
 import PurchaseSuccess from "./pages/PurchaseSuccess"
 import PurchaseCancel from "./pages/PurchaseCancel"
 import AdminPage from "./pages/AdminPage/Admin"
+import About from "./pages/About"
 
 import { useUserStore } from "./store/useUserStore"
 
@@ -37,8 +38,8 @@ function App() {
               <Route path="/login" element={(!user.email && !user.userName) ? <LogInPage /> : <Navigate to="/" replace />} />
               <Route path="/shop" element={<Shop />} />
               <Route path="/cart" element={<Cart />} />
-              <Route path="/about" element={<HomePage />} />
-              <Route path="/contact" element={<HomePage />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<h1>Contact page</h1>} />
               <Route path="/product/:id" element={<ProductPage />} />
               <Route path="/category/:category" element={<Categories />} />
               <Route
