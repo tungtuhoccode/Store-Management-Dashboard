@@ -352,6 +352,7 @@ const columns = [
   },
   {
     accessorKey: "categories",
+    //TODO: Implement useMemo and allow selecting mutiple categories before apply filters
     header: ({column, row, table}) => {
       const filterValues = column.getFilterValue();
       return (
@@ -361,7 +362,9 @@ const columns = [
           </span>
           <span>
             <DropdownMenu>
-              <DropdownMenuTrigger><Funnel variant="" className='w-4 mt-1 text-gray-400'/></DropdownMenuTrigger>
+              <DropdownMenuTrigger onClick={console.log("clicked")}>
+                <Funnel variant="" className='w-4 mt-1 text-gray-400'/>
+                </DropdownMenuTrigger>
                 <DropdownMenuContent className="mt-2">
                   <DropdownMenuLabel>Filter By</DropdownMenuLabel>
                   
