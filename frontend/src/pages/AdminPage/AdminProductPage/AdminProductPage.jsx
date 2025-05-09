@@ -348,7 +348,7 @@ const columns = [
     header: "Image", 
     cell: (props) => (
       <div className='w-full flex justify-center'>
-        <img src={props.getValue()} className="max-w-10"/> 
+        <img width={48} height={48} src={props.getValue()}/> 
       </div>
   ) //props.getValue() to get value, wrapped in <p> tag for the style
   },
@@ -598,9 +598,6 @@ export default function DataTableDemo() {
               )}
             </TableBody>
           </Table>
-          <div className="flex items-center justify-end space-x-2 py-4">
-
-      </div>
         </div>
       </div>
 
