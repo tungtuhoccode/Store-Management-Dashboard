@@ -51,6 +51,9 @@ import {
   } from "@/components/ui/select"
 import { generateUniqueValues } from '@/pages/Utils/filterHelper'
   
+
+// Custom Component
+import CategoryHeaderWithFilter from "./TableComponents/CategoryHeaderWithFilter"
 const data = [
         {
             "id": "c57c288c-a26d-452e-9945-a5c44ca6dc6b",
@@ -315,6 +318,8 @@ const data = [
   // "slide_display": true,
   // "displayed_product": true
 
+
+
 const columns = [
 
   {
@@ -372,57 +377,7 @@ const columns = [
   {
     accessorKey: "categories",
     //TODO: Implement useMemo and allow selecting mutiple categories before apply filters
-    header: ({column, row, table}) => {
-      const filterValues = column.getFilterValue();
-      return (
-        <div className='flex justify-center items-center'>
-          <span className='mr-2'>
-            Categories
-          </span>
-          <span>
-            <DropdownMenu>
-            <DropdownMenuTrigger onClick={() => console.log("clicked")}>
-            <div className="flex items-center relative">
-              <Funnel variant="" className={`w-4 mt-1 ${filterValues.length >= 1 ? "text-black":"text-gray-400" }`}/>
-              {filterValues.length > 0 && (
-                <span className="absolute left-[10px] bottom-3 bg-black text-white text-xs rounded-full w-3 h-3 text-xs  flex items-center justify-center">
-                  {filterValues.length}
-                </span>
-              )}
-            </div>
-          </DropdownMenuTrigger>
-                <DropdownMenuContent className="mt-2">
-                  <DropdownMenuLabel>Filter By</DropdownMenuLabel>
-                    {/* Clear all filters */}
-
-                  <DropdownMenuSeparator />
-                    {generateUniqueValues(data, "categories").map( (category, id) =>
-                        <DropdownMenuCheckboxItem key={id} 
-                          checked={filterValues.includes(category)}
-                          onCheckedChange={(checked) => {
-                            const newValues = checked
-                              ? [...filterValues, category]
-                              : filterValues.filter((v) => v !== category);
-                            column.setFilterValue(newValues);
-                          }}
-                          className="cursor-pointer">
-                          {category}
-                          </DropdownMenuCheckboxItem>
-                    )}
-                  <DropdownMenuSeparator/>
-              <DropdownMenuItem
-                className="flex justify-center font-bold cursor-pointer"
-                onSelect={() => column.setFilterValue([])}
-              >
-                Clear All
-              </DropdownMenuItem>
-                    
-                </DropdownMenuContent>
-            </DropdownMenu>
-          </span>
-        </div>
-      )  
-    }, 
+    header: ({column}) => <CategoryHeaderWithFilter column={column} availableFilterValues={generateUniqueValues(data, "categories")}/>, 
     filterFn: (row, columnId, filterValues) => {
       if (!filterValues?.length) return true;
       return filterValues.includes(row.getValue(columnId));
@@ -440,13 +395,14 @@ const columns = [
           <span className="mr-2">Display Status</span>
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <div className="flex items-center relative">
-                <Funnel
-                  className={`w-4 ${
-                    filterValues.length ? "text-black" : "text-gray-400"
-                  }`}
-                />
-              </div>
+            <div className="flex items-center relative">
+              <Funnel variant="" className={`w-4 mt-1 ${filterValues.length >= 1 ? "text-black":"text-gray-400" }`}/>
+              {filterValues.length > 0 && (
+                <span className="absolute left-[10px] bottom-3 bg-black text-white text-xs rounded-full w-3 h-3 text-xs  flex items-center justify-center">
+                  {filterValues.length}
+                </span>
+              )}
+            </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="mt-2">
               <DropdownMenuLabel>Filter By</DropdownMenuLabel>
