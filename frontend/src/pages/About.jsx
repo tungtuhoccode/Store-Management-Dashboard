@@ -1,6 +1,9 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { FiBox } from "react-icons/fi";
+import { FaCheckCircle } from "react-icons/fa";
+
+import { coreValue } from '@/constants/coreValue';
 
 export default function About() {
   return (
@@ -9,7 +12,7 @@ export default function About() {
       <img
         src="/images/AboutPageWallPaper.avif"
         alt=""
-        className="absolute top-0 left-0 w-full h-[200vh] z-[-1]"
+        className="absolute top-0 left-0 w-full h-[353vh] sm:h-[250vh] md:[250vh] lg:h-[222vh] z-[-1]"
       />
 
       <div className="max-w-7xl mt-20 mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -55,7 +58,20 @@ export default function About() {
 
             <div className="flex items-center gap-4 pt-4">
               <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
-                {/* Image holder placeholder */}
+                <img
+                  className='rounded-full object-cover'
+                  src="https://avatars.githubusercontent.com/u/126214032?v=4"
+                  alt="CEO VU" />
+
+              </div>
+              <div>
+                <div className="font-semibold">Vu Nguyen</div>
+                <div className="text-sm text-gray-300">CEO & Co-founder @ 2 people company</div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4 pt-4">
+              <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
                 <span className="text-gray-700 text-sm">Img</span>
               </div>
               <div>
@@ -65,34 +81,24 @@ export default function About() {
             </div>
           </div>
         </motion.div>
-
-
-
       </div>
 
-      <motion.div className=" py-40 flex justify-center items-center text-white">
+      <motion.div className="border-y border-green-600  py-40 flex justify-center items-center text-white">
         <div className="max-w-7xl w-full px-6 ">
           <h1 className="text-center text-3xl font-pacifico mb-12 ">
             Our Core Values that Drive Everything We Do
           </h1>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-            {[
-              'Passionate About Work',
-              'Creative Team Members',
-              'Innovation Solutions',
-              'Qualitiful Products',
-              'Customer Satisfaction',
-              'Simplicity Interface',
-            ].map((title, index) => (
-              <div key={index} className="flex items-start space-x-4">
+            {coreValue.map(({ title, description }, index) => (
+              <div key={index} className="flex items-center space-x-4">
                 <div className="flex-shrink-0">
-                  <FiBox size={40} className="text-green-400" />
+                  <FiBox size={40} className="text-green-400 flex" />
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold mb-1">{title}</h3>
                   <p className="text-sm ">
-                    Passion for work is an enthusiasm and excitement for what you do.
+                    {description}
                   </p>
                 </div>
               </div>
@@ -101,7 +107,44 @@ export default function About() {
         </div>
       </motion.div>
 
+      <div className="max-w-7xl mt-20 mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
 
+        {/* Right text side */}
+        <motion.div className="text-white space-y-6">
+          <div>
+            <h1 className="font-pacifico text-4xl mb-2">Our mission</h1>
+          </div>
+
+          <div className="space-y-4">
+            <p className="leading-relaxed">
+              Our mission is to make the world a greener place, one plant at a time. We strive to provide our customers with the highest quality plants and plant care products, along with the knowledge and support to help them thrive.
+            </p>
+          </div>
+
+          <div className='grid grid-cols-1 sm:grid-cols-2'>
+            {["Quality and Variety",
+              "Expert Guidance",
+              "Sustainable Practices",
+              "Experienced Team"].map((item) => {
+                return (
+                  <div className='flex items-center gap-2'>
+                    <FaCheckCircle className='text-lime-600' />
+                    <div>{item}</div>
+                  </div>
+                )
+              })}
+          </div>
+        </motion.div>
+
+        {/* Left image side */}
+        <motion.div className="flex justify-center">
+          <img
+            src="/images/AboutPage2.avif"
+            alt=""
+            className="w-full max-w-md rounded-lg shadow-lg"
+          />
+        </motion.div>
+      </div>
 
     </div >
 

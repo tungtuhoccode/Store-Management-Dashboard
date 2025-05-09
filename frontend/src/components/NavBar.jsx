@@ -32,7 +32,12 @@ function NavBar() {
 
         }
         const handleScroll = () => {
-            if (window.scrollY >= (window.innerHeight - 30)) {
+            if (currentLocation === "/" && window.scrollY >= (window.innerHeight - 30)) {
+                console.log("zzz")
+                setScrolled(true);
+            }
+            else if (currentLocation === "/about" && window.scrollY > 0) {
+                console.log("true")
                 setScrolled(true);
             }
             else {
@@ -48,7 +53,12 @@ function NavBar() {
             }
         }
         fetchCart();
-    }, [user, getCartItems]
+
+        return () => {
+            window.removeEventListener("resize", handleResize);
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, [user, getCartItems, location.pathname]
     )
     if ((currentLocation === "/" || currentLocation === "/about") && !scrolled) {
         textColor = "text-white";
@@ -56,7 +66,7 @@ function NavBar() {
 
     return (
         <header className={`fixed top-0 left-0 w-full z-40 transition-all duration-300
-            ${(currentLocation === "/" || currentLocation === "/about")  ? `${scrolled ? 'bg-white text-black shadow-md border-b' : 'bg-transparent text-white'} ` : 'bg-white text-black shadow-md border-b'}`}>
+            ${(currentLocation === "/" || currentLocation === "/about") ? `${scrolled ? 'bg-white text-black shadow-md border-b' : 'bg-transparent text-white'} ` : 'bg-white text-black shadow-md border-b'}`}>
 
             <div className="max-w-7xl mx-auto flex justify-between items-center px-4 md:px-8 py-6">
                 <div className="text-xl font-bold items-center space-x-2 flex font-pacifico hover:text-green-500"><Link to="/">VNWear</Link></div>
