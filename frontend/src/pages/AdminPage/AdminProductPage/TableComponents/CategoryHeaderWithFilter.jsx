@@ -1,5 +1,7 @@
-import React, { useState } from 'react'
+// src/components/AdminDataTable/DataTableDemo.jsx
+import React from 'react'
 
+import {Funnel} from "lucide-react"
 import {
 DropdownMenu,
 DropdownMenuCheckboxItem,
@@ -9,6 +11,7 @@ DropdownMenuLabel,
 DropdownMenuSeparator,
 DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+  
 
 export default function CategoryHeaderWithFilter({column, availableFilterValues}){
     const filterValues = column.getFilterValue();
