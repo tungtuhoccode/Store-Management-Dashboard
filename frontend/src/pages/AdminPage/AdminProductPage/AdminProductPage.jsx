@@ -352,7 +352,8 @@ const columns = [
   },
   {
     accessorKey: "categories",
-    header: () => {
+    header: ({column, row, table}) => {
+      const filterValues = column.getFilterValue();
       return (
         <div className='flex justify-center items-center'>
           <span className='mr-2'>
@@ -365,8 +366,16 @@ const columns = [
                   <DropdownMenuLabel>Filter By</DropdownMenuLabel>
                   
                   <DropdownMenuSeparator />
-                    {generateUniqueValues(data, "categories").map( category =>
-                        <DropdownMenuCheckboxItem className="cursor-pointer">
+                    {generateUniqueValues(data, "categories").map( (category, id) =>
+                        <DropdownMenuCheckboxItem key={id} 
+                          checked={filterValues.includes(category)}
+                          onCheckedChange={(checked) => {
+                            const newValues = checked
+                              ? [...filterValues, category]
+                              : filterValues.filter((v) => v !== category);
+                            column.setFilterValue(newValues);
+                          }}
+                          className="cursor-pointer">
                           {category}
                           </DropdownMenuCheckboxItem>
                     )}
@@ -375,6 +384,10 @@ const columns = [
           </span>
         </div>
       )  
+    }, 
+    filterFn: (row, columnId, filterValues) => {
+      if (!filterValues?.length) return true;
+      return filterValues.includes(row.getValue(columnId));
     }
   },
   {
@@ -400,9 +413,11 @@ const columns = [
 export default function DataTableDemo() {
   const [sorting, setSorting] = React.useState([])
   const [tableData, setTableData] = React.useState(data)
+  const [columnFilters, setColumnFilters] = useState([
+    {id:"categories", value:["Hoodies"]}
+  ])
 
   const updateData = (rowIndex, columnIndex, value) => {
-    console.log(rowIndex, columnIndex, value)
     setTableData(      tableData.map( row => {
       return (row.id == rowIndex) ? {...row, [columnIndex]:value} : row 
     }))
@@ -412,12 +427,16 @@ export default function DataTableDemo() {
   const table = useReactTable({
     data: tableData,
     columns,
+    state: {
+      sorting,
+      columnFilters
+    },
+    onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-    state: {
-      sorting,
-    },
+    getFilteredRowModel: getFilteredRowModel(),
+
     meta: {updateData}
   })
 
