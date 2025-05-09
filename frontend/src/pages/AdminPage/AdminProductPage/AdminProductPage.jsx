@@ -8,8 +8,7 @@ import {
     getSortedRowModel,
     flexRender,
   } from "@tanstack/react-table"
-  import { ArrowUpDown, ChevronDown, MoreHorizontal, ArrowUp, ArrowDown} from "lucide-react"
-   
+  import { ArrowUpDown, ChevronDown, MoreHorizontal, ArrowUp, ArrowDown, ListFilter, Funnel} from "lucide-react"
   import { Button } from "@/components/ui/button"
   import { Checkbox } from "@/components/ui/checkbox"
   import {
@@ -31,6 +30,7 @@ import {
     TableRow,
   } from "@/components/ui/table"
 
+import { generateUniqueValues } from '@/pages/Utils/filterHelper'
   
 const data = [
         {
@@ -286,6 +286,7 @@ const data = [
 ]
 
 
+
   // "id": "c57c288c-a26d-452e-9945-a5c44ca6dc6b",
   // "name": "Nike Air Max Hoodie",
   // "price": "75.00",
@@ -351,7 +352,30 @@ const columns = [
   },
   {
     accessorKey: "categories",
-    header: "Categories"
+    header: () => {
+      return (
+        <div className='flex justify-center items-center'>
+          <span className='mr-2'>
+            Categories
+          </span>
+          <span>
+            <DropdownMenu>
+              <DropdownMenuTrigger><Funnel variant="" className='w-4 mt-1 text-gray-400'/></DropdownMenuTrigger>
+                <DropdownMenuContent className="mt-2">
+                  <DropdownMenuLabel>Filter By</DropdownMenuLabel>
+                  
+                  <DropdownMenuSeparator />
+                    {generateUniqueValues(data, "categories").map( category =>
+                        <DropdownMenuCheckboxItem className="cursor-pointer">
+                          {category}
+                          </DropdownMenuCheckboxItem>
+                    )}
+                </DropdownMenuContent>
+            </DropdownMenu>
+          </span>
+        </div>
+      )  
+    }
   },
   {
     accessorKey: "displayed_product",

@@ -39,8 +39,6 @@ app.use("/api/cart", cartRoute);
 app.use("/api/coupon", couponRoute);
 app.use("/api/payment", paymentRoute);
 
-console.log('Hello world')
-
 app.listen(PORT, () => {
     console.log(`Server is currently running on ${PORT}`)
 })
