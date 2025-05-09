@@ -8,8 +8,7 @@ import {
     getSortedRowModel,
     flexRender,
   } from "@tanstack/react-table"
-  import { ArrowUpDown, ChevronDown, MoreHorizontal, ArrowUp, ArrowDown} from "lucide-react"
-   
+  import { ArrowUpDown, ChevronDown, MoreHorizontal, ArrowUp, ArrowDown, ListFilter, Funnel} from "lucide-react"
   import { Button } from "@/components/ui/button"
   import { Checkbox } from "@/components/ui/checkbox"
   import {
@@ -31,6 +30,7 @@ import {
     TableRow,
   } from "@/components/ui/table"
 
+import { generateUniqueValues } from '@/pages/Utils/filterHelper'
   
 const data = [
         {
@@ -286,6 +286,7 @@ const data = [
 ]
 
 
+
   // "id": "c57c288c-a26d-452e-9945-a5c44ca6dc6b",
   // "name": "Nike Air Max Hoodie",
   // "price": "75.00",
@@ -351,7 +352,46 @@ const columns = [
   },
   {
     accessorKey: "categories",
-    header: "Categories"
+    //TODO: Implement useMemo and allow selecting mutiple categories before apply filters
+    header: ({column, row, table}) => {
+      const filterValues = column.getFilterValue();
+      return (
+        <div className='flex justify-center items-center'>
+          <span className='mr-2'>
+            Categories
+          </span>
+          <span>
+            <DropdownMenu>
+              <DropdownMenuTrigger onClick={console.log("clicked")}>
+                <Funnel variant="" className='w-4 mt-1 text-gray-400'/>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="mt-2">
+                  <DropdownMenuLabel>Filter By</DropdownMenuLabel>
+                  
+                  <DropdownMenuSeparator />
+                    {generateUniqueValues(data, "categories").map( (category, id) =>
+                        <DropdownMenuCheckboxItem key={id} 
+                          checked={filterValues.includes(category)}
+                          onCheckedChange={(checked) => {
+                            const newValues = checked
+                              ? [...filterValues, category]
+                              : filterValues.filter((v) => v !== category);
+                            column.setFilterValue(newValues);
+                          }}
+                          className="cursor-pointer">
+                          {category}
+                          </DropdownMenuCheckboxItem>
+                    )}
+                </DropdownMenuContent>
+            </DropdownMenu>
+          </span>
+        </div>
+      )  
+    }, 
+    filterFn: (row, columnId, filterValues) => {
+      if (!filterValues?.length) return true;
+      return filterValues.includes(row.getValue(columnId));
+    }
   },
   {
     accessorKey: "displayed_product",
@@ -376,9 +416,11 @@ const columns = [
 export default function DataTableDemo() {
   const [sorting, setSorting] = React.useState([])
   const [tableData, setTableData] = React.useState(data)
+  const [columnFilters, setColumnFilters] = useState([
+    {id:"categories", value:["Hoodies"]}
+  ])
 
   const updateData = (rowIndex, columnIndex, value) => {
-    console.log(rowIndex, columnIndex, value)
     setTableData(      tableData.map( row => {
       return (row.id == rowIndex) ? {...row, [columnIndex]:value} : row 
     }))
@@ -388,12 +430,16 @@ export default function DataTableDemo() {
   const table = useReactTable({
     data: tableData,
     columns,
+    state: {
+      sorting,
+      columnFilters
+    },
+    onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-    state: {
-      sorting,
-    },
+    getFilteredRowModel: getFilteredRowModel(),
+
     meta: {updateData}
   })
 
