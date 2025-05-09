@@ -1,5 +1,6 @@
 import React from 'react'
 import { motion } from 'framer-motion'
+import { FiBox } from "react-icons/fi";
 
 export default function About() {
   return (
@@ -64,12 +65,45 @@ export default function About() {
             </div>
           </div>
         </motion.div>
+
+
+
       </div>
 
-      <motion.div>
+      <motion.div className=" py-40 flex justify-center items-center text-white">
+        <div className="max-w-7xl w-full px-6 ">
+          <h1 className="text-center text-3xl font-pacifico mb-12 ">
+            Our Core Values that Drive Everything We Do
+          </h1>
 
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+            {[
+              'Passionate About Work',
+              'Creative Team Members',
+              'Innovation Solutions',
+              'Qualitiful Products',
+              'Customer Satisfaction',
+              'Simplicity Interface',
+            ].map((title, index) => (
+              <div key={index} className="flex items-start space-x-4">
+                <div className="flex-shrink-0">
+                  <FiBox size={40} className="text-green-400" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold mb-1">{title}</h3>
+                  <p className="text-sm ">
+                    Passion for work is an enthusiasm and excitement for what you do.
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </motion.div>
-    </div>
+
+
+
+    </div >
 
   )
 }

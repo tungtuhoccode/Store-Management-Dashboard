@@ -50,7 +50,7 @@ function NavBar() {
         fetchCart();
     }, [user, getCartItems]
     )
-    if (currentLocation === "/" || currentLocation === "/about" && !scrolled) {
+    if ((currentLocation === "/" || currentLocation === "/about") && !scrolled) {
         textColor = "text-white";
     }
 
