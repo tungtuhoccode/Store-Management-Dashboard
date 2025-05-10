@@ -4,7 +4,22 @@
 A modern, responsive online clothing store built with React. Explore products, add to cart, and manage your store via a full-featured admin dashboard.
 
 ---
+
+## ⚙️ Tech Stack
+
+- **Frontend:** React, React Router
+- **Styling:** Tailwind CSS, ShadCN, RadixUI, Framer Motion, MaterialUI 
+- **Global State Managment:** Zustand
+- **Data Fetching & Rendering Optimization:** Axios, React Query, TanStack Table
+
+- **Backend (WIP):** Node.js, Express, Cloudinary, Stripe
+- **Auth:** JWT, bcrypt  
+- **Database (WIP):** PostGreSQL, Redis
+
+---
 ## 📸 Screenshots
+
+Here are some screenshots available for our current website
 
 ### Landing Page & Product Listing
 ![Clean Landing Page](./showcase-images/image-2.jpeg)  
@@ -41,19 +56,7 @@ A modern, responsive online clothing store built with React. Explore products, a
 - **Toggle Product Visibility**  
 
 
----
 
-## ⚙️ Tech Stack
-
-- **Frontend:** React, React Router
-- **Styling:** Tailwind CSS, ShadCN, RadixUI, Framer Motion, MaterialUI 
-- **Global State Managment:** Zustand
-- **Data Fetching & Rendering Optimization:** Axios, React Query, TanStack Table
-- **Auth:** JWT, bcrypt  
-- **Backend (WIP):** Node.js, Express, Cloudinary, Stripe
-- **Database (WIP):** PostGreSQL, Redis
-
----
 
 ## 📦 Installation
 
