@@ -27,6 +27,7 @@ import AppSidebar from "@/components/ui/app-sidebar"
 
 // Custom Page and Components
 import AdminProductPage from './AdminProductPage/AdminProductPage'
+import AdminSingleProductPage from "./AdminSingleProductPage/AdminSingleProductPage"
 
 //Set Up
 const queryClient = new QueryClient()

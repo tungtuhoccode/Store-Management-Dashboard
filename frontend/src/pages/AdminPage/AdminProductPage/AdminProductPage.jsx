@@ -18,7 +18,7 @@ import {
     flexRender,
   } from "@tanstack/react-table"
   import { Label } from "@/components/ui/label"
-  import { ArrowUpDown, ChevronDown, MoreHorizontal, ArrowUp, ArrowDown, ListFilter, Funnel,  CheckCircle2Icon,
+  import { ArrowUpDown, ChevronDown, MoreHorizontal, ArrowUp, ArrowDown, ListFilter, Funnel,        CheckCircle2Icon,
     CheckCircleIcon,
     AlertCircle,
     ChevronDownIcon,
