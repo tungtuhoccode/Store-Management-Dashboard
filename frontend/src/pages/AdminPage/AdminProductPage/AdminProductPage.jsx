@@ -8,7 +8,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query'
-import { ErrorAlert } from './TableComponents/error-alert.jsx'
+
 import {
     useReactTable,
     getCoreRowModel,
@@ -59,12 +59,13 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select"
-import { generateUniqueValues, optimizedData } from '@/pages/Utils/filterHelper'
+import { generateUniqueValues, optimizedData } from '@/pages/AdminPage/Utils/filterHelper'
   
 
 // Custom Component
-import CategoryHeaderWithFilter from "./TableComponents/TableHeaderWithMutiSelectFilter"
-import TableLoadingSkeleton from "../AdminProductPage/TableComponents/TableLoadingSkeleton"
+import CategoryHeaderWithFilter from '../components/TableComponents/TableHeaderWithMutiSelectFilter'
+import TableLoadingSkeleton from "../components/TableComponents/TableLoadingSkeleton"
+import { ErrorAlert } from '../components/TableComponents/error-alert.jsx'
 
 const fetchProductsData = async () => {
   console.log("React Query ran")

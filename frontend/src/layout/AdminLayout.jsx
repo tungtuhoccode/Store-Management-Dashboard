@@ -46,16 +46,21 @@ const NavigationHeader = () => {
         <Breadcrumb>
             <BreadcrumbList>
             {pathnames.map((route, index) => {
+               
 
                 if (route in routeToTabName) {
                     return (
                         <>
-                    <BreadcrumbItem className="hidden md:block">
-                        <BreadcrumbLink>
-                            {routeToTabName[route]}
-                        </BreadcrumbLink>
-                    </BreadcrumbItem>
-                    {index != (pathnames.length-1) && <BreadcrumbSeparator className="hidden md:block" />}
+                        <div key={index}>
+                            <BreadcrumbItem  className="hidden md:block">
+                                <BreadcrumbLink>
+                                    {routeToTabName[route]}
+                                </BreadcrumbLink>
+                            </BreadcrumbItem>
+                        </div>
+                        {(index != (pathnames.length-1)) && 
+                            <BreadcrumbSeparator className="hidden md:block" />
+                        }
                         </>
                     )
                 }  
