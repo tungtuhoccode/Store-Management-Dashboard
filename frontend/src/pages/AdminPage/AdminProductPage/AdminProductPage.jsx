@@ -1,5 +1,14 @@
-// src/components/AdminDataTable/DataTableDemo.jsx
 import React, { useState } from 'react'
+import axios from "../../../lib/axios.js"
+
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
+import { ErrorAlert } from './TableComponents/error-alert.jsx'
 import {
     useReactTable,
     getCoreRowModel,
@@ -8,7 +17,21 @@ import {
     getSortedRowModel,
     flexRender,
   } from "@tanstack/react-table"
-  import { ArrowUpDown, ChevronDown, MoreHorizontal, ArrowUp, ArrowDown, ListFilter, Funnel} from "lucide-react"
+  import { Label } from "@/components/ui/label"
+  import { ArrowUpDown, ChevronDown, MoreHorizontal, ArrowUp, ArrowDown, ListFilter, Funnel,  CheckCircle2Icon,
+    CheckCircleIcon,
+    AlertCircle,
+    ChevronDownIcon,
+    ChevronLeftIcon,
+    ChevronRightIcon,
+    ChevronsLeftIcon,
+    ChevronsRightIcon,
+    ColumnsIcon,
+    GripVerticalIcon,
+    LoaderIcon,
+    MoreVerticalIcon,
+    PlusIcon,
+    TrendingUpIcon} from "lucide-react"
   import { Button } from "@/components/ui/button"
   import { Checkbox } from "@/components/ui/checkbox"
   import {
@@ -29,9 +52,19 @@ import {
     TableHeader,
     TableRow,
   } from "@/components/ui/table"
-
+  import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+  } from "@/components/ui/select"
 import { generateUniqueValues } from '@/pages/Utils/filterHelper'
   
+
+// Custom Component
+import CategoryHeaderWithFilter from "./TableComponents/TableHeaderWithMutiSelectFilter"
+
 const data = [
         {
             "id": "c57c288c-a26d-452e-9945-a5c44ca6dc6b",
@@ -285,17 +318,6 @@ const data = [
         }
 ]
 
-
-
-  // "id": "c57c288c-a26d-452e-9945-a5c44ca6dc6b",
-  // "name": "Nike Air Max Hoodie",
-  // "price": "75.00",
-  // "image": "https://cloutcloset.com/cdn/shop/files/A2CFCF1B-60DB-4020-9F3B-EAD78A074EDC.jpg?v=1722376618&width=1946",
-  // "stock_quantity": 40,
-  // "categories": "Hoodies",
-  // "slide_display": true,
-  // "displayed_product": true
-
 const columns = [
 
   {
@@ -329,7 +351,7 @@ const columns = [
     header: "Image", 
     cell: (props) => (
       <div className='w-full flex justify-center'>
-        <img src={props.getValue()} className="max-w-20"/> 
+        <img width={48} height={48} src={props.getValue()}/> 
       </div>
   ) //props.getValue() to get value, wrapped in <p> tag for the style
   },
@@ -353,41 +375,7 @@ const columns = [
   {
     accessorKey: "categories",
     //TODO: Implement useMemo and allow selecting mutiple categories before apply filters
-    header: ({column, row, table}) => {
-      const filterValues = column.getFilterValue();
-      return (
-        <div className='flex justify-center items-center'>
-          <span className='mr-2'>
-            Categories
-          </span>
-          <span>
-            <DropdownMenu>
-              <DropdownMenuTrigger onClick={console.log("clicked")}>
-                <Funnel variant="" className='w-4 mt-1 text-gray-400'/>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="mt-2">
-                  <DropdownMenuLabel>Filter By</DropdownMenuLabel>
-                  
-                  <DropdownMenuSeparator />
-                    {generateUniqueValues(data, "categories").map( (category, id) =>
-                        <DropdownMenuCheckboxItem key={id} 
-                          checked={filterValues.includes(category)}
-                          onCheckedChange={(checked) => {
-                            const newValues = checked
-                              ? [...filterValues, category]
-                              : filterValues.filter((v) => v !== category);
-                            column.setFilterValue(newValues);
-                          }}
-                          className="cursor-pointer">
-                          {category}
-                          </DropdownMenuCheckboxItem>
-                    )}
-                </DropdownMenuContent>
-            </DropdownMenu>
-          </span>
-        </div>
-      )  
-    }, 
+    header: ({column}) => <CategoryHeaderWithFilter column={column} availableFilterValues={generateUniqueValues(data, "categories")}/>, 
     filterFn: (row, columnId, filterValues) => {
       if (!filterValues?.length) return true;
       return filterValues.includes(row.getValue(columnId));
@@ -395,38 +383,186 @@ const columns = [
   },
   {
     accessorKey: "displayed_product",
-    header: "Display Status",
-    cell: ({column, row, getValue, table}) => {
-      return(
-        <Checkbox
+    header: ({ column }) => {
+      const filterValues = column.getFilterValue() ?? []
+      // grab the single boolean, if any
+      const current = filterValues[0]
+  
+      return (
+        <div className="flex justify-center items-center">
+          <span className="mr-2">Display Status</span>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+            <div className="flex items-center relative">
+              <Funnel variant="" className={`w-4 mt-1 ${filterValues.length >= 1 ? "text-black":"text-gray-400" }`}/>
+              {filterValues.length > 0 && (
+                <span className="absolute left-[10px] bottom-3 bg-black text-white text-xs rounded-full w-3 h-3 text-xs  flex items-center justify-center">
+                  {filterValues.length}
+                </span>
+              )}
+            </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="mt-2">
+              <DropdownMenuLabel>Filter By</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+  
+              <DropdownMenuCheckboxItem
+                checked={current === true}
+                onCheckedChange={(checked) =>
+                  column.setFilterValue(checked ? [true] : [])
+                }
+              >
+                Display
+              </DropdownMenuCheckboxItem>
+  
+              <DropdownMenuCheckboxItem
+                checked={current === false}
+                onCheckedChange={(checked) =>
+                  column.setFilterValue(checked ? [false] : [])
+                }
+              >
+                Not Display
+              </DropdownMenuCheckboxItem>
+  
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="flex justify-center font-bold"
+                onSelect={() => column.setFilterValue([])}
+              >
+                Clear All
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      )
+    },
+    cell: ({ getValue, row, table, column }) => (
+      <Checkbox
         checked={getValue()}
-        onCheckedChange={val =>
-          table.options.meta.updateData(
-            row.original.id,
-            column.id,
-            val
-          )
+        onCheckedChange={(val) =>
+          table.options.meta.updateData(row.original.id, column.id, val)
         }
       />
-      )
-    }
+    ),
+    filterFn: (row, columnId, filterValues) => {
+      if (!filterValues.length) return true
+      return filterValues[0] === row.getValue(columnId)
+    },
   }
 ]
 
-export default function DataTableDemo() {
-  const [sorting, setSorting] = React.useState([])
-  const [tableData, setTableData] = React.useState(data)
-  const [columnFilters, setColumnFilters] = useState([
-    {id:"categories", value:["Hoodies"]}
-  ])
 
+function TableLoadingSkeleton({ columns, rows = 5 }) {
+  return (
+    <div>
+      {/* Table Header + Body */}
+      <div className="overflow-auto">
+        <Table className="table-fixed w-full">
+          <TableHeader>
+            <TableRow>
+              {columns.map((col) => (
+                <TableHead
+                  key={col.accessorKey}
+                  className="px-4 py-2 bg-gray-200 animate-pulse"
+                />
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {Array.from({ length: rows }).map((_, rowIdx) => (
+              <TableRow key={rowIdx} className="animate-pulse">
+                {columns.map((col) => (
+                  <TableCell key={col.accessorKey} className="p-2">
+                    {col.accessorKey === "image" ? (
+                      <div className="w-12 h-12 bg-gray-200 justify-center" />
+                    ) : (
+                      <div className="h-4 bg-gray-200 rounded w-3/4" />
+                    )}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* Footer / Pagination Skeleton */}
+      <div className="flex items-center justify-between px-4 py-2 mt-2 animate-pulse">
+        {/* Left: “0 of XX row(s) selected” */}
+        <div className="hidden lg:flex">
+          <div className="h-4 bg-gray-200 rounded w-32" />
+        </div>
+
+        {/* Right: rows-per-page + page info + buttons */}
+        <div className="flex items-center gap-4">
+          {/* Rows per page label */}
+          <div className="hidden lg:block">
+            <div className="h-4 bg-gray-200 rounded w-24" />
+          </div>
+
+          {/* Select dropdown placeholder */}
+          <div className="h-8 w-16 bg-gray-200 rounded" />
+
+          {/* Page info placeholder */}
+          <div className="h-4 bg-gray-200 rounded w-20" />
+
+          {/* Nav buttons placeholders */}
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 bg-gray-200 rounded" />
+            <div className="h-8 w-8 bg-gray-200 rounded" />
+            <div className="h-8 w-8 bg-gray-200 rounded" />
+            <div className="h-8 w-8 bg-gray-200 rounded" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Helper function to optimize any image URL to width=150px
+function optimizeImageUrl(url) {
+  // Cloudinary URLs: insert c_scale,w_150 after /upload/
+  if (url.includes("res.cloudinary.com")) {
+    return url.replace(/\/upload\//, "/upload/c_scale,w_150/");
+  }
+  // CloutCloset URLs: replace width=<digits> query param with width=150
+  if (url.includes("cloutcloset.com")) {
+    return url.replace(/width=\d+/, "width=100");
+  }
+  // Otherwise return the original URL
+  return url;
+}
+
+// Given your existing `data` array, produce a new array with optimized image URLs:
+const optimizedData = data.map(item => ({
+  ...item,
+  image: optimizeImageUrl(item.image),
+}));
+
+const fetchProductsData = async () => {
+  const response = await axios.get("/product")
+  return response.data
+}
+
+export default function DataTableDemo() {
+  const queryClient = useQueryClient();
+
+  const { isPending, isError, data, error } = useQuery({ queryKey: ['products'], queryFn: fetchProductsData })
+
+  const [sorting, setSorting] = React.useState([])
+  const [tableData, setTableData] = React.useState(optimizedData)
+  const [columnFilters, setColumnFilters] = useState([
+    {id:"categories", value:[]}, 
+    {id:"displayed_product", value: []}
+  ])
+  
   const updateData = (rowIndex, columnIndex, value) => {
-    setTableData(      tableData.map( row => {
+    setTableData(tableData.map(row => {
       return (row.id == rowIndex) ? {...row, [columnIndex]:value} : row 
     }))
-
-
   }
+  
+
   const table = useReactTable({
     data: tableData,
     columns,
@@ -439,57 +575,178 @@ export default function DataTableDemo() {
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-
+    getPaginationRowModel: getPaginationRowModel(),
     meta: {updateData}
   })
 
-  return (
-    <div className = "p-2">
-<div className="overflow-auto max-h-[85vh] rounded-sm border">
-          <Table className="table-fixed w-full">
-            <TableHeader className="">
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id} className = "sticky top-0 bg-white z-10 text-center font-bold text-black text-sm">
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                )
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className=" text-center">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </div>
+  //Loading
+  if (isPending) {
+    return (
+      <div className="p-2">
+        <div className="border rounded-sm">
+          <TableLoadingSkeleton columns={columns} rows={9} />
+        </div>
+      </div>
+    );
+  }
 
+  //Error
+  if (isError) {
+    return (
+      <div className="flex h-[75vh] items-center justify-center p-4">
+        <ErrorAlert
+          title="Failed to load products"
+          message={
+            error?.message ||
+            "We couldn't retrieve the product data. Please try again or contact support if the problem persists."
+          }
+          onRetry={() => {queryClient.invalidateQueries({ queryKey: ["products"] })}
+          }
+        />
+      </div>
+    )
+  }
+
+
+  return (
+    <div className="p-2">
+      {/* Table */}
+      <div className="border rounded-sm">
+        <div className="w-full">
+          <Table className="w-full table-fixed">
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <TableHead 
+                      key={header.id} 
+                      className="py-1 z-10 text-center text-black text-sm"
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              ))}
+            </TableHeader>
+          </Table>
+        </div>
+
+        {/* Scrollable Body */}
+        <div className="overflow-auto max-h-[75vh]">
+          <Table className="w-full table-fixed">
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell 
+                        key={cell.id} 
+                        className="text-center"
+                        style={{ width: cell.column.getSize() }}
+                      >
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={columns.length} className="h-24 text-center">
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
+
+      {/* Table Pagination Buttons */}
+      <div className="flex items-center justify-between px-4 mt-2">
+          <div className="hidden flex-1 text-sm text-muted-foreground lg:flex">
+            {table.getFilteredSelectedRowModel().rows.length} of{" "}
+            {table.getFilteredRowModel().rows.length} row(s) selected.
+          </div>
+          <div className="flex w-full items-center gap-8 lg:w-fit">
+            <div className="hidden items-center gap-2 lg:flex">
+              <Label htmlFor="rows-per-page" className="text-sm font-medium">
+                Rows per page
+              </Label>
+              <Select
+                value={`${table.getState().pagination.pageSize}`}
+                onValueChange={(value) => {
+                  table.setPageSize(Number(value))
+                }}
+              >
+                <SelectTrigger className="w-20" id="rows-per-page">
+                  <SelectValue
+                    placeholder={table.getState().pagination.pageSize}
+                  />
+                </SelectTrigger>
+                <SelectContent side="top">
+                  {[10, 20, 30, 40, 50].map((pageSize) => (
+                    <SelectItem key={pageSize} value={`${pageSize}`}>
+                      {pageSize}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex w-fit items-center justify-center text-sm font-medium">
+              Page {table.getState().pagination.pageIndex + 1} of{" "}
+              {table.getPageCount()}
+            </div>
+            <div className="ml-auto flex items-center gap-2 lg:ml-0">
+              <Button
+                variant="outline"
+                className="hidden h-8 w-8 p-0 lg:flex"
+                onClick={() => table.setPageIndex(0)}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <span className="sr-only">Go to first page</span>
+                <ChevronsLeftIcon />
+              </Button>
+              <Button
+                variant="outline"
+                className="size-8"
+                size="icon"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <span className="sr-only">Go to previous page</span>
+                <ChevronLeftIcon />
+              </Button>
+              <Button
+                variant="outline"
+                className="size-8"
+                size="icon"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                <span className="sr-only">Go to next page</span>
+                <ChevronRightIcon />
+              </Button>
+              <Button
+                variant="outline"
+                className="hidden size-8 lg:flex"
+                size="icon"
+                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                disabled={!table.getCanNextPage()}
+              >
+                <span className="sr-only">Go to last page</span>
+                <ChevronsRightIcon />
+              </Button>
+            </div>
+          </div>
+        </div>
     </div>
   )
 }
