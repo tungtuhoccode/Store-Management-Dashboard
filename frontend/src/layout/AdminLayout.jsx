@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+import { useLocation, Link, Outlet } from 'react-router-dom';
 //Framework And Functional Library
 import React from 'react'
 import {
@@ -28,27 +28,44 @@ import AppSidebar from "@/components/ui/app-sidebar"
 //Set Up
 const queryClient = new QueryClient()
 
-const NavigationHeader = () => (
-    <header className="flex h-14 shrink-0 items-center gap-2 border-b">
-    <div className="flex items-center gap-2 px-3">
-      <SidebarTrigger />
-      <Separator orientation="vertical" className="mr-2 h-4" />
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem className="hidden md:block">
-            <BreadcrumbLink href="#">
-              Admin Dashboard
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator className="hidden md:block" />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Product</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-    </div>
-  </header>
-)
+const NavigationHeader = () => {
+    const location = useLocation(); 
+    const pathnames = location.pathname.split("/")
+
+    const routeToTabName = {
+        "admin" : "Admin Dashboard", 
+        "product" : "Product", 
+        "order" : "Order"
+    }
+
+    return (
+        <header className="flex h-14 shrink-0 items-center gap-2 border-b">
+        <div className="flex items-center gap-2 px-3">
+        <SidebarTrigger />
+        <Separator orientation="vertical" className="mr-2 h-4" />
+        <Breadcrumb>
+            <BreadcrumbList>
+            {pathnames.map((route, index) => {
+
+                if (route in routeToTabName) {
+                    return (
+                        <>
+                    <BreadcrumbItem className="hidden md:block">
+                        <BreadcrumbLink>
+                            {routeToTabName[route]}
+                        </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    {index != (pathnames.length-1) && <BreadcrumbSeparator className="hidden md:block" />}
+                        </>
+                    )
+                }  
+            })}
+            </BreadcrumbList>
+        </Breadcrumb>
+        </div>
+    </header>
+    )
+}
 
 function AdminLayout() {
 return (

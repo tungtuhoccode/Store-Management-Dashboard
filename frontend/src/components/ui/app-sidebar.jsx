@@ -30,12 +30,12 @@ import {
 const items = [
   {
     title: "Products",
-    url: "#",
+    url: "/admin/product",
     icon: Package,
   },
   {
     title: "Orders",
-    url: "#",
+    url: "/admin/order",
     icon: ShoppingCart,
   },
 
