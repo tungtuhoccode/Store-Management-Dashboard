@@ -5,6 +5,9 @@ A modern, responsive online clothing store built with React. Explore products, a
 
 ---
 
+![Clean Landing Page](./showcase-images/Admin.gif)  
+
+
 ## 📸 Screenshots
 
 ### Landing Page & Product Listing
