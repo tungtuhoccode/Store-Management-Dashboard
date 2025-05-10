@@ -46,11 +46,12 @@ A modern, responsive online clothing store built with React. Explore products, a
 ## ⚙️ Tech Stack
 
 - **Frontend:** React, React Router
-- **Styling:** Tailwind CSS, Framer Motion  
-- **Data Fetching:** React Query  
+- **Styling:** Tailwind CSS, ShadCN, RadixUI, Framer Motion, MaterialUI 
+- **Global State Managment:** Zustand
+- **Data Fetching & Rendering Optimization:** Axios, React Query, TanStack Table
 - **Auth:** JWT, bcrypt  
-- **Backend (WIP):** Node.js, Express  
-- **Database (WIP):** MongoDB (Mongoose)  
+- **Backend (WIP):** Node.js, Express, Cloudinary, Stripe
+- **Database (WIP):** PostGreSQL, Redis
 
 ---
 
