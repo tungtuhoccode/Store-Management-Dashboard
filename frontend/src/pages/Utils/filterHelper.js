@@ -1,6 +1,5 @@
 //generate unique values from a table of data 
 export const generateUniqueValues  = (data, columnId) => {
-    console.log(data)
     const columnValues = data.map(row => row[columnId])
     return ([... new Set(columnValues)])
 }

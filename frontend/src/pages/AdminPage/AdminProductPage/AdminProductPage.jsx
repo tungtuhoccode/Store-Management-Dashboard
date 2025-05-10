@@ -89,7 +89,6 @@ export default function DataTableDemo() {
     {id:"categories", value:[]}, 
     {id:"displayed_product", value: []}
   ])
-
   const toggleProductVisibilityMutation = useMutation({
     mutationFn: (id) => axios.patch(`/product/displayProduct/${id}`),
     onSuccess: () => {
@@ -191,6 +190,7 @@ export default function DataTableDemo() {
                 <DropdownMenuSeparator />
     
                 <DropdownMenuCheckboxItem
+                  className="cursor-pointer"
                   checked={current === true}
                   onCheckedChange={(checked) =>
                     column.setFilterValue(checked ? [true] : [])
@@ -200,6 +200,7 @@ export default function DataTableDemo() {
                 </DropdownMenuCheckboxItem>
     
                 <DropdownMenuCheckboxItem
+                className="cursor-pointer"
                   checked={current === false}
                   onCheckedChange={(checked) =>
                     column.setFilterValue(checked ? [false] : [])
@@ -210,7 +211,7 @@ export default function DataTableDemo() {
     
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  className="flex justify-center font-bold"
+                  className="flex justify-center font-bold cursor-pointer"
                   onSelect={() => column.setFilterValue([])}
                 >
                   Clear All
@@ -227,8 +228,6 @@ export default function DataTableDemo() {
             
             {
               toggleProductVisibilityMutation.mutate(row.original.id)
-              console.log("Check")
-              console.log(row.original.id)
             }
           }
         />
@@ -253,7 +252,18 @@ export default function DataTableDemo() {
       pagination,
       columnFilters
     },
-    onColumnFiltersChange: setColumnFilters,
+    onColumnFiltersChange: (updater) => {
+      // 1. figure out the next filters array
+      const next = typeof updater === 'function'
+        ? updater(columnFilters)
+        : updater
+    
+      // 2. update filters …
+      setColumnFilters(next)
+    
+      // 3. … and reset pageIndex
+      setPagination(prev => ({ ...prev, pageIndex: 0 }))
+    },
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
@@ -325,9 +335,9 @@ export default function DataTableDemo() {
         </div>
 
         {/* Scrollable Body */}
-        <div className="overflow-auto max-h-[75vh]">
-          <Table className="w-full table-fixed">
-            <TableBody>
+        <div className="overflow-auto w-full max-h-[75vh]">
+          <Table className="">
+            <TableBody className="">
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow

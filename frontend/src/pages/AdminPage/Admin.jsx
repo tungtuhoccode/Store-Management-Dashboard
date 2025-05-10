@@ -62,7 +62,6 @@ return (
         <NavigationHeader/>
         <AdminProductPage/>
       </main>
-    <ReactQueryDevtools/>
     </SidebarProvider>
   </QueryClientProvider>
   )
