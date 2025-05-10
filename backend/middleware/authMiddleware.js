@@ -32,11 +32,11 @@ export const protectRoute = async (req, res, next) => {
         res.status(401).json({ message: "Unauthorized - No access token provided" });
     }
 }
+
 export const adminRoute = async (req, res, next) => {
     if (req.userRole && req.userRole === "admin") {
         next();
     } else {
         return res.status(403).json({ success: false, message: "Unauthorized - Admin only" });
     }
-
 }

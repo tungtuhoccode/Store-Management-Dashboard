@@ -37,7 +37,6 @@ export const getDisplayedProduct = async (req, res) => {
             SELECT id, name, price, image, stock_quantity, categories
             FROM product
             WHERE displayed_product = True
-        
         `;
         if (orderBy) {
             query += ` ORDER BY ${orderBy}`;
