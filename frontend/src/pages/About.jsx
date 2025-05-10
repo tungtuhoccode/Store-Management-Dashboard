@@ -12,7 +12,7 @@ export default function About() {
       <img
         src="/images/AboutPageWallPaper.avif"
         alt=""
-        className="absolute top-0 left-0 w-full h-[353vh] sm:h-[250vh] md:[250vh] lg:h-[222vh] z-[-1]"
+        className="absolute top-0 left-0 w-full h-[calc(100%-28.5rem)] z-[-1]"
       />
 
       <div className="max-w-7xl mt-20 mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">

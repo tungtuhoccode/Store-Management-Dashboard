@@ -116,18 +116,25 @@ function NavBar() {
             {/* Mobile Nav Panel */}
             {
                 isMenuOpen && (
-                    <div className={`md:hidden px-6 pb-6 pt-4 shadow-lg ${currentLocation === "/" ? 'bg-transparent' : 'bg-white'}`}>
+                    <div className={`md:hidden px-6 pb-6 pt-4 shadow-lg bg-white`}>
                         <ul className="space-y-4">
 
-                            <li className='hover:text-green-500' onClick={() => setIsMenuOpen(false)}><Link to="/" className={`hover:text-green-500 ${currentLocation === '/' ? 'text-green-600' : textColor} flex justify-start items-center gap-1`} ><House size={20} />Home</Link></li>
-                            <li className='hover:text-green-500' onClick={() => setIsMenuOpen(false)}><Link to="/shop" className={`hover:text-green-500 ${currentLocation === '/shop' ? 'text-green-600' : textColor} flex justify-start items-center gap-1`} ><Store size={20} /> Shop</Link></li>
-                            <li className='hover:text-green-500' onClick={() => setIsMenuOpen(false)}><Link to="/about" className={`hover:text-green-500 ${currentLocation === '/about' ? 'text-green-600' : textColor} flex justify-start items-center gap-1`} ><SearchSlash size={20} /> About</Link></li>
-                            <li className='hover:text-green-500' onClick={() => setIsMenuOpen(false)}><Link to="/contact" className={`hover:text-green-500 ${currentLocation === '/contact' ? 'text-green-600' : textColor} flex justify-start items-center gap-1`} ><Signature size={20} /> Contact</Link></li>
+                            <li className='hover:text-green-500' onClick={() => setIsMenuOpen(false)}><Link to="/" className={`hover:text-green-500 ${currentLocation === '/' ? 'text-green-600' : 'text-black'} flex justify-start items-center gap-1`} ><House size={20} />Home</Link></li>
+                            <li className='hover:text-green-500' onClick={() => setIsMenuOpen(false)}><Link to="/shop" className={`hover:text-green-500 ${currentLocation === '/shop' ? 'text-green-600' : 'text-black'} flex justify-start items-center gap-1`} ><Store size={20} /> Shop</Link></li>
+                            <li className='hover:text-green-500' onClick={() => setIsMenuOpen(false)}><Link to="/about" className={`hover:text-green-500 ${currentLocation === '/about' ? 'text-green-600' : 'text-black'} flex justify-start items-center gap-1`} ><SearchSlash size={20} /> About</Link></li>
+                            <li className='hover:text-green-500' onClick={() => setIsMenuOpen(false)}><Link to="/contact" className={`hover:text-green-500 ${currentLocation === '/contact' ? 'text-green-600' : 'text-black'} flex justify-start items-center gap-1`} ><Signature size={20} /> Contact</Link></li>
 
                             {(user.email && user.userName) ?
                                 <>
-                                    <li className='hover:text-green-500' onClick={() => setIsMenuOpen(false)}><Link to="/cart" className={`hover:text-green-500 ${currentLocation === '/cart' ? 'text-green-600' : textColor} flex justify-start items-center gap-1`} ><ShoppingCart size={20} /> Cart</Link></li>
-                                    <li onClick={() => logOut()} className='hover:text-green-500 cursor-pointer flex justify-start items-center gap-1'><LogOut size={20} /> Log out</li>
+                                    {user.userRole === "admin" &&
+                                        <li>
+                                            <Link
+                                                to="/admin"
+                                                className="hover:text-green-500 transition duration-200 text-black flex justify-start items-center gap-1"><RiAdminFill size={20} /> Admin Dashboard</Link>
+                                        </li>
+                                    }
+                                    <li className='hover:text-green-500' onClick={() => setIsMenuOpen(false)}><Link to="/cart" className={`hover:text-green-500 ${currentLocation === '/cart' ? 'text-green-600' : 'text-black'} flex justify-start items-center gap-1`} ><ShoppingCart size={20} /> Cart</Link></li>
+                                    <li onClick={() => logOut()} className='hover:text-green-500 cursor-pointer flex justify-start items-center gap-1 text-black'><LogOut size={20} /> Log out</li>
                                 </>
 
                                 :
