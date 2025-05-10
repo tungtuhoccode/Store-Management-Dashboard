@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useRef } from 'react'
 import axios from "../../../lib/axios.js"
 
 import {
@@ -72,10 +72,24 @@ const fetchProductsData = async () => {
   return response.data
 }
 
+let page = 0
+
 export default function DataTableDemo() {
   const queryClient = useQueryClient();
 
   const productQuery = useQuery({ queryKey: ['products'], queryFn: fetchProductsData })
+
+
+  const [sorting, setSorting] = React.useState([])
+  const [pagination, setPagination] = useState({
+    pageIndex: page, //initial page index
+    pageSize: 10, //default page size
+  });
+  const [columnFilters, setColumnFilters] = useState([
+    {id:"categories", value:[]}, 
+    {id:"displayed_product", value: []}
+  ])
+
   const toggleProductVisibilityMutation = useMutation({
     mutationFn: (id) => axios.patch(`/product/displayProduct/${id}`),
     onSuccess: () => {
@@ -87,19 +101,6 @@ export default function DataTableDemo() {
       console.error('Failed to toggle display status', error)
     },
   })
-
-  const [sorting, setSorting] = React.useState([])
-  const [tableData, setTableData] = React.useState([])
-  const [columnFilters, setColumnFilters] = useState([
-    {id:"categories", value:[]}, 
-    {id:"displayed_product", value: []}
-  ])
-
-  const updateData = (rowIndex, columnIndex, value) => {
-    setTableData(tableData.map(row => {
-      return (row.id == rowIndex) ? {...row, [columnIndex]:value} : row 
-    }))
-  }
 
   const columns = [
 
@@ -134,7 +135,9 @@ export default function DataTableDemo() {
       header: "Image", 
       cell: (props) => (
         <div className='w-full flex justify-center'>
-          <img width={48} height={48} src={props.getValue()}/> 
+          <div>
+            <img className='w-12 h-12' src={props.getValue()}/> 
+          </div>
         </div>
     ) //props.getValue() to get value, wrapped in <p> tag for the style
     },
@@ -158,7 +161,7 @@ export default function DataTableDemo() {
     {
       accessorKey: "categories",
       //TODO: Implement useMemo and allow selecting mutiple categories before apply filters
-      header: ({column}) => <CategoryHeaderWithFilter column={column} availableFilterValues={generateUniqueValues(tableData, "categories")}/>, 
+      header: ({column}) => <CategoryHeaderWithFilter column={column} availableFilterValues={generateUniqueValues(optimizedProductData, "categories")}/>, 
       filterFn: (row, columnId, filterValues) => {
         if (!filterValues?.length) return true;
         return filterValues.includes(row.getValue(columnId));
@@ -249,6 +252,7 @@ export default function DataTableDemo() {
     columns,
     state: {
       sorting,
+      pagination,
       columnFilters
     },
     onColumnFiltersChange: setColumnFilters,
@@ -257,13 +261,15 @@ export default function DataTableDemo() {
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    onPaginationChange: setPagination,
+    autoResetPageIndex: false,
     meta: {toggleProductVisibilityMutation}
   })
 
 
 
   //Loading
-  if (productQuery.isLoading) {
+  if (productQuery.isLoading ) {
     return (
       <div className="p-2">
         <div className="border rounded-sm">
