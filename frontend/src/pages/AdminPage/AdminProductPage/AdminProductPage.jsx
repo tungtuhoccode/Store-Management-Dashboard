@@ -135,9 +135,7 @@ export default function DataTableDemo() {
       header: "Image", 
       cell: (props) => (
         <div className='w-full flex justify-center'>
-          <div>
-            <img className='w-12 h-12' src={props.getValue()}/> 
-          </div>
+          <img width={48} height={48} src={props.getValue()}/> 
         </div>
     ) //props.getValue() to get value, wrapped in <p> tag for the style
     },
