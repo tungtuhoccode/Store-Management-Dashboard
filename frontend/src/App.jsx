@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate} from "react-router-dom"
 import { Toaster } from "react-hot-toast"
 
 import MainLayout from "./layout/MainLayout"
+import AdminLayout from "./layout/AdminLayout"
 
 import HomePage from "./pages/HomePage"
 import SignUpPages from "./pages/SignUpPages"
@@ -15,6 +16,7 @@ import Categories from "./pages/Categories"
 import PurchaseSuccess from "./pages/PurchaseSuccess"
 import PurchaseCancel from "./pages/PurchaseCancel"
 import AdminPage from "./pages/AdminPage/Admin"
+import AdminProductPage from "../src/pages/AdminPage/AdminProductPage/AdminProductPage"
 import About from "./pages/About"
 
 import { useUserStore } from "./store/useUserStore"
@@ -64,13 +66,17 @@ function App() {
 
             {/* admin route */}
             <Route
-              path="/admin"
               element={
                 (user && user.userRole === "admin") ?
-                  <AdminPage /> :
+                  <AdminLayout /> :
                   <Navigate to="/login" replace />
               }
-            />
+            >
+              <Route path="/admin" element={<AdminProductPage />} />
+              <Route path="/admin/product" element={<AdminProductPage />} />
+              <Route path="/admin/order" element={<AdminProductPage />} />
+            </Route>
+
           </Routes>
           <Toaster />
         </BrowserRouter>
