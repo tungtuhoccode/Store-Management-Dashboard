@@ -4,10 +4,6 @@
 A modern, responsive online clothing store built with React. Explore products, add to cart, and manage your store via a full-featured admin dashboard.
 
 ---
-
-![Clean Landing Page](./showcase-images/Admin.gif)  
-
-
 ## 📸 Screenshots
 
 ### Landing Page & Product Listing
@@ -24,22 +20,14 @@ A modern, responsive online clothing store built with React. Explore products, a
 ![Login Form](./showcase-images/image-4.jpeg)  
 ![Animated Transition](./showcase-images/image-5.jpeg)
 
-### Admin Product Dashboard
-![Dashboard Home](./showcase-images/image-10.jpeg)
-
 ---
 
 ## 🛠️ Features
 
-### Customer-Facing
+### Admin Features
 - **Clean, Responsive Landing Page**  
   Highlight your brand with a minimalist design.
 - **Product Mangement**  
-  - Category filters  
-    ![Filter Categories](./showcase-images/image-11.jpeg)  
-    ![Filtered Results](./showcase-images/image-12.jpeg)
-  - Sort by price, popularity, or rating  
-    ![Sorting Options](./showcase-images/image-13.jpeg)
 - **Shopping Cart & Checkout**  
   Intuitive cart management and step-by-step checkout flow.
 - **Animated Authentication**  
@@ -51,8 +39,7 @@ A modern, responsive online clothing store built with React. Explore products, a
 - **Category Filters & Sorting**  
   Quickly find and organize products.
 - **Toggle Product Visibility**  
-  - **Before:** ![Before Toggle](./showcase-images/image-14.jpeg)  
-  - **After:**  ![After Toggle](./showcase-images/image-15.jpeg)
+
 
 ---
 
