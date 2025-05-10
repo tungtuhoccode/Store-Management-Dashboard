@@ -8,21 +8,21 @@ A modern, responsive online clothing store built with React. Explore products, a
 ## 📸 Screenshots
 
 ### Landing Page & Product Listing
-![Clean Landing Page](image-2.png)  
-![About](image17.png)
-![All Products](image.png)  
+![Clean Landing Page](./showcase-images/image-2.png)  
+![About](./showcase-images/image17.png)
+![All Products](./showcase-images/image.png)  
 
 ### Shopping Experience
-![Cart Overview](image-6.png)  
-![Checkout Step 1](image-7.png)  
-![Order Confirmation](image-8.png)
+![Cart Overview](./showcase-images/image-6.png)  
+![Checkout Step 1](./showcase-images/image-7.png)  
+![Order Confirmation](./showcase-images/image-8.png)
 
 ### Smooth Login with Animation
-![Login Form](image-4.png)  
-![Animated Transition](image-5.png)
+![Login Form](./showcase-images/image-4.png)  
+![Animated Transition](./showcase-images/image-5.png)
 
-### Admin Product Management Dashboard
-![Dashboard Home](image-10.png)
+### Admin Product Dashboard
+![Dashboard Home](./showcase-images/image-10.png)
 
 ---
 
@@ -33,10 +33,10 @@ A modern, responsive online clothing store built with React. Explore products, a
   Highlight your brand with a minimalist design.
 - **Product Mangement**  
   - Category filters  
-    ![Filter Categories](image-11.png)  
-    ![Filtered Results](image-12.png)
+    ![Filter Categories](./showcase-images/image-11.png)  
+    ![Filtered Results](./showcase-images/image-12.png)
   - Sort by price, popularity, or rating  
-    ![Sorting Options](image-13.png)
+    ![Sorting Options](./showcase-images/image-13.png)
 - **Shopping Cart & Checkout**  
   Intuitive cart management and step-by-step checkout flow.
 - **Animated Authentication**  
@@ -48,8 +48,8 @@ A modern, responsive online clothing store built with React. Explore products, a
 - **Category Filters & Sorting**  
   Quickly find and organize products.
 - **Toggle Product Visibility**  
-  - **Before:** ![Before Toggle](image-14.png)  
-  - **After:**  ![After Toggle](image-15.png)
+  - **Before:** ![Before Toggle](./showcase-images/image-14.png)  
+  - **After:**  ![After Toggle](./showcase-images/image-15.png)
 
 ---
 
