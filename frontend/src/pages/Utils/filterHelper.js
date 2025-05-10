@@ -16,7 +16,10 @@ function optimizeImageUrl(url) {
 }
 
 // Given your existing `data` array, produce a new array with optimized image URLs:
-export const optimizedData = (data) => ( data.map(item => ({
-  ...item,
-  image: optimizeImageUrl(item.image),
-})));
+export const optimizedData = data =>
+    data
+      .map(item => ({
+        ...item,
+        image: optimizeImageUrl(item.image),
+      }))
+      .sort((a, b) => a.id.localeCompare(b.id))

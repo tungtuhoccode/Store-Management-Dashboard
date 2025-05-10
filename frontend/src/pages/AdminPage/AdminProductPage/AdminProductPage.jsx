@@ -77,7 +77,7 @@ export default function DataTableDemo() {
 
   const productQuery = useQuery({ queryKey: ['products'], queryFn: fetchProductsData })
   const toggleProductVisibilityMutation = useMutation({
-    mutationFn: (id) => axios.patch(`/displayProduct/${id}`),
+    mutationFn: (id) => axios.patch(`/product/displayProduct/${id}`),
     onSuccess: () => {
       // 3) when it succeeds, invalidate the 'products' query so it refetches
       queryClient.invalidateQueries({ queryKey: ['products'] })
@@ -225,8 +225,9 @@ export default function DataTableDemo() {
           onCheckedChange={(val) =>
             
             {
+              toggleProductVisibilityMutation.mutate(row.original.id)
               console.log("Check")
-              console.log(row.original)
+              console.log(row.original.id)
             }
           }
         />
