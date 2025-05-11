@@ -10,7 +10,6 @@ const router = express.Router();
 router.get("/", protectRoute, adminRoute, getOrders );
 router.get("/:id", protectRoute, getSingleOrder );
 router.patch("/:id/fulfillment-status", protectRoute, adminRoute, updateFulfillmentStatus);
-//late add add coupon route for admin
 
 
 export default router;
