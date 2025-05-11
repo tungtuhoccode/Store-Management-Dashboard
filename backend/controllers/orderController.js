@@ -2,7 +2,7 @@ import { db } from "../config/db.js";
 import { validate as isUuid, validate } from "uuid";
 
 
-// GET api/order
+// GET api/order/:id
 export const getSingleOrder = async (req , res) => {
     const { id } = req.params;
     const isAdmin = req.userRole == "admin"
@@ -77,6 +77,7 @@ export const getSingleOrder = async (req , res) => {
     }
 }
 
+//GET /api/order
 export const getOrders = async (req , res) => {
     try {
         const allOrders = await db`
@@ -102,3 +103,31 @@ export const getOrders = async (req , res) => {
     }
 }
 
+/*
+Available status
+  pending
+  in progress
+  shipped
+  delivered
+  cancelled
+*/
+export const updateFulfillmentStatus = async (req, res) => {
+  const {id} = req.params
+  const {new_fulfillment_status} = req.body
+  console.log("id:", id)
+  console.log("new status:", new_fulfillment_status)
+
+   try {
+
+        res.status(200).json({
+            success: true,
+        });
+    }
+    catch(err) {
+        console.log(err)
+        res.status(500).json({ success: false, message: err.message });
+    }
+}
+//POST /api/order/...
+
+//Patch /api/order/fulfillment-status
