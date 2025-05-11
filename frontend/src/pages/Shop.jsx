@@ -143,7 +143,7 @@ export default function Shop() {
                                         scale: { duration: 0.3 },
                                         boxShadow: { duration: 0.6 },
                                     }}
-                                    viewport={{ once: true, amount: 0.5 }}
+                                    viewport={{ once: true, amount: 0.2 }}
 
                                     key={product.id}
                                     className='relative group max-w-[386px] rounded-b-lg cursor-pointer pb-3'
