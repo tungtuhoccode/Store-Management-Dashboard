@@ -75,7 +75,7 @@ const fetchProductsData = async () => {
 
 let page = 0
 
-export default function DataTableDemo() {
+export default function AdminProductPage() {
   const queryClient = useQueryClient();
 
   const productQuery = useQuery({ queryKey: ['products'], queryFn: fetchProductsData })
