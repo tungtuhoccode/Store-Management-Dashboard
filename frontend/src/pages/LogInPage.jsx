@@ -19,7 +19,6 @@ function LogInPage() {
         e.preventDefault();
         signIn(formData);
 
-
     }
     return (
         <div className='min-h-[calc(100vh-5rem)] flex items-center justify-center bg-emerald-500'>

@@ -80,8 +80,6 @@ export const checkoutSuccessfull = async (req, res) => {
             ? JSON.parse(session.metadata.couponCode)
             : null;
 
-
-
         if (session.payment_status === "paid") {
             console.log("user paid")
             if (couponCode) {
