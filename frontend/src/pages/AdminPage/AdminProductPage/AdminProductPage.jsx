@@ -80,7 +80,6 @@ export default function AdminProductPage() {
 
   const productQuery = useQuery({ queryKey: ['products'], queryFn: fetchProductsData })
 
-
   const [sorting, setSorting] = React.useState([])
   const [pagination, setPagination] = useState({
     pageIndex: page, //initial page index
