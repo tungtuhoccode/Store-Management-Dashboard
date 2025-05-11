@@ -29,7 +29,7 @@ export default function Contact() {
     };
 
     return (
-        <div className='max-w-7xl mt-20 mx-auto px-6 py-12 relative'>
+        <div className='max-w-7xl mt-10 mx-auto px-6 py-12 relative'>
             <h1 className='font-pacifico md:text-3xl sm:text-2xl text-center mb-12'>Contact Us</h1>
 
             {/* Backdrop overlay */}
@@ -125,13 +125,13 @@ export default function Contact() {
                             <div className="w-20 h-20 bg-gray-200 rounded-full overflow-hidden mb-4">
                                 <img
                                     className='w-full h-full object-cover'
-                                    src="https://avatars.githubusercontent.com/u/126214032?v=4"
+                                    src="https://thumbs.dreamstime.com/b/vector-illustration-depicts-young-male-programmer-engaged-laptop-wearing-glasses-emphasizing-coding-346344547.jpg"
                                     alt="CEO VU"
                                 />
                             </div>
                             <div className='max-w-full max-h-32 overflow-y-auto break-words mb-4'>
                                 <div className='font-bold'>Name: Tung Tran</div>
-                                <p>I worked on: Amazing e-commerce projects, interactive React apps, and cool backend systems!</p>
+                                <p>I worked on: Full-stack projects, interactive web apps, and many other cool systems!</p>
                             </div>
                             <div className='flex flex-col gap-2 text-sm'>
                                 <div className='flex items-center gap-2'>
@@ -235,27 +235,38 @@ export default function Contact() {
                                         <div className="w-20 h-20 bg-gray-200 rounded-full overflow-hidden mb-4">
                                             <img
                                                 className='w-full h-full object-cover'
-                                                src="https://avatars.githubusercontent.com/u/126214032?v=4"
+                                                src="https://thumbs.dreamstime.com/b/vector-illustration-depicts-young-male-programmer-engaged-laptop-wearing-glasses-emphasizing-coding-346344547.jpg"
                                                 alt="CEO VU"
                                             />
                                         </div>
                                         <div className='max-w-full max-h-32 overflow-y-auto break-words mb-4'>
                                             <div className='font-bold'>Name: Tung Tran</div>
-                                            <p>I worked on: Amazing e-commerce projects, interactive React apps, and cool backend systems!</p>
+                                           <p>I worked on: Full-stack projects, interactive web apps, and many other cool systems!</p>
                                         </div>
                                         <div className='flex flex-col gap-2 text-sm'>
                                             <div className='flex items-center gap-2'>
                                                 <FaExternalLinkAlt /> Website
                                             </div>
-                                            <div className='flex items-center gap-2'>
+                                            <a href="mailto:thanhtungtran112233@gmail.com" className="flex items-center gap-2 hover:underline cursor-pointer">
                                                 <MdOutlineEmail /> Email
-                                            </div>
-                                            <div className='flex items-center gap-2'>
+                                            </a>
+                                            <a
+                                                href="https://www.linkedin.com/in/tungtrann/"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="flex items-center gap-2 hover:underline cursor-pointer"
+                                            >
                                                 <FaLinkedin /> LinkedIn
-                                            </div>
-                                            <div className='flex items-center gap-2'>
+                                            </a>
+                                            <a
+                                                href="https://github.com/tungtuhoccode"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="flex items-center gap-2 hover:underline cursor-pointer"
+                                            >
                                                 <FaGithub /> GitHub
-                                            </div>
+                                            </a>
+
                                         </div>
                                     </div>
                                 </>
