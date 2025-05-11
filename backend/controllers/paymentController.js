@@ -9,7 +9,6 @@ export const createCheckoutSession = async (req, res) => {
         const { couponInfor } = req.body;
         const products = await db`
             SELECT product.id, product.name, product.price, product.image, cart_item.quantity FROM product JOIN cart_item ON product.id = cart_item.product_id JOIN cart ON cart_item.cart_id = cart.id WHERE cart.user_email = ${req.userEmail}
-
         `;
         let totalAmount = 0;
         const lineItems = products.map((product) => {
@@ -125,14 +124,15 @@ export const checkoutSuccessfull = async (req, res) => {
                 await db`
                     INSERT INTO order_items(order_id, product_id, quantity, price)
                     VALUES (
-                    ${insertOrders[0].id},
-                    ${product.id},
-                    ${product.quantity},
-                    ${product.price}
+                        ${insertOrders[0].id},
+                        ${product.id},
+                        ${product.quantity},
+                        ${product.price}
                     )
                 `;
             }
-            // Delte existing cart items
+
+            // Delete existing cart items
             await db`
                 DELETE FROM cart_item
                 WHERE cart_id = 
