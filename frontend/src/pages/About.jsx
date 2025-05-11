@@ -84,11 +84,14 @@ export default function About() {
 
             <div className="flex items-center gap-4 pt-4">
               <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
-                <span className="text-gray-700 text-sm">Img</span>
+                 <img
+                  className='rounded-full object-cover'
+                  src="https://thumbs.dreamstime.com/b/vector-illustration-depicts-young-male-programmer-engaged-laptop-wearing-glasses-emphasizing-coding-346344547.jpg"
+                  alt="CEO VU" />
               </div>
               <div>
-                <div className="font-semibold">Name</div>
-                <div className="text-sm text-gray-300">Title</div>
+                <div className="font-semibold">Tung Tran</div>
+                <div className="text-sm text-gray-300">Vu Nguyen's Boss & Co-founder @ 2 people company</div>
               </div>
             </div>
           </div>
