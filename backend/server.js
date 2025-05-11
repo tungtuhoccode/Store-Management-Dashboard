@@ -8,7 +8,9 @@ import productRoute from "./routes/productRoute.js"
 import cartRoute from "./routes/cartRoute.js"
 import couponRoute from "./routes/couponRoute.js"
 import paymentRoute from "./routes/paymentRoute.js"
+import orderRoute from "./routes/orderRoute.js"
 import cookieParser from "cookie-parser";
+
 import { isSpoofedBot } from "@arcjet/inspect"; //for rate limiting later
 
 dotenv.config();
@@ -38,6 +40,7 @@ app.use("/api/product", productRoute);
 app.use("/api/cart", cartRoute);
 app.use("/api/coupon", couponRoute);
 app.use("/api/payment", paymentRoute);
+app.use("/api/order", orderRoute);
 
 app.listen(PORT, () => {
     console.log(`Server is currently running on ${PORT}`)
