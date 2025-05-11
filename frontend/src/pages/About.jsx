@@ -12,12 +12,18 @@ export default function About() {
       <img
         src="/images/AboutPageWallPaper.avif"
         alt=""
-        className="absolute top-0 left-0 w-full h-[353vh] sm:h-[250vh] md:[250vh] lg:h-[222vh] z-[-1]"
+        className="absolute top-0 left-0 w-full h-[calc(100%-28.5rem)] z-[-1]"
       />
 
       <div className="max-w-7xl mt-20 mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
         {/* Left image side */}
-        <motion.div className="flex justify-center">
+        <motion.div
+          className="flex justify-center"
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ amount: 0.2 }}
+        >
           <img
             src="/images/AboutPage1.avif"
             alt=""
@@ -26,7 +32,13 @@ export default function About() {
         </motion.div>
 
         {/* Right text side */}
-        <motion.div className="text-white space-y-6">
+        <motion.div
+          className="text-white space-y-6"
+          initial={{ opacity: 0, x: 20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ amount: 0.2 }}
+        >
           <div>
             <h1 className="font-pacifico text-4xl mb-2">About</h1>
             <h2 className="font-pacifico text-2xl">
@@ -83,7 +95,13 @@ export default function About() {
         </motion.div>
       </div>
 
-      <motion.div className="border-y border-green-600  py-40 flex justify-center items-center text-white">
+      <motion.div
+        className="border-y border-green-600  py-40 flex justify-center items-center text-white"
+        initial={{ opacity: 0, y: -40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1.0 }}
+        viewport={{ amount: 0.2 }}
+      >
         <div className="max-w-7xl w-full px-6 ">
           <h1 className="text-center text-3xl font-pacifico mb-12 ">
             Our Core Values that Drive Everything We Do
@@ -109,8 +127,14 @@ export default function About() {
 
       <div className="max-w-7xl mt-20 mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
 
-        {/* Right text side */}
-        <motion.div className="text-white space-y-6">
+        {/* Left text side */}
+        <motion.div
+          className="text-white space-y-6"
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ amount: 0.2 }}
+        >
           <div>
             <h1 className="font-pacifico text-4xl mb-2">Our mission</h1>
           </div>
@@ -136,8 +160,14 @@ export default function About() {
           </div>
         </motion.div>
 
-        {/* Left image side */}
-        <motion.div className="flex justify-center">
+        {/* Right image side */}
+        <motion.div
+          className="flex justify-center"
+          initial={{ opacity: 0, x: 20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ amount: 0.2 }}
+        >
           <img
             src="/images/AboutPage2.avif"
             alt=""
