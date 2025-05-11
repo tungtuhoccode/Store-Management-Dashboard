@@ -12,9 +12,9 @@ A modern, responsive online clothing store built with React. Explore products, a
 - **Global State Managment:** Zustand
 - **Data Fetching & Rendering Optimization:** Axios, React Query, TanStack Table
 
-- **Backend (WIP):** Node.js, Express, Cloudinary, Stripe
+- **Backend:** Node.js, Express, Cloudinary, Stripe
 - **Auth:** JWT, bcrypt  
-- **Database (WIP):** PostGreSQL, Redis
+- **Database:** PostGreSQL, Redis
 
 ---
 ## 📸 Screenshots

@@ -48,7 +48,7 @@ const NavigationHeader = () => {
             {pathnames.map((route, index) => {
                 if (route in routeToTabName) {
                     return (
-                        <div key={index}>
+                        <React.Fragment key={index}>
                         <div>
                             <BreadcrumbItem  className="hidden md:block">
                                 <BreadcrumbLink>
@@ -59,7 +59,7 @@ const NavigationHeader = () => {
                         {(index != (pathnames.length-1)) && 
                         <BreadcrumbSeparator className="hidden md:block" />
                         }
-                        </div>
+                        </React.Fragment>
                     )
                 }  
             })}

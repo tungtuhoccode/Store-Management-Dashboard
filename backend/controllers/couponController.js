@@ -2,7 +2,6 @@ import { db } from "../config/db.js";
 
 export const applyCoupon = async (req, res) => {
     try {
-
         const { couponCode } = req.body;
         const { userEmail } = req;
         const couponInfor = await db`
@@ -43,6 +42,23 @@ export const applyCoupon = async (req, res) => {
 
 
     } catch (error) {
+        console.log("Error inside applyCoupon ", error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+}
+
+export const getCoupon = async (req, res) => {
+    try {
+        const allCoupon = await db`
+            SELECT * FROM coupon
+        `; 
+        res.status(200).json({
+            success: true,
+            data : allCoupon
+        });
+
+    }
+    catch(err) {
         console.log("Error inside applyCoupon ", error);
         res.status(500).json({ success: false, message: error.message });
     }

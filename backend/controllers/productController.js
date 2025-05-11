@@ -134,7 +134,7 @@ export const toggleFeaturedProduct = async (req, res) => {
 }
 
 export const createNewProduct = async (req, res) => {
-
+    console.log(req.body)
     try {
         const { name, price, image, stock_quantity, categories } = req.body;
         if (!name || !price || !image || !stock_quantity || !categories) {
@@ -169,7 +169,6 @@ export const createNewProduct = async (req, res) => {
 
         const newProduct = await db`
            INSERT INTO product (name, price, image, stock_quantity, categories) VALUES (${name}, ${price}, ${uploadResult.secure_url}, ${stock_quantity}, ${categories}) RETURNING *;
-        
         `;
 
         console.log("Success inserting ", newProduct[0]);
