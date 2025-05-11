@@ -79,7 +79,7 @@ export default function Contact() {
                             </div>
                             <div className='max-w-full max-h-32 overflow-y-auto break-words mb-4'>
                                 <div className='font-bold'>Name: Vu Nguyen</div>
-                                <p>I worked on: Amazing e-commerce projects, interactive React apps, and cool backend systems!</p>
+                                <p>I worked on frontend customer's user-experiences, creating APIs, handling backend logic, and designing database structures.</p>
                             </div>
                             <div className='flex flex-col gap-2 text-sm'>
                                 <div className='flex items-center gap-2'>
