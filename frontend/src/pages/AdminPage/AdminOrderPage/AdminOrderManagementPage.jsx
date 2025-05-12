@@ -31,7 +31,9 @@ import {
     LoaderIcon,
     MoreVerticalIcon,
     PlusIcon,
-    TrendingUpIcon} from "lucide-react"
+    TrendingUpIcon,
+    CalendarDays
+} from "lucide-react"
   import { Button } from "@/components/ui/button"
   import { Checkbox } from "@/components/ui/checkbox"
   import {
@@ -137,37 +139,74 @@ const data = [
     ].sort( (a,b) =>  b.order_number.localeCompare(a.order_number))
 
 const columns = [
-    {
-      accessorKey: "order_number", 
-      header: "Order Number",
-    },
-    {
-      accessorKey: "user_email", 
-      header: "User Email",
-    },
-    {
-      accessorKey: "item_count", 
-      header: "Item Count",
-    },
-    {
-      accessorKey: "total_amount", 
-      header: "Total Amount",
-      cell: (props) => (
-        <div className='w-full flex justify-center'>
-            ${props.getValue()}
-        </div>
-      )
-    },
-    {
-      accessorKey: "create_at", 
-      header: "Created At",
-    },
-    {
-      accessorKey: "fulfillment_status", 
-      header: "Order Status",
-    },
-
+  {
+    accessorKey: "order_number", 
+    header: "Order Number",
+    size: 120,
+  },
+  {
+    accessorKey: "user_email", 
+    header: "User Email",
+    size: 170,
+  },
+  {
+    accessorKey: "item_count", 
+    header: "Item Count",
+    size: 80,
+    meta: {
+      headerAndCellStyle: "text-center",
+    }
+  },
+  {
+    accessorKey: "total_amount", 
+    header: "Total Amount",
+    size: 130,
+    cell: (props) => (
+      <div className='w-full flex justify-center'>
+          ${props.getValue()}
+      </div>
+    ), 
+    meta: {
+      headerAndCellStyle: "text-center",
+    }
+  },
+  {
+    accessorKey: "create_at", 
+    header: "Created At",
+    size: 200,
+    cell: (props) => (
+      <div className='flex items-center gap-1'>
+          <CalendarDays size="16px" className='text-primary'/> {formatDate(props.getValue())}
+      </div>
+    )
+  },
+  {
+    accessorKey: "fulfillment_status", 
+    header: "Order Status", 
+    size: 140,
+    meta: {
+      headerAndCellStyle: "text-center",
+    }
+  },
 ]
+
+function formatDate(isoString) {
+  const date = new Date(isoString);
+
+  const day = String(date.getDate()).padStart(2, '0');
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const month = monthNames[date.getMonth()];
+  const year = date.getFullYear();
+
+  let hours = date.getHours();
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+
+  hours = hours % 12 || 12; // Convert to 12-hour format and replace 0 with 12
+
+  return `${day} ${month} ${year}, ${hours}:${minutes} ${ampm}`;
+}
 
 export default function AdminOrderManagementPage () {
     const queryClient = useQueryClient();
@@ -194,10 +233,14 @@ export default function AdminOrderManagementPage () {
                 <TableHeader>
                   {table.getHeaderGroups().map((headerGroup) => (
                     <TableRow key={headerGroup.id}>
-                      {headerGroup.headers.map((header) => (
+                      {headerGroup.headers.map((header) => {
+                        const cls = header.column.columnDef.meta?.headerAndCellStyle ?? "";
+                        console.log(cls)
+                        return (
                         <TableHead 
-                          key={header.id} 
-                          className="py-1 z-10 text-black text-sm"
+                            key={header.id} 
+                            className={"py-1 z-10 text-black text-sm " + cls}
+                            style={{ width: header.getSize() }}
                         >
                           {header.isPlaceholder
                             ? null
@@ -206,16 +249,14 @@ export default function AdminOrderManagementPage () {
                                 header.getContext()
                               )}
                         </TableHead>
-                      ))}
+                        )
+                        }
+                      )}
                     </TableRow>
                   ))}
                 </TableHeader>
-              </Table>
-            </div>
     
-            {/* Scrollable Body */}
-            <div className="overflow-auto w-full max-h-[75vh]">
-              <Table className="">
+
                 <TableBody className="">
                   {table.getRowModel().rows?.length ? (
                     table.getRowModel().rows.map((row) => (
@@ -223,15 +264,18 @@ export default function AdminOrderManagementPage () {
                         key={row.id}
                         data-state={row.getIsSelected() && "selected"}
                       >
-                        {row.getVisibleCells().map((cell) => (
+                        {row.getVisibleCells().map((cell) => {
+                        const cls = cell.column.columnDef.meta?.headerAndCellStyle ?? "";
+                        return(
                           <TableCell 
                             key={cell.id} 
-                            className=""
+                            className={"" + cls}
                             style={{ width: cell.column.getSize() }}
                           >
                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                           </TableCell>
-                        ))}
+                        )}
+                        )}
                       </TableRow>
                     ))
                   ) : (
