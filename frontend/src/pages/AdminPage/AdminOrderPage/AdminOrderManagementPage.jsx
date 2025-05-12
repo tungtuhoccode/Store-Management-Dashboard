@@ -32,8 +32,22 @@ import {
     MoreVerticalIcon,
     PlusIcon,
     TrendingUpIcon,
-    CalendarDays
+    CalendarDays,
+    Package,
+    Package2,
+    Hash,
+    BarChart,
+    Calculator,
+    ListOrdered,
+    Tags,
+    LayoutGrid,
+    Archive,
+    Layers,
+    PackageCheck,
+    Puzzle,
+    Banknote
 } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
   import { Button } from "@/components/ui/button"
   import { Checkbox } from "@/components/ui/checkbox"
   import {
@@ -116,7 +130,7 @@ const data = [
             "total_amount": "300.56",
             "create_at": "2025-05-05T06:34:27.455Z",
             "item_count": "3",
-            "fulfillment_status": "pending"
+            "fulfillment_status": "delivered"
         },
         {
             "order_id": "c152ee43-8126-44cd-82e2-9c659220b108",
@@ -135,7 +149,8 @@ const data = [
             "create_at": "2025-05-11T22:04:37.833Z",
             "item_count": "2",
             "fulfillment_status": "shipped"
-        }
+        },
+        
     ].sort( (a,b) =>  b.order_number.localeCompare(a.order_number))
 
 const columns = [
@@ -143,6 +158,11 @@ const columns = [
     accessorKey: "order_number", 
     header: "Order Number",
     size: 120,
+    cell: (props) => (
+      <div className='flex items-center gap-1'>
+          <Hash size="12px" className='text-primary' />  {props.getValue()}
+      </div>
+    )
   },
   {
     accessorKey: "user_email", 
@@ -153,6 +173,11 @@ const columns = [
     accessorKey: "item_count", 
     header: "Item Count",
     size: 80,
+    cell: (props) => (
+      <div className='flex items-center gap-1 justify-center'>
+          <Package2 size="12px" className='text-primary' />  {props.getValue()}
+      </div>
+    ), 
     meta: {
       headerAndCellStyle: "text-center",
     }
@@ -162,8 +187,8 @@ const columns = [
     header: "Total Amount",
     size: 130,
     cell: (props) => (
-      <div className='w-full flex justify-center'>
-          ${props.getValue()}
+      <div className='w-full flex justify-center items-center gap-1'>
+          <Banknote  size="16px"  className='text-primary'/>${props.getValue()}
       </div>
     ), 
     meta: {
@@ -184,8 +209,52 @@ const columns = [
     accessorKey: "fulfillment_status", 
     header: "Order Status", 
     size: 140,
+    cell: ({ getValue }) => {
+    const status = getValue();
+const statusMap = {
+  "pending": {
+    label: "Pending",
+    color: "bg-amber-100 text-amber-800",
+    dot: "bg-amber-500"
+  },
+  "in progress": {
+    label: "In Progress",
+    color: "bg-blue-100 text-blue-800",
+    dot: "bg-blue-500"
+
+  },
+  "shipped": {
+    label: "Shipped",
+    color: "bg-teal-100 text-teal-800",
+    dot: "bg-teal-500"
+  },
+  "cancelled": {
+    label: "Cancelled",
+    color: "bg-rose-100 text-rose-800",
+    dot: "bg-rose-500"
+  },
+ "delivered": {
+    label: "Delivered",
+    color: "bg-green-100 text-green-800",
+    dot: "bg-green-500"
+  },
+};
+
+    const { label, color, dot } = statusMap[status] || {
+      label: status,
+      color: "bg-gray-100 text-gray-700",
+      dot: "bg-gray-500",
+    };
+
+    return (
+      <div className={`inline-flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium ${color}`}>
+        <span className={`w-2 h-2 rounded-full ${dot}`} />
+        {label}
+      </div>
+    );
+  },
     meta: {
-      headerAndCellStyle: "text-center",
+      headerAndCellStyle: "text-left",
     }
   },
 ]
