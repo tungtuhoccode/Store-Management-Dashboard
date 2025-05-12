@@ -31,7 +31,24 @@ import {
     LoaderIcon,
     MoreVerticalIcon,
     PlusIcon,
-    TrendingUpIcon} from "lucide-react"
+    TrendingUpIcon,
+    CalendarDays,
+    Package,
+    Package2,
+    Hash,
+    BarChart,
+    Calculator,
+    ListOrdered,
+    Tags,
+    LayoutGrid,
+    Archive,
+    Layers,
+    PackageCheck,
+    Puzzle,
+    Banknote, 
+    Wallet, 
+    Coins
+} from "lucide-react"
   import { Button } from "@/components/ui/button"
   import { Checkbox } from "@/components/ui/checkbox"
   import {
@@ -75,11 +92,10 @@ const fetchProductsData = async () => {
 
 let page = 0
 
-export default function DataTableDemo() {
+export default function AdminProductPage() {
   const queryClient = useQueryClient();
 
   const productQuery = useQuery({ queryKey: ['products'], queryFn: fetchProductsData })
-
 
   const [sorting, setSorting] = React.useState([])
   const [pagination, setPagination] = useState({
@@ -126,6 +142,11 @@ export default function DataTableDemo() {
           </Button>
         );
       },
+      cell: (props) => (
+        <div className='w-full flex justify-center items-center gap-1'>
+            <Banknote  size="16px"  className='text-primary'/>${props.getValue()}
+        </div>
+      ), 
       enableSorting: true,
       enableSortingRemoval: true,
     },
@@ -151,10 +172,16 @@ export default function DataTableDemo() {
             {isSorted === 'desc' && <ArrowUp className=""/>}
           </Button>
         )
-  
       }, 
+      cell: (props) => (
+        <div className='flex items-center gap-1 justify-center'>
+            <Package2 size="14px" className='text-primary' />  {props.getValue()}
+        </div>
+      ), 
+      
       enableSorting: true, 
-      enableSortingRemoval: true
+      enableSortingRemoval: true, 
+
     },
     {
       accessorKey: "categories",

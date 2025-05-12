@@ -16,6 +16,7 @@ import Categories from "./pages/Categories"
 import PurchaseSuccess from "./pages/PurchaseSuccess"
 import PurchaseCancel from "./pages/PurchaseCancel"
 import AdminProductPage from "../src/pages/AdminPage/AdminProductPage/AdminProductPage"
+import AdminOrderManagementPage from "../src/pages/AdminPage/AdminOrderPage/AdminOrderManagementPage"
 import About from "./pages/About"
 import Contact from "./pages/Contact"
 
@@ -74,7 +75,7 @@ function App() {
           >
             <Route path="/admin" element={<Navigate to="/admin/product" replace />} />
             <Route path="/admin/product" element={<AdminProductPage />} />
-            <Route path="/admin/order" element={<AdminProductPage />} />
+            <Route path="/admin/order" element={<AdminOrderManagementPage />} />
           </Route>
 
         </Routes>
