@@ -153,7 +153,8 @@ export default function AdminProductPage() {
   
       }, 
       enableSorting: true, 
-      enableSortingRemoval: true
+      enableSortingRemoval: true, 
+      
     },
     {
       accessorKey: "categories",

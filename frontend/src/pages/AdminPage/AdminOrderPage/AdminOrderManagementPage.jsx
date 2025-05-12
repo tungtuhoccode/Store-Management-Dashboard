@@ -45,7 +45,9 @@ import {
     Layers,
     PackageCheck,
     Puzzle,
-    Banknote
+    Banknote, 
+    Wallet, 
+    Coins
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
   import { Button } from "@/components/ui/button"
@@ -167,12 +169,12 @@ const columns = [
   {
     accessorKey: "user_email", 
     header: "User Email",
-    size: 170,
+    size: 160,
   },
   {
     accessorKey: "item_count", 
     header: "Item Count",
-    size: 80,
+    size: 100,
     cell: (props) => (
       <div className='flex items-center gap-1 justify-center'>
           <Package2 size="12px" className='text-primary' />  {props.getValue()}
@@ -188,7 +190,7 @@ const columns = [
     size: 130,
     cell: (props) => (
       <div className='w-full flex justify-center items-center gap-1'>
-          <Banknote  size="16px"  className='text-primary'/>${props.getValue()}
+          <Coins  size="14px" strokeWidth={0.95}  className='text-primary'/>${props.getValue()}
       </div>
     ), 
     meta: {
