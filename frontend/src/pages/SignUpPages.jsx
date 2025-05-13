@@ -4,6 +4,9 @@ import { Mail, Lock, MoveRight, User, LoaderCircle } from "lucide-react"
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '../store/useUserStore';
 
+import { IoEyeSharp } from "react-icons/io5";
+import { BsFillEyeSlashFill } from "react-icons/bs";
+
 
 
 function SignUpPages() {
@@ -17,6 +20,8 @@ function SignUpPages() {
         password: "",
         confirmPassword: ""
     })
+    const [password, setPassword] = React.useState(true);
+    const [confirmedPassword, setConfirmedPassword] = React.useState(true);
 
     function handleSubmit(e) {
         e.preventDefault();
@@ -26,7 +31,6 @@ function SignUpPages() {
     return (
         <div className='min-h-[calc(100vh-5rem)] flex items-center justify-center bg-emerald-500'>
             <div className="bg-white rounded-lg p-8 flex w-11/12 max-w-4xl mx-auto">
-                {/*  mb-20 */}
                 {/* for logo */}
                 <motion.div className='hidden md:flex md:w-1/2 justify-center items-center '
                     initial={!switchPage ? { opacity: 0, x: -20 } : { opacity: 1, x: 0 }}
@@ -37,7 +41,6 @@ function SignUpPages() {
                 </motion.div>
 
                 {/* for user sign up page */}
-
                 <form onSubmit={handleSubmit} className='w-full md:w-1/2 flex flex-col items-center justify-center p-4 '>
                     <div className='w-full'>
                         <motion.div
@@ -85,13 +88,19 @@ function SignUpPages() {
                                             ="true" />
                                     </div>
                                     <input
-                                        type='text'
+                                        type={`${password ? 'password' : 'text'}`}
                                         required
                                         value={formData.password}
                                         onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                         className='block w-full py-4 pl-12 bg-gray-200 border border-white rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm '
                                         placeholder='Password'
                                     />
+                                    <span
+                                        onClick={() => setPassword(!password)}
+                                        className='absolute inset-y-0 right-2 pr-3 flex items-center cursor-pointer opacity-25 hover:opacity-100'
+                                    >
+                                        {password ? <IoEyeSharp size={20} /> : <BsFillEyeSlashFill size={20} />}
+                                    </span>
                                 </div>
 
                                 <div className='relative'>
@@ -100,13 +109,19 @@ function SignUpPages() {
                                             ="true" />
                                     </div>
                                     <input
-                                        type='text'
+                                        type={`${confirmedPassword ? 'password' : 'text'}`}
                                         required
                                         value={formData.confirmPassword}
                                         onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                                         className='block w-full py-4 pl-12 bg-gray-200 border border-white rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm '
                                         placeholder='Confirm Password'
                                     />
+                                    <span
+                                        onClick={() => setConfirmedPassword(!confirmedPassword)} 
+                                        className='absolute inset-y-0 right-2 pr-3 flex items-center cursor-pointer opacity-25 hover:opacity-100' 
+                                    >
+                                        {confirmedPassword ? <IoEyeSharp size={20} /> : <BsFillEyeSlashFill size={20} />}
+                                    </span>
                                 </div>
                             </div>
                         </motion.div>
