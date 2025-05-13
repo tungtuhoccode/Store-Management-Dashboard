@@ -5,6 +5,9 @@ import { useNavigate } from 'react-router-dom';
 
 import { useUserStore } from '../store/useUserStore.js';
 
+import { IoEyeSharp } from "react-icons/io5";
+import { BsFillEyeSlashFill } from "react-icons/bs";
+
 function LogInPage() {
     const navigate = useNavigate();
     const { loading, error, signIn } = useUserStore();
@@ -14,6 +17,7 @@ function LogInPage() {
         email: "",
         password: "",
     })
+    const [password, setPassword] = React.useState(true);
 
     function handleSubmit(e) {
         e.preventDefault();
@@ -59,13 +63,19 @@ function LogInPage() {
                                             ="true" />
                                     </div>
                                     <input
-                                        type='password'
+                                        type={`${password ? 'password' : 'text'}`}
                                         required
                                         value={formData.password}
                                         onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                         className='block w-full py-4 pl-12 bg-gray-200 border border-white rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm '
                                         placeholder='Password'
                                     />
+                                    <span
+                                        onClick={() => setPassword(!password)}
+                                        className='absolute right-2 inset-y-0  pr-3 flex items-center cursor-pointer opacity-25 hover:opacity-100'
+                                    >
+                                        {password ? <IoEyeSharp size={20} /> : <BsFillEyeSlashFill size={20} />}
+                                    </span>
                                 </div>
                             </div>
                         </motion.div>
