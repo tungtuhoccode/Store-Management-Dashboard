@@ -19,6 +19,7 @@ import {
   } from "@tanstack/react-table"
   import { Label } from "@/components/ui/label"
   import { ArrowUpDown, ChevronDown, MoreHorizontal, ArrowUp, ArrowDown, ListFilter, Funnel,        CheckCircle2Icon,
+    SlidersHorizontal,
     CheckCircleIcon,
     AlertCircle,
     ChevronDownIcon,
@@ -33,9 +34,11 @@ import {
     PlusIcon,
     TrendingUpIcon,
     CalendarDays,
+    PlusCircleIcon,
     Package,
     Package2,
     Hash,
+    Download,
     BarChart,
     Calculator,
     ListOrdered,
@@ -47,7 +50,8 @@ import {
     Puzzle,
     Banknote, 
     Wallet, 
-    Coins
+    Coins,
+    Plus
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
   import { Button } from "@/components/ui/button"
@@ -78,6 +82,8 @@ import { Badge } from "@/components/ui/badge"
     SelectValue,
   } from "@/components/ui/select"
 import { generateUniqueValues, optimizedData } from '@/pages/AdminPage/Utils/filterHelper'
+
+import OrderPageHeader from './components/OrderPageHeader'
 
 const data = [
         {
@@ -158,13 +164,32 @@ const data = [
 const columns = [
   {
     accessorKey: "order_number", 
-    header: "Order Number",
+    header: ({column}) => {
+      const isSorted = column.getIsSorted();
+
+      return (
+        <Button
+          variant="ghost"
+          onClick={column.getToggleSortingHandler()}
+          className="p-0"
+        >
+          Order Number
+
+          {isSorted === false && <ArrowUpDown className="text-gray-400"/>}
+          {isSorted === 'asc' && <ArrowDown className=""/>}
+          {isSorted === 'desc' && <ArrowUp className=""/>}
+        </Button>
+      );
+        
+    },
     size: 120,
     cell: (props) => (
       <div className='flex items-center gap-1'>
           <Hash size="12px" className='text-primary' />  {props.getValue()}
       </div>
-    )
+    ), 
+    enableSorting: true,
+    enableSortingRemoval: true,
   },
   {
     accessorKey: "user_email", 
@@ -190,7 +215,7 @@ const columns = [
     size: 130,
     cell: (props) => (
       <div className='w-full flex justify-center items-center gap-1'>
-          <Coins  size="14px" strokeWidth={0.95}  className='text-primary'/>${props.getValue()}
+            ${props.getValue()}
       </div>
     ), 
     meta: {
@@ -199,13 +224,34 @@ const columns = [
   },
   {
     accessorKey: "create_at", 
-    header: "Created At",
+    header: ({column}) => {
+      const isSorted = column.getIsSorted();
+
+      return (
+        <Button
+          variant="ghost"
+          onClick={column.getToggleSortingHandler()}
+          className="p-0"
+        >
+          Date Created
+
+          {isSorted === false && <ArrowUpDown className="text-gray-400"/>}
+          {isSorted === 'asc' && <ArrowDown className=""/>}
+          {isSorted === 'desc' && <ArrowUp className=""/>}
+        </Button>
+      );
+        
+    },
     size: 200,
+    
     cell: (props) => (
       <div className='flex items-center gap-1'>
           <CalendarDays size="16px" className='text-primary'/> {formatDate(props.getValue())}
       </div>
-    )
+    ), 
+
+    enableSorting: true,
+    enableSortingRemoval: true,
   },
   {
     accessorKey: "fulfillment_status", 
@@ -213,33 +259,33 @@ const columns = [
     size: 140,
     cell: ({ getValue }) => {
     const status = getValue();
-const statusMap = {
-  "pending": {
-    label: "Pending",
-    color: "bg-amber-100 text-amber-800",
-    dot: "bg-amber-500"
-  },
-  "in progress": {
-    label: "In Progress",
-    color: "bg-blue-100 text-blue-800",
-    dot: "bg-blue-500"
+    const statusMap = {
+      "pending": {
+        label: "Pending",
+        color: "bg-amber-100 text-amber-800",
+        dot: "bg-amber-500"
+      },
+      "in progress": {
+        label: "In Progress",
+        color: "bg-blue-100 text-blue-800",
+        dot: "bg-blue-500"
 
-  },
-  "shipped": {
-    label: "Shipped",
-    color: "bg-teal-100 text-teal-800",
-    dot: "bg-teal-500"
-  },
-  "cancelled": {
-    label: "Cancelled",
-    color: "bg-rose-100 text-rose-800",
-    dot: "bg-rose-500"
-  },
- "delivered": {
-    label: "Delivered",
-    color: "bg-green-100 text-green-800",
-    dot: "bg-green-500"
-  },
+      },
+      "shipped": {
+        label: "Shipped",
+        color: "bg-teal-100 text-teal-800",
+        dot: "bg-teal-500"
+      },
+      "cancelled": {
+        label: "Cancelled",
+        color: "bg-rose-100 text-rose-800",
+        dot: "bg-rose-500"
+      },
+    "delivered": {
+        label: "Delivered",
+        color: "bg-green-100 text-green-800",
+        dot: "bg-green-500"
+      },
 };
 
     const { label, color, dot } = statusMap[status] || {
@@ -260,6 +306,44 @@ const statusMap = {
     }
   },
 ]
+
+const FilterAndSearch = () => {
+  return (
+    <div className="flex items-center justify-between mb-3">
+      {/* Left side: filter input, faceted filter buttons, reset */}
+      <div className="flex flex-1 flex-col-reverse items-start gap-y-2 sm:flex-row sm:items-center sm:space-x-2">
+        <Input
+          placeholder="Filter tasks..."
+          className="h-8 w-[150px] lg:w-[250px]"
+          readOnly
+        />
+
+        <div className="flex gap-x-2">
+          <Button variant="outline" size="sm" className="h-8 border-dashed">
+            <PlusCircleIcon className="mr-2 h-4 w-4" />
+            Status
+          </Button>
+          <Button variant="outline" size="sm" className="h-8 border-dashed">
+            <PlusCircleIcon className="mr-2 h-4 w-4" />
+            User
+          </Button>
+        </div>
+
+        <Button variant="ghost" className="h-8 px-2 lg:px-3">
+          Reset
+        </Button>
+      </div>
+
+      {/* Right side: view options stub */}
+      <div>
+        <Button variant="outline">
+           <SlidersHorizontal/> <span>View</span>
+          </Button>
+
+      </div>
+    </div>
+  )
+}
 
 function formatDate(isoString) {
   const date = new Date(isoString);
@@ -296,7 +380,11 @@ export default function AdminOrderManagementPage () {
       })
 
     return(
-    <div className="p-2">
+    <div className="pl-5 pr-5 pt-4">
+          {/* Page Header */}
+          <OrderPageHeader/>
+          <FilterAndSearch/>
+
           {/* Table */}
           <div className="border rounded-sm">
             <div className="w-full">
