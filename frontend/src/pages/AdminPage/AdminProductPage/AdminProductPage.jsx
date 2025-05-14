@@ -47,7 +47,8 @@ import {
     Puzzle,
     Banknote, 
     Wallet, 
-    Coins
+    Coins,
+    Tag
 } from "lucide-react"
   import { Button } from "@/components/ui/button"
   import { Checkbox } from "@/components/ui/checkbox"
@@ -175,7 +176,7 @@ export default function AdminProductPage() {
       }, 
       cell: (props) => (
         <div className='flex items-center gap-1 justify-center'>
-            <Package2 size="14px" className='text-primary' />  {props.getValue()}
+            <Package2 size="14px" strokeWidth={1.5} className='text-primary' />  {props.getValue()}
         </div>
       ), 
       
@@ -190,7 +191,12 @@ export default function AdminProductPage() {
       filterFn: (row, columnId, filterValues) => {
         if (!filterValues?.length) return true;
         return filterValues.includes(row.getValue(columnId));
-      }
+      }, 
+      cell: (props) => (
+        <div className='w-full flex justify-center items-center gap-1'>
+            <Tag  size="14px"  className='text-primary'/>{props.getValue()}
+        </div>
+      ),
     },
     {
       accessorKey: "displayed_product",

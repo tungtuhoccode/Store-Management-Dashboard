@@ -158,13 +158,32 @@ const data = [
 const columns = [
   {
     accessorKey: "order_number", 
-    header: "Order Number",
+    header: ({column}) => {
+      const isSorted = column.getIsSorted();
+
+      return (
+        <Button
+          variant="ghost"
+          onClick={column.getToggleSortingHandler()}
+          className="p-0"
+        >
+          Order Number
+
+          {isSorted === false && <ArrowUpDown className="text-gray-400"/>}
+          {isSorted === 'asc' && <ArrowDown className=""/>}
+          {isSorted === 'desc' && <ArrowUp className=""/>}
+        </Button>
+      );
+        
+    },
     size: 120,
     cell: (props) => (
       <div className='flex items-center gap-1'>
           <Hash size="12px" className='text-primary' />  {props.getValue()}
       </div>
-    )
+    ), 
+    enableSorting: true,
+    enableSortingRemoval: true,
   },
   {
     accessorKey: "user_email", 
@@ -190,7 +209,7 @@ const columns = [
     size: 130,
     cell: (props) => (
       <div className='w-full flex justify-center items-center gap-1'>
-          <Coins  size="14px" strokeWidth={0.95}  className='text-primary'/>${props.getValue()}
+            ${props.getValue()}
       </div>
     ), 
     meta: {
@@ -199,13 +218,34 @@ const columns = [
   },
   {
     accessorKey: "create_at", 
-    header: "Created At",
+    header: ({column}) => {
+      const isSorted = column.getIsSorted();
+
+      return (
+        <Button
+          variant="ghost"
+          onClick={column.getToggleSortingHandler()}
+          className="p-0"
+        >
+          Date Created
+
+          {isSorted === false && <ArrowUpDown className="text-gray-400"/>}
+          {isSorted === 'asc' && <ArrowDown className=""/>}
+          {isSorted === 'desc' && <ArrowUp className=""/>}
+        </Button>
+      );
+        
+    },
     size: 200,
+    
     cell: (props) => (
       <div className='flex items-center gap-1'>
           <CalendarDays size="16px" className='text-primary'/> {formatDate(props.getValue())}
       </div>
-    )
+    ), 
+
+    enableSorting: true,
+    enableSortingRemoval: true,
   },
   {
     accessorKey: "fulfillment_status", 
@@ -213,33 +253,33 @@ const columns = [
     size: 140,
     cell: ({ getValue }) => {
     const status = getValue();
-const statusMap = {
-  "pending": {
-    label: "Pending",
-    color: "bg-amber-100 text-amber-800",
-    dot: "bg-amber-500"
-  },
-  "in progress": {
-    label: "In Progress",
-    color: "bg-blue-100 text-blue-800",
-    dot: "bg-blue-500"
+    const statusMap = {
+      "pending": {
+        label: "Pending",
+        color: "bg-amber-100 text-amber-800",
+        dot: "bg-amber-500"
+      },
+      "in progress": {
+        label: "In Progress",
+        color: "bg-blue-100 text-blue-800",
+        dot: "bg-blue-500"
 
-  },
-  "shipped": {
-    label: "Shipped",
-    color: "bg-teal-100 text-teal-800",
-    dot: "bg-teal-500"
-  },
-  "cancelled": {
-    label: "Cancelled",
-    color: "bg-rose-100 text-rose-800",
-    dot: "bg-rose-500"
-  },
- "delivered": {
-    label: "Delivered",
-    color: "bg-green-100 text-green-800",
-    dot: "bg-green-500"
-  },
+      },
+      "shipped": {
+        label: "Shipped",
+        color: "bg-teal-100 text-teal-800",
+        dot: "bg-teal-500"
+      },
+      "cancelled": {
+        label: "Cancelled",
+        color: "bg-rose-100 text-rose-800",
+        dot: "bg-rose-500"
+      },
+    "delivered": {
+        label: "Delivered",
+        color: "bg-green-100 text-green-800",
+        dot: "bg-green-500"
+      },
 };
 
     const { label, color, dot } = statusMap[status] || {
