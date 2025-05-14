@@ -9,7 +9,7 @@ import React, { useState, useMemo } from 'react'
 
 export default function OrderPageHeader() {
   return(
-    <div className="flex justify-between w-full mb-5">
+    <div className="flex justify-between w-full mb-4">
       <div>
         <h1 className='font-bold text-xl'>Orders</h1>
         <h3 className='text-slate-500'>Here's a list of your orders for your shop!</h3>
