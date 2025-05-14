@@ -19,6 +19,7 @@ import {
   } from "@tanstack/react-table"
   import { Label } from "@/components/ui/label"
   import { ArrowUpDown, ChevronDown, MoreHorizontal, ArrowUp, ArrowDown, ListFilter, Funnel,        CheckCircle2Icon,
+    SlidersHorizontal,
     CheckCircleIcon,
     AlertCircle,
     ChevronDownIcon,
@@ -33,6 +34,7 @@ import {
     PlusIcon,
     TrendingUpIcon,
     CalendarDays,
+    PlusCircleIcon,
     Package,
     Package2,
     Hash,
@@ -307,7 +309,39 @@ const columns = [
 
 const FilterAndSearch = () => {
   return (
-    <div></div>
+    <div className="flex items-center justify-between mb-3">
+      {/* Left side: filter input, faceted filter buttons, reset */}
+      <div className="flex flex-1 flex-col-reverse items-start gap-y-2 sm:flex-row sm:items-center sm:space-x-2">
+        <Input
+          placeholder="Filter tasks..."
+          className="h-8 w-[150px] lg:w-[250px]"
+          readOnly
+        />
+
+        <div className="flex gap-x-2">
+          <Button variant="outline" size="sm" className="h-8 border-dashed">
+            <PlusCircleIcon className="mr-2 h-4 w-4" />
+            Status
+          </Button>
+          <Button variant="outline" size="sm" className="h-8 border-dashed">
+            <PlusCircleIcon className="mr-2 h-4 w-4" />
+            Priority
+          </Button>
+        </div>
+
+        <Button variant="ghost" className="h-8 px-2 lg:px-3">
+          Reset
+        </Button>
+      </div>
+
+      {/* Right side: view options stub */}
+      <div>
+        <Button variant="outline">
+           <SlidersHorizontal/> <span>View</span>
+          </Button>
+
+      </div>
+    </div>
   )
 }
 
@@ -349,6 +383,7 @@ export default function AdminOrderManagementPage () {
     <div className="pl-5 pr-5 pt-4">
           {/* Page Header */}
           <OrderPageHeader/>
+          <FilterAndSearch/>
 
           {/* Table */}
           <div className="border rounded-sm">
