@@ -36,6 +36,7 @@ import {
     Package,
     Package2,
     Hash,
+    Download,
     BarChart,
     Calculator,
     ListOrdered,
@@ -47,7 +48,8 @@ import {
     Puzzle,
     Banknote, 
     Wallet, 
-    Coins
+    Coins,
+    Plus
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
   import { Button } from "@/components/ui/button"
@@ -78,6 +80,8 @@ import { Badge } from "@/components/ui/badge"
     SelectValue,
   } from "@/components/ui/select"
 import { generateUniqueValues, optimizedData } from '@/pages/AdminPage/Utils/filterHelper'
+
+import OrderPageHeader from './components/OrderPageHeader'
 
 const data = [
         {
@@ -301,6 +305,12 @@ const columns = [
   },
 ]
 
+const FilterAndSearch = () => {
+  return (
+    <div></div>
+  )
+}
+
 function formatDate(isoString) {
   const date = new Date(isoString);
 
@@ -336,7 +346,10 @@ export default function AdminOrderManagementPage () {
       })
 
     return(
-    <div className="p-2">
+    <div className="pl-5 pr-5 pt-4">
+          {/* Page Header */}
+          <OrderPageHeader/>
+
           {/* Table */}
           <div className="border rounded-sm">
             <div className="w-full">
