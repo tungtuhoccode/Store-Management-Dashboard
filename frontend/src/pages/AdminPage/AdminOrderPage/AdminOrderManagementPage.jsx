@@ -82,6 +82,7 @@ import { Badge } from "@/components/ui/badge"
     SelectValue,
   } from "@/components/ui/select"
 import { generateUniqueValues, optimizedData } from '@/pages/AdminPage/Utils/filterHelper'
+import FilterDialog from './components/FilterDialog.jsx'
 
 import OrderPageHeader from './components/OrderPageHeader'
 
@@ -339,7 +340,6 @@ const FilterAndSearch = () => {
         <Button variant="outline">
            <SlidersHorizontal/> <span>View</span>
           </Button>
-
       </div>
     </div>
   )
@@ -363,19 +363,34 @@ function formatDate(isoString) {
   return `${day} ${month} ${year}, ${hours}:${minutes} ${ampm}`;
 }
 
+/*
+  "order_id": "1135e96f-702b-4bc9-acb7-31a9d43c00f4",
+  "order_number": "10000002",
+  "user_email": "vunguyen@gmail.com",
+  "total_amount": "276.83",
+  "create_at": "2025-05-05T10:28:12.449Z",
+  "item_count": "3",
+  "fulfillment_status": "pending"
+*/
 export default function AdminOrderManagementPage () {
     const queryClient = useQueryClient();
     const [sorting, setSorting] = React.useState([])
-
+    const [columnFilters, setColumnFilters] = React.useState([
+      {id: "fulfillment_status", value: []}, 
+      {id: "user_email", value: []},
+    ])
 
     const table = useReactTable({
         data: data,
         columns,
         state: {
           sorting,
+          columnFilters
         },
         getCoreRowModel: getCoreRowModel(),
         onSortingChange: setSorting,
+        getFilteredRowModel: getFilteredRowModel(),
+        onColumnFiltersChange: setColumnFilters,
         getSortedRowModel: getSortedRowModel(),
       })
 
@@ -384,6 +399,7 @@ export default function AdminOrderManagementPage () {
           {/* Page Header */}
           <OrderPageHeader/>
           <FilterAndSearch/>
+          <FilterDialog/>
 
           {/* Table */}
           <div className="border rounded-sm">
