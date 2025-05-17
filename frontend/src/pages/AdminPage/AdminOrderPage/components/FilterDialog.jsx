@@ -13,7 +13,7 @@ import {
   CommandSeparator,
 } from '@/components/ui/command';
 
-import { PlusCircleIcon } from 'lucide-react';
+import { PlusCircleIcon, CheckIcon } from 'lucide-react';
   
 export default function FilterDialog({column, title, options}){
     options = ["Pending", "Cancelled", "Shipped", "In Progress", "Delivered"]
@@ -69,11 +69,17 @@ export default function FilterDialog({column, title, options}){
                 >
                     {/* left side: checkbox + label */}
                     <div className="flex items-center space-x-2">
-                    <input
-                        type="checkbox"
-                        checked={isSel}
-                        readOnly
-                        className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                   <input
+                    type="checkbox"
+                    checked={isSel}
+                    readOnly
+                    className={`
+                        h-4 w-4
+                        rounded-full               /* try to make it circular */
+                        bg-white                   /* unchecked bg */
+                        accent-slate-800           /* checkmark & fill color */
+                        focus:ring-2 focus:ring-slate-900
+                    `}
                     />
                     <span className={isSel ? "font-medium text-gray-900" : "text-gray-700"}>
                         {opt}
