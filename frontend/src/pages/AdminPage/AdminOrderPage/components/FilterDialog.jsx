@@ -39,9 +39,10 @@ export default function FilterDialog({column, title, options}){
     <Popover>
       <PopoverTrigger>
         <Button variant="outline" size="sm" className="h-8 border-dashed">
-                <PlusCircleIcon className="mr-2 h-4 w-4" />
+            <PlusCircleIcon className="mr-2 h-4 w-4" />
                 {title}
-            </Button>
+        </Button>
+
       </PopoverTrigger>
 
       <PopoverContent  className="w-15 p-0">
@@ -51,25 +52,37 @@ export default function FilterDialog({column, title, options}){
           <CommandList>
             <CommandEmpty>No results</CommandEmpty>
 
-            <CommandGroup >
-              {options.map((opt) => {
-                const isSel = selectedValues.has(opt);
+            <CommandGroup>
+            {options.map(opt => {
+                const isSel = selectedValues.has(opt)
                 return (
-                  <CommandItem
-                    key={opt.value}
+                <CommandItem
+                    key={opt}
                     onSelect={() => toggleValue(opt)}
-                    className="cursor-pointer"
-                  >
+                    className="
+                    flex items-center justify-between
+                    px-3 py-2
+                    rounded-md
+                    hover:bg-gray-100
+                    cursor-pointer
+                    "
+                >
+                    {/* left side: checkbox + label */}
+                    <div className="flex items-center space-x-2">
                     <input
-                      type="checkbox"
-                      checked={isSel}
-                      readOnly
-                      style={{ marginRight: 8 }}
+                        type="checkbox"
+                        checked={isSel}
+                        readOnly
+                        className="h-4 w-4 text-blue-600 border-gray-300 rounded"
                     />
-                    {opt}
-                  </CommandItem>
-                );
-              })}
+                    <span className={isSel ? "font-medium text-gray-900" : "text-gray-700"}>
+                        {opt}
+                    </span>
+                    </div>
+
+                </CommandItem>
+                )
+            })}
             </CommandGroup>
 
             {selectedValues.size > 0 && (
