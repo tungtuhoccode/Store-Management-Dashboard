@@ -31,6 +31,8 @@ export default function FilterDialog({column, title = "Title needed", options = 
         })
     }
 
+
+
     const clearFilters = () => {
         setSelectedValues(new Set())
     }
@@ -79,13 +81,13 @@ export default function FilterDialog({column, title = "Title needed", options = 
 
       <PopoverContent  className="w-15 p-0">
         <Command>
-          <CommandInput placeholder={`Filter ${title}`} />
+          <CommandInput placeholder={`Search filter value`} />
 
           <CommandList>
             <CommandEmpty>No results</CommandEmpty>
 
             <CommandGroup>
-            {options.map(opt => {
+            {options.filter(opt => opt.toLocaleLowerCase().startsWith(searchTerm.toLocaleLowerCase())).map(opt => {
                 const isSel = selectedValues.has(opt)
                 return (
                 <CommandItem
