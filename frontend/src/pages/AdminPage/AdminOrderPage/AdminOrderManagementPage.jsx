@@ -205,6 +205,10 @@ const columns = [
     accessorKey: "user_email",
     header: "User Email",
     size: 160,
+    filterFn: (row, columnId, filterValues) => {
+      if (!filterValues?.length) return true;
+      return filterValues.includes(row.getValue(columnId));
+    },
   },
   {
     accessorKey: "item_count",
@@ -336,6 +340,11 @@ const FilterAndSearch = ({ table }) => {
           <FilterDialog
             column={table.getColumn("fulfillment_status")}
             title="Status"
+            capitilizedLabel = {true}
+          />
+           <FilterDialog
+            column={table.getColumn("user_email")}
+            title="User Email"
           />
         </div>
 

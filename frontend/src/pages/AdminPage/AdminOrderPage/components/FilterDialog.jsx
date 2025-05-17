@@ -17,7 +17,7 @@ import { Badge } from '@/components/ui/badge';
 
 import { PlusCircleIcon, CheckIcon } from 'lucide-react';
   
-export default function FilterDialog({column, title}){
+export default function FilterDialog({column, title, capitilizedLabel = false}){
     const [selectedValues, setSelectedValues] = useState(new Set());
     const [searchTerm, setSearchTerm] = useState("")
     const options = [...column.getFacetedUniqueValues()]
@@ -107,7 +107,7 @@ export default function FilterDialog({column, title}){
                         `}
                         />
                         <span className={isSel ? "font-medium text-gray-900" : "text-gray-700"}>
-                            {opt[0].slice(0,1).toUpperCase() + opt[0].slice(1)}
+                            {capitilizedLabel ? opt[0].slice(0,1).toUpperCase() + opt[0].slice(1) : opt[0]}
                         </span>
                     </div>
 
