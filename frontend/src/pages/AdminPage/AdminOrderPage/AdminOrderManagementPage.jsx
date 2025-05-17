@@ -392,7 +392,6 @@ export default function AdminOrderManagementPage () {
           {/* Page Header */}
           <OrderPageHeader/>
           <FilterAndSearch/>
-          <FilterDialog/>
 
           {/* Table */}
           <div className="border rounded-sm">

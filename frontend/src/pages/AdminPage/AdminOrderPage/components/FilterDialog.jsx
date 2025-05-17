@@ -68,9 +68,9 @@ export default function FilterDialog({column, title = "Title needed", options = 
     }
 
     return (
-    <Popover>
+    <Popover className="relative">
         {/* Filter Button */}
-      <PopoverTrigger className='flex '>
+      <PopoverTrigger className='flex'>
         <Button variant="outline" size="sm" className="h-8 border-dashed">
             <PlusCircleIcon className="mr-1 h-4 w-4" />
             <span>{title}</span>
@@ -79,7 +79,7 @@ export default function FilterDialog({column, title = "Title needed", options = 
 
       </PopoverTrigger>
 
-      <PopoverContent  className="w-15 p-0">
+      <PopoverContent align='start' className="w-15 p-0">
         <Command>
           <CommandInput placeholder={`Search filter value`} />
 
