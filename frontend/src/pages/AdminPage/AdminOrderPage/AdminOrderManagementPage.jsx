@@ -66,15 +66,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -84,13 +76,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import {
   generateUniqueValues,
   optimizedData,
@@ -213,15 +199,16 @@ const columns = [
           color: "bg-teal-100 text-teal-800",
           dot: "bg-teal-500",
         },
-        cancelled: {
-          label: "Cancelled",
-          color: "bg-rose-100 text-rose-800",
-          dot: "bg-rose-500",
-        },
+
         delivered: {
           label: "Delivered",
           color: "bg-green-100 text-green-800",
           dot: "bg-green-500",
+        },
+        cancelled: {
+          label: "Cancelled",
+          color: "bg-rose-100 text-rose-800",
+          dot: "bg-rose-500",
         },
       };
 
@@ -231,13 +218,40 @@ const columns = [
         dot: "bg-gray-500",
       };
 
+      console.log(Object.keys(statusMap).m)
+
+      const renderAvailableStatus = () => Object.keys(statusMap).map(key => {
+         const { label, color, dot } = statusMap[key] || {
+          label: status,
+          color: "bg-gray-100 text-gray-700",
+          dot: "bg-gray-500",
+        };
+        return (
+          <div
+              key={key}
+              className={`inline-flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium ${color} cursor-pointer`}
+              >
+                <span className={`w-2 h-2 rounded-full ${dot}`} />
+                {label}
+              </div>
+        )
+      })
+
       return (
-        <div
-          className={`inline-flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium ${color}`}
-        >
-          <span className={`w-2 h-2 rounded-full ${dot}`} />
-          {label}
-        </div>
+        <Popover>
+          <PopoverTrigger>
+            <div
+              className={`inline-flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium ${color}`}
+            >
+              <span className={`w-2 h-2 rounded-full ${dot}`} />
+              {label}
+            </div>
+            </PopoverTrigger>
+            <PopoverContent className="flex flex-col gap-1 w-30">
+              <h3> Change status </h3>
+              {renderAvailableStatus()}
+            </PopoverContent>
+          </Popover>
       );
     },
     meta: {
@@ -346,7 +360,7 @@ export default function AdminOrderManagementPage() {
   ]);
 
   const table = useReactTable({
-    data: orderQuery.data.data,
+    data: orderQuery.data ? orderQuery.data.data  : [],
     columns,
     state: {
       sorting,
@@ -360,6 +374,11 @@ export default function AdminOrderManagementPage() {
     getFacetedUniqueValues: getFacetedUniqueValues(), // required
     getSortedRowModel: getSortedRowModel(),
   });
+
+
+  if (orderQuery.isLoading) return (
+    <>Loading...</>
+  )
 
   return (
     <div className="pl-5 pr-5 pt-4">
