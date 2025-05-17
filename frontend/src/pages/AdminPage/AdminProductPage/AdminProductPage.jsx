@@ -273,6 +273,7 @@ export default function AdminProductPage() {
     }
   ]
 
+  //optimize data by using lower quality images
   const optimizedProductData = useMemo(() => optimizedData(
     productQuery.data ? productQuery.data.data  : []),
     [productQuery.data]

@@ -402,8 +402,16 @@ function formatDate(isoString) {
   "item_count": "3",
   "fulfillment_status": "pending"
 */
+
+const fetchOrders = async () => {
+  const response = await axios.get("/order")
+  return response.data
+}
+
 export default function AdminOrderManagementPage() {
   const queryClient = useQueryClient();
+  const orderQuery = useQuery({queryKey: ["orders"], queryFn: fetchOrders})
+
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([
     { id: "fulfillment_status", value: [] },
@@ -411,7 +419,7 @@ export default function AdminOrderManagementPage() {
   ]);
 
   const table = useReactTable({
-    data: data,
+    data: orderQuery.data.data,
     columns,
     state: {
       sorting,
