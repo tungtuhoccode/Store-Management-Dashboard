@@ -12,12 +12,12 @@ import {
   CommandItem,
   CommandSeparator,
 } from '@/components/ui/command';
+import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
 
 import { PlusCircleIcon, CheckIcon } from 'lucide-react';
   
-export default function FilterDialog({column, title, options}){
-    options = ["Pending", "Cancelled", "Shipped", "In Progress", "Delivered"]
-    title = "Status"
+export default function FilterDialog({column, title = "Title needed", options = ["1", "2", "3"]}){
     const [selectedValues, setSelectedValues] = useState(new Set());
     const [searchTerm, setSearchTerm] = useState("")
 
@@ -35,12 +35,44 @@ export default function FilterDialog({column, title, options}){
         setSelectedValues(new Set())
     }
 
+    const renderSelectedBadges = () => {
+        if (selectedValues.size === 0) return null;
+
+        if (selectedValues.size < 3) {
+            return (
+            <>
+                <Separator orientation='vertical' className='h-4' />
+                {[...selectedValues].map(val => (
+                <Badge
+                    key={val}
+                    variant="secondary"
+                    className="rounded-sm px-1 font-normal ml-1"
+                >
+                    {val}
+                </Badge>
+                ))}
+            </>
+            );
+        }
+
+        return (
+            <>
+             <Separator orientation='vertical' className=' h-4' />
+            <Badge variant="secondary" className="rounded-sm px-1 font-normal ml-1">
+            {selectedValues.size} selected
+            </Badge>
+            </>
+        );
+    }
+
     return (
     <Popover>
-      <PopoverTrigger>
+        {/* Filter Button */}
+      <PopoverTrigger className='flex '>
         <Button variant="outline" size="sm" className="h-8 border-dashed">
-            <PlusCircleIcon className="mr-2 h-4 w-4" />
-                {title}
+            <PlusCircleIcon className="mr-1 h-4 w-4" />
+            <span>{title}</span>
+            {renderSelectedBadges()}
         </Button>
 
       </PopoverTrigger>
