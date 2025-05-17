@@ -17,9 +17,10 @@ import { Badge } from '@/components/ui/badge';
 
 import { PlusCircleIcon, CheckIcon } from 'lucide-react';
   
-export default function FilterDialog({column, title = "Title needed", options = ["1", "2", "3"]}){
+export default function FilterDialog({column, title}){
     const [selectedValues, setSelectedValues] = useState(new Set());
     const [searchTerm, setSearchTerm] = useState("")
+    const options = [...column.getFacetedUniqueValues()]
 
     const toggleValue = (value) => {
         setSelectedValues(prevSet => {
@@ -27,11 +28,11 @@ export default function FilterDialog({column, title = "Title needed", options = 
             if (next.has(value)) next.delete(value)
             else next.add(value)
             
+            //set filter values
+            column.setFilterValue([...next])
             return next;
         })
     }
-
-
 
     const clearFilters = () => {
         setSelectedValues(new Set())
@@ -87,38 +88,33 @@ export default function FilterDialog({column, title = "Title needed", options = 
             <CommandEmpty>No results</CommandEmpty>
 
             <CommandGroup>
-            {options.filter(opt => opt.toLocaleLowerCase().startsWith(searchTerm.toLocaleLowerCase())).map(opt => {
-                const isSel = selectedValues.has(opt)
+            {options.filter(opt => opt[0].toLocaleLowerCase().startsWith(searchTerm.toLocaleLowerCase())).map(opt => {
+                const isSel = selectedValues.has(opt[0])
                 return (
                 <CommandItem
                     key={opt}
-                    onSelect={() => toggleValue(opt)}
-                    className="
-                    flex items-center justify-between
-                    px-3 py-2
-                    rounded-md
-                    hover:bg-gray-100
-                    cursor-pointer
-                    "
+                    onSelect={() => toggleValue(opt[0])}
+                    className="flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-100 cursor-pointer"
                 >
                     {/* left side: checkbox + label */}
                     <div className="flex items-center space-x-2">
-                   <input
-                    type="checkbox"
-                    checked={isSel}
-                    readOnly
-                    className={`
-                        h-4 w-4
-                        rounded-full               /* try to make it circular */
-                        bg-white                   /* unchecked bg */
-                        accent-slate-800           /* checkmark & fill color */
-                        focus:ring-2 focus:ring-slate-900
-                    `}
-                    />
-                    <span className={isSel ? "font-medium text-gray-900" : "text-gray-700"}>
-                        {opt}
-                    </span>
+                      <input
+                        type="checkbox"
+                        checked={isSel}
+                        readOnly
+                        className={`
+                            h-4 w-4 rounded-full bg-white accent-slate-800 focus:ring-2 focus:ring-slate-900
+                        `}
+                        />
+                        <span className={isSel ? "font-medium text-gray-900" : "text-gray-700"}>
+                            {opt[0].slice(0,1).toUpperCase() + opt[0].slice(1)}
+                        </span>
                     </div>
+
+                     {/* right side: Number of items */}
+                     <div className={isSel ? "font-medium text-gray-900" : "text-gray-700"}>
+                          {opt[1]}
+                     </div>
 
                 </CommandItem>
                 )
