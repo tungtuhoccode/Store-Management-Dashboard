@@ -83,7 +83,6 @@ import { Badge } from "@/components/ui/badge"
   } from "@/components/ui/select"
 import { generateUniqueValues, optimizedData } from '@/pages/AdminPage/Utils/filterHelper'
 import FilterDialog from './components/FilterDialog.jsx'
-
 import OrderPageHeader from './components/OrderPageHeader'
 
 const data = [
@@ -320,14 +319,8 @@ const FilterAndSearch = () => {
         />
 
         <div className="flex gap-x-2">
-          <Button variant="outline" size="sm" className="h-8 border-dashed">
-            <PlusCircleIcon className="mr-2 h-4 w-4" />
-            Status
-          </Button>
-          <Button variant="outline" size="sm" className="h-8 border-dashed">
-            <PlusCircleIcon className="mr-2 h-4 w-4" />
-            User
-          </Button>
+          <FilterDialog title='Status' options={["Pending", "In Progress", "Shipped", "Delivered", "Cancelled"]}/>
+          <FilterDialog title='User' options={["User1", "User2", "User3", "User4", "User5"]}/>
         </div>
 
         <Button variant="ghost" className="h-8 px-2 lg:px-3">
