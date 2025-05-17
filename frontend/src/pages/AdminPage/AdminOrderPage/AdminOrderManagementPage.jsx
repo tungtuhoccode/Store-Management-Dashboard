@@ -410,7 +410,7 @@ const fetchOrders = async () => {
 
 export default function AdminOrderManagementPage() {
   const queryClient = useQueryClient();
-  const orderQuery = useQuery({queryKey: ["orders"], queryFn: fetchOrders})
+  const orderQuery = useQuery({queryKey: ["orders"], queryFn: fetchOrders, refetchInterval: 10000})
 
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([
