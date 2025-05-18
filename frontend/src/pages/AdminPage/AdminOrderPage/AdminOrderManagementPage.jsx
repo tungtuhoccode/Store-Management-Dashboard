@@ -76,7 +76,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 import {
   generateUniqueValues,
   optimizedData,
@@ -218,22 +222,28 @@ const columns = [
         dot: "bg-gray-500",
       };
 
-      const renderAvailableStatus = () => Object.keys(statusMap).map(key => {
-         const { label, color, dot } = statusMap[key] || {
-          label: status,
-          color: "bg-gray-100 text-gray-700",
-          dot: "bg-gray-500",
-        };
-        return (
-          <div
-              key={key}
-              className={`inline-flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium ${color} cursor-pointer`}
+      const renderAvailableStatus = () =>
+        Object.keys(statusMap).map((key) => {
+          const { label, color, dot } = statusMap[key] || {
+            label: status,
+            color: "bg-gray-100 text-gray-700",
+            dot: "bg-gray-500",
+          };
+          return (
+            <div className="hover:bg-gray-100  cursor-pointer flex items-center">
+              <div
+                key={key}
+                className={`inline-flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium ${color}`}
+                onClick={() => {
+                  console.log("Clicked on status: ", key);
+                }}
               >
                 <span className={`w-2 h-2 rounded-full ${dot}`} />
                 {label}
               </div>
-        )
-      })
+            </div>
+          );
+        });
 
       return (
         <Popover>
@@ -244,12 +254,12 @@ const columns = [
               <span className={`w-2 h-2 rounded-full ${dot}`} />
               {label}
             </div>
-            </PopoverTrigger>
-            <PopoverContent className="flex flex-col gap-1 w-30">
-              <h3> Change status </h3>
-              {renderAvailableStatus()}
-            </PopoverContent>
-          </Popover>
+          </PopoverTrigger>
+          <PopoverContent className="flex flex-col gap-1 w-30">
+            <h3> Choose new status </h3>
+            {renderAvailableStatus()}
+          </PopoverContent>
+        </Popover>
       );
     },
     meta: {
@@ -277,9 +287,9 @@ const FilterAndSearch = ({ table }) => {
           <FilterDialog
             column={table.getColumn("fulfillment_status")}
             title="Status"
-            capitilizedLabel = {true}
+            capitilizedLabel={true}
           />
-           <FilterDialog
+          <FilterDialog
             column={table.getColumn("user_email")}
             title="User Email"
           />
@@ -341,16 +351,35 @@ function formatDate(isoString) {
 */
 
 const fetchOrders = async () => {
-  const response = await axios.get("/order")
+  const response = await axios.get("/order");
+  return response.data;
+};
+
+const toggleProductFulfillmentStaus = async (id, newStatus)  => {
+  const response = await axios.patch(`/order/${id}/fulfillment-status`)
   return response.data
 }
 
 export default function AdminOrderManagementPage() {
   const queryClient = useQueryClient();
-  const orderQuery = useQuery({queryKey: ["orders"], queryFn: fetchOrders, refetchInterval: 5000})
+  const orderQuery = useQuery({
+    queryKey: ["orders"],
+    queryFn: fetchOrders,
+    refetchInterval: 5000,
+  });
+
+  const toggleOrderFulfilmentStatus = useMutation({
+    mutationFn: toggleProductFulfillmentStaus, 
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ["orders"]})
+    }, 
+        onError: (error) => {
+      console.error('Failed to toggle fulfillment status', error)
+    },
+  })
 
   const [sorting, setSorting] = React.useState([
-    { id: 'create_at', desc: true }, // false = ascending
+    { id: "create_at", desc: true }, // false = ascending
   ]);
   const [columnFilters, setColumnFilters] = React.useState([
     { id: "fulfillment_status", value: [] },
@@ -358,7 +387,7 @@ export default function AdminOrderManagementPage() {
   ]);
 
   const table = useReactTable({
-    data: orderQuery.data ? orderQuery.data.data  : [],
+    data: orderQuery.data ? orderQuery.data.data : [],
     columns,
     state: {
       sorting,
@@ -371,13 +400,9 @@ export default function AdminOrderManagementPage() {
     getFacetedRowModel: getFacetedRowModel(), // required
     getFacetedUniqueValues: getFacetedUniqueValues(), // required
     getSortedRowModel: getSortedRowModel(),
-    
   });
 
-
-  if (orderQuery.isLoading) return (
-    <>Loading...</>
-  )
+  if (orderQuery.isLoading) return <>Loading...</>;
 
   return (
     <div className="pl-5 pr-5 pt-4">

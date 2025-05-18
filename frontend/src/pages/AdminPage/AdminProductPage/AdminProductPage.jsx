@@ -128,7 +128,7 @@ export default function AdminProductPage() {
     {
       accessorKey: "price",
       header: ({ column }) => {
-        const isSorted = column.getIsSorted(); // 'asc' | 'desc' | false
+        const isSorted = column.getIsSorted();
     
         return (
           <Button
