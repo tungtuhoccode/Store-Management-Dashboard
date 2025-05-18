@@ -191,7 +191,7 @@ export default function AdminProductPage() {
       filterFn: (row, columnId, filterValues) => {
         if (!filterValues?.length) return true;
         return filterValues.includes(row.getValue(columnId));
-      }, 
+      },
       cell: (props) => (
         <div className='w-full flex justify-center items-center gap-1'>
             <Tag  size="14px"  className='text-primary'/>{props.getValue()}
@@ -273,6 +273,7 @@ export default function AdminProductPage() {
     }
   ]
 
+  //optimize data by using lower quality images
   const optimizedProductData = useMemo(() => optimizedData(
     productQuery.data ? productQuery.data.data  : []),
     [productQuery.data]

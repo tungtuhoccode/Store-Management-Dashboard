@@ -16,6 +16,21 @@ router.get("/category/:category", getCategoryProducts);
 
 router.get("/", protectRoute, adminRoute, getAllProducts);
 router.post("/", protectRoute, adminRoute, createNewProduct);
+router.post("/bulk", protectRoute, adminRoute, async (req, res) => {
+    try {
+        const products = req.body.products;
+        if (!Array.isArray(products) || products.length === 0) {
+            return res.status(400).json({ message: "No products provided" });
+        }
+        // Assuming you have a Product model
+        const createdProducts = await Promise.all(
+            products.map(productData => createNewProduct({ body: productData }, { json: () => {} }))
+        );
+        res.status(201).json({ message: "Products created", products: createdProducts });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
 router.get("/:id", getProduct);
 
 
