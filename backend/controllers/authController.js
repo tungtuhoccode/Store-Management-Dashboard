@@ -133,6 +133,7 @@ export const refreshToken = async (req, res) => {
         const refreshToken = req.cookies.refreshToken;
 
         if (!refreshToken) {
+            console.log("No refresh token provided")
             return res.status(401).json({ message: "No refresh token provided" });
         }
 
@@ -140,11 +141,13 @@ export const refreshToken = async (req, res) => {
         try {
             decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
         } catch (error) {
+            console.log("Invalid refresh token")
             return res.status(401).json({ message: "Invalid refresh token" });
         }
 
         const storedToken = await redis.get(`refresh_token:${decoded.userEmail}`);
         if (storedToken !== refreshToken) {
+             console.log("Invalid refresh token")
             return res.status(401).json({ message: "Invalid refresh token" });
         }
 
