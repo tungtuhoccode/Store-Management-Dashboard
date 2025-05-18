@@ -343,16 +343,6 @@ function formatDate(isoString) {
   return `${day} ${month} ${year}, ${hours}:${minutes} ${ampm}`;
 }
 
-/*
-  "order_id": "1135e96f-702b-4bc9-acb7-31a9d43c00f4",
-  "order_number": "10000002",
-  "user_email": "vunguyen@gmail.com",
-  "total_amount": "276.83",
-  "create_at": "2025-05-05T10:28:12.449Z",
-  "item_count": "3",
-  "fulfillment_status": "pending"
-*/
-
 const fetchOrders = async () => {
   const response = await axios.get("/order");
   return response.data;
@@ -366,6 +356,7 @@ const patchOrderFulfillmentStatus = async ({id, newStatus})  => {
 }
 
 export default function AdminOrderManagementPage() {
+  const [updatingRowId, setUpdatingRowId] = useState(null);
   const queryClient = useQueryClient();
   const orderQuery = useQuery({
     queryKey: ["orders"],
@@ -374,12 +365,21 @@ export default function AdminOrderManagementPage() {
   });
 
   const updateOrderFulfillmentStatus = useMutation({
-    mutationFn: patchOrderFulfillmentStatus, 
+    mutationFn: async({id, newStatus}) => {
+      
+      setUpdatingRowId(id)
+      return patchOrderFulfillmentStatus({id, newStatus});
+    }
+    , 
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ["orders"]})
     }, 
-        onError: (error) => {
-        console.error('Failed to toggle fulfillment status', error)
+      onError: (error) => {
+      console.error('Failed to toggle fulfillment status', error)
+    },
+      onSettled: () => {
+      // clear when done (either success or error)
+      setUpdatingRowId(null);
     },
   })
 
@@ -445,37 +445,31 @@ export default function AdminOrderManagementPage() {
               ))}
             </TableHeader>
 
-            <TableBody className="">
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
+            <TableBody>
+              {table.getRowModel().rows.map((row) => {
+                const isUpdating = row.original.order_id === updatingRowId;
+                return (
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
+                    className={isUpdating ? "animate-pulse bg-yellow-50" : ""}
                   >
-                    {row.getVisibleCells().map((cell) => {
-                      const cls =
-                        cell.column.columnDef.meta?.headerAndCellStyle ?? "";
-                      return (
-                        <TableCell
-                          key={cell.id}
-                          className={"" + cls}
-                          style={{ width: cell.column.getSize() }}
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </TableCell>
-                      );
-                    })}
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        key={cell.id}
+                        className={cell.column.columnDef.meta?.headerAndCellStyle ?? ""}
+                        style={{ width: cell.column.getSize() }}
+                      >
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
                   </TableRow>
-                ))
-              ) : (
+                );
+              })}
+
+              {table.getRowModel().rows.length === 0 && (
                 <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center"
-                  >
+                  <TableCell colSpan={columns.length} className="h-24 text-center">
                     No results.
                   </TableCell>
                 </TableRow>
