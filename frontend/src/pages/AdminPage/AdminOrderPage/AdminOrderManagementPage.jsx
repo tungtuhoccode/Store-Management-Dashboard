@@ -76,11 +76,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+
 import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import {
   generateUniqueValues,
   optimizedData,
@@ -230,10 +240,10 @@ const columns = [
             dot: "bg-gray-500",
           };
           return (
-            <div className="hover:bg-gray-100  cursor-pointer flex items-center">
+            <DropdownMenuItem className="hover:bg-gray-100  cursor-pointer flex justify-center">
               <div
                 key={status}
-                className={`inline-flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium ${color}`}
+                className={`w-30 inline-flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium ${color}`}
                 onClick={() => {
                   const {updateOrderFulfillmentStatus} = table.options.meta
                   console.log(table.options.meta)
@@ -246,25 +256,26 @@ const columns = [
                 <span className={`w-2 h-2 rounded-full ${dot}`} />
                 {label}
               </div>
-            </div>
+            </DropdownMenuItem>
           );
         });
 
       return (
-        <Popover>
-          <PopoverTrigger>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
             <div
-              className={`inline-flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium ${color}`}
+              className={`inline-flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium ${color} cursor-pointer`}
             >
               <span className={`w-2 h-2 rounded-full ${dot}`} />
               {label}
             </div>
-          </PopoverTrigger>
-          <PopoverContent className="flex flex-col gap-1 w-30">
-            <h3> Choose new status </h3>
+           </DropdownMenuTrigger>
+          <DropdownMenuContent className="flex flex-col gap-1 w-30">
+            <DropdownMenuLabel>Choose new status</DropdownMenuLabel>
+             <DropdownMenuSeparator />
             {renderAvailableStatus()}
-          </PopoverContent>
-        </Popover>
+          </DropdownMenuContent>
+        </DropdownMenu>
       );
     },
     meta: {
