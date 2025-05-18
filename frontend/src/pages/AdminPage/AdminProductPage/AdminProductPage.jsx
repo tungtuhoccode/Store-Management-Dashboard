@@ -107,8 +107,14 @@ export default function AdminProductPage() {
     {id:"categories", value:[]}, 
     {id:"displayed_product", value: []}
   ])
+  const [updatingRows, setUpdatingRows] = useState([]) //store ids of rows that are being updating
+  console.log(updatingRows)
   const toggleProductVisibilityMutation = useMutation({
-    mutationFn: (id) => axios.patch(`/product/displayProduct/${id}`),
+    mutationFn: async (id) => {
+      setUpdatingRows(allUpdatingRowIds => [...allUpdatingRowIds, id])
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      return  axios.patch(`/product/displayProduct/${id}`)
+    },
     onSuccess: () => {
       // 3) when it succeeds, invalidate the 'products' query so it refetches
       queryClient.invalidateQueries({ queryKey: ['products'] })
@@ -117,6 +123,10 @@ export default function AdminProductPage() {
       // optional: show a toast or console.error
       console.error('Failed to toggle display status', error)
     },
+    onSettled: (response) => {
+      const id = response.data.data.id
+      setUpdatingRows(allUpdatingRowIds => allUpdatingRowIds.filter(rowId => rowId != id))
+    }
   })
 
   const columns = [
@@ -128,7 +138,7 @@ export default function AdminProductPage() {
     {
       accessorKey: "price",
       header: ({ column }) => {
-        const isSorted = column.getIsSorted(); // 'asc' | 'desc' | false
+        const isSorted = column.getIsSorted();
     
         return (
           <Button
@@ -255,17 +265,21 @@ export default function AdminProductPage() {
           </div>
         )
       },
-      cell: ({ getValue, row, table, column }) => (
-        <Checkbox
-          checked={getValue()}
-          onCheckedChange={(val) =>
-            
-            {
-              toggleProductVisibilityMutation.mutate(row.original.id)
-            }
-          }
-        />
-      ),
+      cell: ({ getValue, row }) => {
+        const isUpdating = updatingRows.includes(row.original.id);
+
+        return (
+          <Checkbox
+            disabled={isUpdating}
+            className={isUpdating ? "cursor-not-allowed opacity-50" : ""}
+            checked={getValue()}
+            onCheckedChange={(val) => {
+              if (isUpdating) return; // no-op while loading
+              toggleProductVisibilityMutation.mutate(row.original.id);
+            }}
+          />
+        );
+      },
       filterFn: (row, columnId, filterValues) => {
         if (!filterValues.length) return true
         return filterValues[0] === row.getValue(columnId)
@@ -372,16 +386,18 @@ export default function AdminProductPage() {
         {/* Scrollable Body */}
         <div className="overflow-auto w-full max-h-[75vh]">
           <Table className="">
-            <TableBody className="">
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
+            <TableBody>
+              {table.getRowModel().rows.map((row) => {
+                const isUpdating = updatingRows.includes(row.original.id);
+                return (
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
+                    className={isUpdating ? "animate-pulse bg-yellow-50" : ""}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell 
-                        key={cell.id} 
+                      <TableCell
+                        key={cell.id}
                         className="text-center"
                         style={{ width: cell.column.getSize() }}
                       >
@@ -389,8 +405,10 @@ export default function AdminProductPage() {
                       </TableCell>
                     ))}
                   </TableRow>
-                ))
-              ) : (
+                );
+              })}
+
+              {table.getRowModel().rows.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={columns.length} className="h-24 text-center">
                     No results.

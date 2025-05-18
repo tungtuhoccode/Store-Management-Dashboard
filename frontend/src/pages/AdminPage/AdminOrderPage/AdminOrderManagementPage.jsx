@@ -21,6 +21,7 @@ import {
 } from "@tanstack/react-table";
 import { Label } from "@/components/ui/label";
 import {
+  Clock,
   ArrowUpDown,
   ChevronDown,
   MoreHorizontal,
@@ -76,7 +77,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import {
   generateUniqueValues,
   optimizedData,
@@ -181,34 +196,29 @@ const columns = [
     accessorKey: "fulfillment_status",
     header: "Order Status",
     size: 140,
-    cell: ({ getValue }) => {
+    cell: ({ getValue, table, row  }) => {
       const status = getValue();
       const statusMap = {
-        pending: {
-          label: "Pending",
-          color: "bg-amber-100 text-amber-800",
-          dot: "bg-amber-500",
+        pending: { 
+          label: "Pending", color: "bg-amber-100 text-amber-800", dot: "bg-amber-500",
+          icon: <MoreHorizontal size={16}/>
         },
         "in progress": {
-          label: "In Progress",
-          color: "bg-blue-100 text-blue-800",
-          dot: "bg-blue-500",
+          label: "In Progress", color: "bg-blue-100 text-blue-800", dot: "bg-blue-500",
+           icon: <Clock size={16} />
         },
-        shipped: {
-          label: "Shipped",
-          color: "bg-teal-100 text-teal-800",
-          dot: "bg-teal-500",
+        shipped: { 
+          label: "Shipped", color: "bg-teal-100 text-teal-800", dot: "bg-teal-500",
+          icon: <PackageCheck size={16}/>
         },
 
-        delivered: {
-          label: "Delivered",
-          color: "bg-green-100 text-green-800",
-          dot: "bg-green-500",
+        delivered: { 
+          label: "Delivered", color: "bg-green-100 text-green-800", dot: "bg-green-500",
+          icon: <CheckCircle2Icon size={16}/>
         },
         cancelled: {
-          label: "Cancelled",
-          color: "bg-rose-100 text-rose-800",
-          dot: "bg-rose-500",
+          label: "Cancelled", color: "bg-rose-100 text-rose-800", dot: "bg-rose-500",
+          icon: <AlertCircle size={16}/>
         },
       };
 
@@ -218,40 +228,41 @@ const columns = [
         dot: "bg-gray-500",
       };
 
-      console.log(Object.keys(statusMap).m)
-
-      const renderAvailableStatus = () => Object.keys(statusMap).map(key => {
-         const { label, color, dot } = statusMap[key] || {
-          label: status,
-          color: "bg-gray-100 text-gray-700",
-          dot: "bg-gray-500",
-        };
-        return (
-          <div
-              key={key}
-              className={`inline-flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium ${color} cursor-pointer`}
-              >
-                <span className={`w-2 h-2 rounded-full ${dot}`} />
-                {label}
-              </div>
-        )
-      })
+  const renderAvailableStatus = () =>
+    Object.entries(statusMap).map(
+      ([statusKey, { label, color, dot, icon }]) => (
+        <DropdownMenuItem
+          key={statusKey}
+          className={"cursor-pointer flex items-center gap-2 px-1 py-1 rounded-md " + "hover:" + color}
+          onSelect={() => {
+            table.options.meta
+              .updateOrderFulfillmentStatus
+              .mutate({ id: row.original.order_id, newStatus: statusKey });
+          }}
+        >
+          <span className={`w-2 h-2 rounded-full ${dot}`} />
+          {icon}
+          <span className="flex-1 text-sm">{label}</span>
+        </DropdownMenuItem>
+      )
+    );
 
       return (
-        <Popover>
-          <PopoverTrigger>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
             <div
-              className={`inline-flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium ${color}`}
+              className={`inline-flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium ${color} cursor-pointer`}
             >
               <span className={`w-2 h-2 rounded-full ${dot}`} />
               {label}
             </div>
-            </PopoverTrigger>
-            <PopoverContent className="flex flex-col gap-1 w-30">
-              <h3> Change status </h3>
-              {renderAvailableStatus()}
-            </PopoverContent>
-          </Popover>
+           </DropdownMenuTrigger>
+          <DropdownMenuContent className="flex flex-col gap-1 w-30">
+            <DropdownMenuLabel>Choose new status</DropdownMenuLabel>
+             <DropdownMenuSeparator />
+            {renderAvailableStatus()}
+          </DropdownMenuContent>
+        </DropdownMenu>
       );
     },
     meta: {
@@ -279,9 +290,9 @@ const FilterAndSearch = ({ table }) => {
           <FilterDialog
             column={table.getColumn("fulfillment_status")}
             title="Status"
-            capitilizedLabel = {true}
+            capitilizedLabel={true}
           />
-           <FilterDialog
+          <FilterDialog
             column={table.getColumn("user_email")}
             title="User Email"
           />
@@ -332,27 +343,49 @@ function formatDate(isoString) {
   return `${day} ${month} ${year}, ${hours}:${minutes} ${ampm}`;
 }
 
-/*
-  "order_id": "1135e96f-702b-4bc9-acb7-31a9d43c00f4",
-  "order_number": "10000002",
-  "user_email": "vunguyen@gmail.com",
-  "total_amount": "276.83",
-  "create_at": "2025-05-05T10:28:12.449Z",
-  "item_count": "3",
-  "fulfillment_status": "pending"
-*/
-
 const fetchOrders = async () => {
-  const response = await axios.get("/order")
-  return response.data
-}
+  const response = await axios.get("/order");
+  return response.data;
+};
+
+const patchOrderFulfillmentStatus = async ({ id, newStatus }) => {
+  await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate a 3s delay
+  const response = await axios.patch(`/order/${id}/fulfillment-status`, {
+    new_fulfillment_status: newStatus,
+  });
+  return response.data;
+};
 
 export default function AdminOrderManagementPage() {
+  const [updatingRowId, setUpdatingRowId] = useState(null);
   const queryClient = useQueryClient();
-  const orderQuery = useQuery({queryKey: ["orders"], queryFn: fetchOrders, refetchInterval: 10000})
+  const orderQuery = useQuery({
+    queryKey: ["orders"],
+    queryFn: fetchOrders,
+    refetchInterval: 5000,
+  });
+
+  const updateOrderFulfillmentStatus = useMutation({
+    mutationFn: async({id, newStatus}) => {
+      
+      setUpdatingRowId(id)
+      return patchOrderFulfillmentStatus({id, newStatus});
+    }
+    , 
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ["orders"]})
+    }, 
+      onError: (error) => {
+      console.error('Failed to toggle fulfillment status', error)
+    },
+    onSettled: () => {
+      // clear when done (either success or error)
+      setUpdatingRowId(null);
+    },
+  })
 
   const [sorting, setSorting] = React.useState([
-    { id: 'create_at', desc: true }, // false = ascending
+    { id: "create_at", desc: true }, // false = ascending
   ]);
   const [columnFilters, setColumnFilters] = React.useState([
     { id: "fulfillment_status", value: [] },
@@ -360,7 +393,7 @@ export default function AdminOrderManagementPage() {
   ]);
 
   const table = useReactTable({
-    data: orderQuery.data ? orderQuery.data.data  : [],
+    data: orderQuery.data ? orderQuery.data.data : [],
     columns,
     state: {
       sorting,
@@ -373,12 +406,10 @@ export default function AdminOrderManagementPage() {
     getFacetedRowModel: getFacetedRowModel(), // required
     getFacetedUniqueValues: getFacetedUniqueValues(), // required
     getSortedRowModel: getSortedRowModel(),
+    meta: {updateOrderFulfillmentStatus}
   });
 
-
-  if (orderQuery.isLoading) return (
-    <>Loading...</>
-  )
+  if (orderQuery.isLoading) return <>Loading...</>;
 
   return (
     <div className="pl-5 pr-5 pt-4">
@@ -415,37 +446,31 @@ export default function AdminOrderManagementPage() {
               ))}
             </TableHeader>
 
-            <TableBody className="">
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
+            <TableBody>
+              {table.getRowModel().rows.map((row) => {
+                const isUpdating = row.original.order_id === updatingRowId;
+                return (
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
+                    className={isUpdating ? "animate-pulse bg-yellow-50 [animation-duration:2s]" : ""}
                   >
-                    {row.getVisibleCells().map((cell) => {
-                      const cls =
-                        cell.column.columnDef.meta?.headerAndCellStyle ?? "";
-                      return (
-                        <TableCell
-                          key={cell.id}
-                          className={"" + cls}
-                          style={{ width: cell.column.getSize() }}
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </TableCell>
-                      );
-                    })}
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        key={cell.id}
+                        className={cell.column.columnDef.meta?.headerAndCellStyle ?? ""}
+                        style={{ width: cell.column.getSize() }}
+                      >
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
                   </TableRow>
-                ))
-              ) : (
+                );
+              })}
+
+              {table.getRowModel().rows.length === 0 && (
                 <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center"
-                  >
+                  <TableCell colSpan={columns.length} className="h-24 text-center">
                     No results.
                   </TableCell>
                 </TableRow>
