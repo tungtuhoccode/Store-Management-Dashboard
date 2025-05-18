@@ -371,6 +371,7 @@ export default function AdminOrderManagementPage() {
     getFacetedRowModel: getFacetedRowModel(), // required
     getFacetedUniqueValues: getFacetedUniqueValues(), // required
     getSortedRowModel: getSortedRowModel(),
+    
   });
 
 
