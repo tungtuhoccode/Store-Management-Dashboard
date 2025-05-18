@@ -21,6 +21,7 @@ import {
 } from "@tanstack/react-table";
 import { Label } from "@/components/ui/label";
 import {
+  Clock,
   ArrowUpDown,
   ChevronDown,
   MoreHorizontal,
@@ -200,11 +201,11 @@ const columns = [
       const statusMap = {
         pending: { 
           label: "Pending", color: "bg-amber-100 text-amber-800", dot: "bg-amber-500",
-          icon: <ListFilter size={16}/>
+          icon: <MoreHorizontal size={16}/>
         },
         "in progress": {
           label: "In Progress", color: "bg-blue-100 text-blue-800", dot: "bg-blue-500",
-           icon: <LoaderIcon size={16}className="animate-spin [animation-duration:2s] text-blue-500"/>
+           icon: <Clock size={16} />
         },
         shipped: { 
           label: "Shipped", color: "bg-teal-100 text-teal-800", dot: "bg-teal-500",
@@ -227,24 +228,24 @@ const columns = [
         dot: "bg-gray-500",
       };
 
-const renderAvailableStatus = () =>
-  Object.entries(statusMap).map(
-    ([statusKey, { label, color, dot, icon }]) => (
-      <DropdownMenuItem
-        key={statusKey}
-        className={"cursor-pointer flex items-center gap-2 px-1 py-1 rounded-md " + "hover:" + color}
-        onSelect={() => {
-          table.options.meta
-            .updateOrderFulfillmentStatus
-            .mutate({ id: row.original.order_id, newStatus: statusKey });
-        }}
-      >
-        <span className={`w-2 h-2 rounded-full ${dot}`} />
-        {icon}
-        <span className="flex-1 text-sm">{label}</span>
-      </DropdownMenuItem>
-    )
-  );
+  const renderAvailableStatus = () =>
+    Object.entries(statusMap).map(
+      ([statusKey, { label, color, dot, icon }]) => (
+        <DropdownMenuItem
+          key={statusKey}
+          className={"cursor-pointer flex items-center gap-2 px-1 py-1 rounded-md " + "hover:" + color}
+          onSelect={() => {
+            table.options.meta
+              .updateOrderFulfillmentStatus
+              .mutate({ id: row.original.order_id, newStatus: statusKey });
+          }}
+        >
+          <span className={`w-2 h-2 rounded-full ${dot}`} />
+          {icon}
+          <span className="flex-1 text-sm">{label}</span>
+        </DropdownMenuItem>
+      )
+    );
 
       return (
         <DropdownMenu>
