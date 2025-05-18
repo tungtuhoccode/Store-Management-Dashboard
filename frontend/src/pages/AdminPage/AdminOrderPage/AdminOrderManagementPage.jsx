@@ -218,8 +218,6 @@ const columns = [
         dot: "bg-gray-500",
       };
 
-      console.log(Object.keys(statusMap).m)
-
       const renderAvailableStatus = () => Object.keys(statusMap).map(key => {
          const { label, color, dot } = statusMap[key] || {
           label: status,
@@ -349,7 +347,7 @@ const fetchOrders = async () => {
 
 export default function AdminOrderManagementPage() {
   const queryClient = useQueryClient();
-  const orderQuery = useQuery({queryKey: ["orders"], queryFn: fetchOrders, refetchInterval: 10000})
+  const orderQuery = useQuery({queryKey: ["orders"], queryFn: fetchOrders, refetchInterval: 5000})
 
   const [sorting, setSorting] = React.useState([
     { id: 'create_at', desc: true }, // false = ascending

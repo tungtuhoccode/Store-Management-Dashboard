@@ -36,6 +36,7 @@ export default function FilterDialog({column, title, capitilizedLabel = false}){
 
     const clearFilters = () => {
         setSelectedValues(new Set())
+        column.setFilterValue([])
     }
 
     const renderSelectedBadges = () => {
