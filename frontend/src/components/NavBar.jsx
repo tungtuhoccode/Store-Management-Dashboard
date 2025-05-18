@@ -98,7 +98,7 @@ function NavBar() {
                             <li onClick={() => logOut()} className='hover:text-green-500 cursor-pointer'><LogOut size={20} /></li>
                         </>
                         :
-                        <li className='hover:text-green-500'><Link to="/signup" className={`hover:text-green-500 ${currentLocation === '/signup' ? 'text-green-600' : textColor}`}><User size={20} /></Link></li>
+                        <li className='hover:text-green-500'><Link to="/login" className={`hover:text-green-500 ${currentLocation === '/signup' ? 'text-green-600' : textColor}`}><User size={20} /></Link></li>
 
                     }
 
