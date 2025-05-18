@@ -198,31 +198,26 @@ const columns = [
     cell: ({ getValue, table, row  }) => {
       const status = getValue();
       const statusMap = {
-        pending: {
-          label: "Pending",
-          color: "bg-amber-100 text-amber-800",
-          dot: "bg-amber-500",
+        pending: { 
+          label: "Pending", color: "bg-amber-100 text-amber-800", dot: "bg-amber-500",
+          icon: <ListFilter size={16}/>
         },
         "in progress": {
-          label: "In Progress",
-          color: "bg-blue-100 text-blue-800",
-          dot: "bg-blue-500",
+          label: "In Progress", color: "bg-blue-100 text-blue-800", dot: "bg-blue-500",
+           icon: <LoaderIcon size={16}className="animate-spin [animation-duration:2s] text-blue-500"/>
         },
-        shipped: {
-          label: "Shipped",
-          color: "bg-teal-100 text-teal-800",
-          dot: "bg-teal-500",
+        shipped: { 
+          label: "Shipped", color: "bg-teal-100 text-teal-800", dot: "bg-teal-500",
+          icon: <PackageCheck size={16}/>
         },
 
-        delivered: {
-          label: "Delivered",
-          color: "bg-green-100 text-green-800",
-          dot: "bg-green-500",
+        delivered: { 
+          label: "Delivered", color: "bg-green-100 text-green-800", dot: "bg-green-500",
+          icon: <CheckCircle2Icon size={16}/>
         },
         cancelled: {
-          label: "Cancelled",
-          color: "bg-rose-100 text-rose-800",
-          dot: "bg-rose-500",
+          label: "Cancelled", color: "bg-rose-100 text-rose-800", dot: "bg-rose-500",
+          icon: <AlertCircle size={16}/>
         },
       };
 
@@ -232,33 +227,24 @@ const columns = [
         dot: "bg-gray-500",
       };
 
-      const renderAvailableStatus = () =>
-        Object.keys(statusMap).map((status) => {
-          const { label, color, dot } = statusMap[status] || {
-            label: status,
-            color: "bg-gray-100 text-gray-700",
-            dot: "bg-gray-500",
-          };
-          return (
-            <DropdownMenuItem className="hover:bg-gray-100  cursor-pointer flex justify-center">
-              <div
-                key={status}
-                className={`w-30 inline-flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium ${color}`}
-                onClick={() => {
-                  const {updateOrderFulfillmentStatus} = table.options.meta
-                  console.log(table.options.meta)
-                  console.log(row.original)
-                  const newStatus = status.toLocaleLowerCase().trim()
-                  console.log(newStatus)
-                  updateOrderFulfillmentStatus.mutate({id: row.original.order_id, newStatus: newStatus})
-                }}
-              >
-                <span className={`w-2 h-2 rounded-full ${dot}`} />
-                {label}
-              </div>
-            </DropdownMenuItem>
-          );
-        });
+const renderAvailableStatus = () =>
+  Object.entries(statusMap).map(
+    ([statusKey, { label, color, dot, icon }]) => (
+      <DropdownMenuItem
+        key={statusKey}
+        className={"cursor-pointer flex items-center gap-2 px-1 py-1 rounded-md " + "hover:" + color}
+        onSelect={() => {
+          table.options.meta
+            .updateOrderFulfillmentStatus
+            .mutate({ id: row.original.order_id, newStatus: statusKey });
+        }}
+      >
+        <span className={`w-2 h-2 rounded-full ${dot}`} />
+        {icon}
+        <span className="flex-1 text-sm">{label}</span>
+      </DropdownMenuItem>
+    )
+  );
 
       return (
         <DropdownMenu>
