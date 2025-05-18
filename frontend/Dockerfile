@@ -17,7 +17,7 @@ COPY .env ./
 COPY . .
 
 # 7) Declare which port your app listens on
-EXPOSE 3000
+EXPOSE 5000
 
 # 8) Default command to start your server
 CMD ["node", "server.js"]
