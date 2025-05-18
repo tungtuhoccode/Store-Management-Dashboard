@@ -348,12 +348,13 @@ const fetchOrders = async () => {
   return response.data;
 };
 
-const patchOrderFulfillmentStatus = async ({id, newStatus})  => {
+const patchOrderFulfillmentStatus = async ({ id, newStatus }) => {
+  await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate a 3s delay
   const response = await axios.patch(`/order/${id}/fulfillment-status`, {
-    new_fulfillment_status: newStatus
+    new_fulfillment_status: newStatus,
   });
   return response.data;
-}
+};
 
 export default function AdminOrderManagementPage() {
   const [updatingRowId, setUpdatingRowId] = useState(null);
@@ -377,7 +378,7 @@ export default function AdminOrderManagementPage() {
       onError: (error) => {
       console.error('Failed to toggle fulfillment status', error)
     },
-      onSettled: () => {
+    onSettled: () => {
       // clear when done (either success or error)
       setUpdatingRowId(null);
     },
@@ -452,7 +453,7 @@ export default function AdminOrderManagementPage() {
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
-                    className={isUpdating ? "animate-pulse bg-yellow-50" : ""}
+                    className={isUpdating ? "animate-pulse bg-yellow-50 [animation-duration:2s]" : ""}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
