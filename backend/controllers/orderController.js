@@ -123,6 +123,7 @@ export const updateFulfillmentStatus = async (req, res) => {
   }
 
   // Check for valid status value
+  console.log(new_fulfillment_status)
   if (!VALID_STATUSES.includes(new_fulfillment_status)) {
     return res.status(400).json({
       success: false,

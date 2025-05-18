@@ -259,7 +259,6 @@ export default function AdminProductPage() {
         <Checkbox
           checked={getValue()}
           onCheckedChange={(val) =>
-            
             {
               toggleProductVisibilityMutation.mutate(row.original.id)
             }

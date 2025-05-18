@@ -185,7 +185,7 @@ const columns = [
     accessorKey: "fulfillment_status",
     header: "Order Status",
     size: 140,
-    cell: ({ getValue }) => {
+    cell: ({ getValue, table, row  }) => {
       const status = getValue();
       const statusMap = {
         pending: {
@@ -223,8 +223,8 @@ const columns = [
       };
 
       const renderAvailableStatus = () =>
-        Object.keys(statusMap).map((key) => {
-          const { label, color, dot } = statusMap[key] || {
+        Object.keys(statusMap).map((status) => {
+          const { label, color, dot } = statusMap[status] || {
             label: status,
             color: "bg-gray-100 text-gray-700",
             dot: "bg-gray-500",
@@ -232,10 +232,15 @@ const columns = [
           return (
             <div className="hover:bg-gray-100  cursor-pointer flex items-center">
               <div
-                key={key}
+                key={status}
                 className={`inline-flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium ${color}`}
                 onClick={() => {
-                  console.log("Clicked on status: ", key);
+                  const {updateOrderFulfillmentStatus} = table.options.meta
+                  console.log(table.options.meta)
+                  console.log(row.original)
+                  const newStatus = status.toLocaleLowerCase().trim()
+                  console.log(newStatus)
+                  updateOrderFulfillmentStatus.mutate({id: row.original.order_id, newStatus: newStatus})
                 }}
               >
                 <span className={`w-2 h-2 rounded-full ${dot}`} />
@@ -355,9 +360,11 @@ const fetchOrders = async () => {
   return response.data;
 };
 
-const toggleProductFulfillmentStaus = async (id, newStatus)  => {
-  const response = await axios.patch(`/order/${id}/fulfillment-status`)
-  return response.data
+const patchOrderFulfillmentStatus = async ({id, newStatus})  => {
+  const response = await axios.patch(`/order/${id}/fulfillment-status`, {
+    new_fulfillment_status: newStatus
+  });
+  return response.data;
 }
 
 export default function AdminOrderManagementPage() {
@@ -368,13 +375,13 @@ export default function AdminOrderManagementPage() {
     refetchInterval: 5000,
   });
 
-  const toggleOrderFulfilmentStatus = useMutation({
-    mutationFn: toggleProductFulfillmentStaus, 
+  const updateOrderFulfillmentStatus = useMutation({
+    mutationFn: patchOrderFulfillmentStatus, 
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ["orders"]})
     }, 
         onError: (error) => {
-      console.error('Failed to toggle fulfillment status', error)
+        console.error('Failed to toggle fulfillment status', error)
     },
   })
 
@@ -400,6 +407,7 @@ export default function AdminOrderManagementPage() {
     getFacetedRowModel: getFacetedRowModel(), // required
     getFacetedUniqueValues: getFacetedUniqueValues(), // required
     getSortedRowModel: getSortedRowModel(),
+    meta: {updateOrderFulfillmentStatus}
   });
 
   if (orderQuery.isLoading) return <>Loading...</>;
