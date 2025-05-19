@@ -47,7 +47,8 @@ import {
     Puzzle,
     Banknote, 
     Wallet, 
-    Coins
+    Coins,
+    Tag
 } from "lucide-react"
   import { Button } from "@/components/ui/button"
   import { Checkbox } from "@/components/ui/checkbox"
@@ -106,8 +107,14 @@ export default function AdminProductPage() {
     {id:"categories", value:[]}, 
     {id:"displayed_product", value: []}
   ])
+  const [updatingRows, setUpdatingRows] = useState([]) //store ids of rows that are being updating
+  console.log(updatingRows)
   const toggleProductVisibilityMutation = useMutation({
-    mutationFn: (id) => axios.patch(`/product/displayProduct/${id}`),
+    mutationFn: async (id) => {
+      setUpdatingRows(allUpdatingRowIds => [...allUpdatingRowIds, id])
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      return  axios.patch(`/product/displayProduct/${id}`)
+    },
     onSuccess: () => {
       // 3) when it succeeds, invalidate the 'products' query so it refetches
       queryClient.invalidateQueries({ queryKey: ['products'] })
@@ -116,6 +123,10 @@ export default function AdminProductPage() {
       // optional: show a toast or console.error
       console.error('Failed to toggle display status', error)
     },
+    onSettled: (response) => {
+      const id = response.data.data.id
+      setUpdatingRows(allUpdatingRowIds => allUpdatingRowIds.filter(rowId => rowId != id))
+    }
   })
 
   const columns = [
@@ -127,7 +138,7 @@ export default function AdminProductPage() {
     {
       accessorKey: "price",
       header: ({ column }) => {
-        const isSorted = column.getIsSorted(); // 'asc' | 'desc' | false
+        const isSorted = column.getIsSorted();
     
         return (
           <Button
@@ -175,7 +186,7 @@ export default function AdminProductPage() {
       }, 
       cell: (props) => (
         <div className='flex items-center gap-1 justify-center'>
-            <Package2 size="14px" className='text-primary' />  {props.getValue()}
+            <Package2 size="14px" strokeWidth={1.5} className='text-primary' />  {props.getValue()}
         </div>
       ), 
       
@@ -190,7 +201,12 @@ export default function AdminProductPage() {
       filterFn: (row, columnId, filterValues) => {
         if (!filterValues?.length) return true;
         return filterValues.includes(row.getValue(columnId));
-      }
+      },
+      cell: (props) => (
+        <div className='w-full flex justify-center items-center gap-1'>
+            <Tag  size="14px"  className='text-primary'/>{props.getValue()}
+        </div>
+      ),
     },
     {
       accessorKey: "displayed_product",
@@ -249,17 +265,21 @@ export default function AdminProductPage() {
           </div>
         )
       },
-      cell: ({ getValue, row, table, column }) => (
-        <Checkbox
-          checked={getValue()}
-          onCheckedChange={(val) =>
-            
-            {
-              toggleProductVisibilityMutation.mutate(row.original.id)
-            }
-          }
-        />
-      ),
+      cell: ({ getValue, row }) => {
+        const isUpdating = updatingRows.includes(row.original.id);
+
+        return (
+          <Checkbox
+            disabled={isUpdating}
+            className={isUpdating ? "cursor-not-allowed opacity-50" : ""}
+            checked={getValue()}
+            onCheckedChange={(val) => {
+              if (isUpdating) return; // no-op while loading
+              toggleProductVisibilityMutation.mutate(row.original.id);
+            }}
+          />
+        );
+      },
       filterFn: (row, columnId, filterValues) => {
         if (!filterValues.length) return true
         return filterValues[0] === row.getValue(columnId)
@@ -267,6 +287,7 @@ export default function AdminProductPage() {
     }
   ]
 
+  //optimize data by using lower quality images
   const optimizedProductData = useMemo(() => optimizedData(
     productQuery.data ? productQuery.data.data  : []),
     [productQuery.data]
@@ -365,16 +386,18 @@ export default function AdminProductPage() {
         {/* Scrollable Body */}
         <div className="overflow-auto w-full max-h-[75vh]">
           <Table className="">
-            <TableBody className="">
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
+            <TableBody>
+              {table.getRowModel().rows.map((row) => {
+                const isUpdating = updatingRows.includes(row.original.id);
+                return (
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
+                    className={isUpdating ? "animate-pulse bg-yellow-50" : ""}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell 
-                        key={cell.id} 
+                      <TableCell
+                        key={cell.id}
                         className="text-center"
                         style={{ width: cell.column.getSize() }}
                       >
@@ -382,8 +405,10 @@ export default function AdminProductPage() {
                       </TableCell>
                     ))}
                   </TableRow>
-                ))
-              ) : (
+                );
+              })}
+
+              {table.getRowModel().rows.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={columns.length} className="h-24 text-center">
                     No results.

@@ -1,6 +1,8 @@
 import { db } from "../config/db.js";
 import { validate as isUuid, validate } from "uuid";
 
+const VALID_STATUSES = ["pending", "in progress", "shipped", "delivered", "cancelled"];
+
 
 // GET api/order/:id
 export const getSingleOrder = async (req , res) => {
@@ -112,22 +114,47 @@ Available status
   cancelled
 */
 export const updateFulfillmentStatus = async (req, res) => {
-  const {id} = req.params
-  const {new_fulfillment_status} = req.body
-  console.log("id:", id)
-  console.log("new status:", new_fulfillment_status)
+  const { id } = req.params;
+  const { new_fulfillment_status } = req.body;
 
-   try {
+  // Check for valid UUID
+  if (!isUuid(id)) {
+    return res.status(400).json({ success: false, message: "Invalid order ID format." });
+  }
 
-        res.status(200).json({
-            success: true,
-        });
+  // Check for valid status value
+  console.log(new_fulfillment_status)
+  if (!VALID_STATUSES.includes(new_fulfillment_status)) {
+    return res.status(400).json({
+      success: false,
+      message: `Invalid fulfillment status. Valid values: ${VALID_STATUSES.join(", ")}`,
+    });
+  }
+
+  try {
+    const [order] = await db`SELECT id FROM orders WHERE id = ${id}`;
+    if (!order) {
+      return res.status(404).json({ success: false, message: "Order not found." });
     }
-    catch(err) {
-        console.log(err)
-        res.status(500).json({ success: false, message: err.message });
-    }
-}
+
+    await db`
+      UPDATE orders
+      SET fulfillment_status = ${new_fulfillment_status}
+      WHERE id = ${id}
+    `;
+
+    return res.status(200).json({
+      success: true,
+      message: "Fulfillment status updated successfully.",
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error.",
+    });
+  }
+};
 //POST /api/order/...
 
 //Patch /api/order/fulfillment-status
