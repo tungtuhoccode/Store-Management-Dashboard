@@ -1,0 +1,30 @@
+# === Node.js (frontend + backend) ===
+node_modules
+.env
+.env.local
+.env.*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# === Vite or React Build ===
+dist
+build
+
+# === IDEs / OS ===
+.DS_Store
+.vscode/
+.idea/
+
+# === Logs ===
+*.log
+logs
+logs/*.log
+
+# === Test coverage ===
+coverage/
+
+# === Misc ===
+*.local
+*.cache
+*.tmp
