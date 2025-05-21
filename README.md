@@ -71,6 +71,14 @@ npm install
 # 3. Start development server
 npm run dev
 
-# 4. Build for production
-npm run build
-npm start
+# 4. Run client server
+cd frontend
+npm run dev
+
+# Docker development
+# 1. Clone the repo
+git clone https://github.com/your-username/react-ecommerce-clothing-store.git
+cd react-ecommerce-clothing-store
+
+# 2. Run docker compose
+docker compose watch  # for developing and rebuild when detect changes 

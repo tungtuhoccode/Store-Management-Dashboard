@@ -35,10 +35,11 @@ export const useUserStore = create((set, get) => ({
         set({ loading: true, error: null });
         try {
             const response = await axios.post("/auth/login", { email, password });
+
             set({ user: { email: response.data.data.email, userName: response.data.data.name, userRole: response.data.data.userRole } })
 
         } catch (error) {
-            set({ error: error.response.data.message });
+            set({ error: error?.response?.data?.message || "Log in failed!" });
         } finally {
             set({ loading: false });
         }
@@ -104,7 +105,10 @@ axios.interceptors.response.use(
     async (error) => {
 
         const originalRequest = error.config;
-        if (error.response?.status === 401 && !originalRequest._retry) {
+        if (error.response?.status === 401 &&
+            !originalRequest._retry &&
+            !originalRequest.url.includes("/auth/login") &&
+            !originalRequest.url.includes("/auth/signup")) {
 
             originalRequest._retry = true;
 

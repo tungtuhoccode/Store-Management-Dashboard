@@ -77,7 +77,7 @@ export default function AddToCartIcon({ productId }) {
     return (
         <motion.div
             animate={controls}
-            className='block sm:hidden absolute top-2 right-2 group-hover:block bg-white p-2 rounded-3xl group/inner'
+            className='block sm:hidden absolute top-2 right-2 group-hover:block bg-white p-2 rounded-3xl group/inner z-50'
             onClick={(e) => {
                 e.stopPropagation();
                 handleClick()
