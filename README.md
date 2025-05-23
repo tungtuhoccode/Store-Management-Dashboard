@@ -3,6 +3,8 @@
 
 A modern, responsive online clothing store built with React. Explore products, add to cart, and manage your store via a full-featured admin dashboard.
 
+🔗 Live Demo: https://react-ecommerce-clothing-store.onrender.com/
+
 ---
 
 ## ⚙️ Tech Stack
