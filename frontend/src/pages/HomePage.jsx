@@ -7,12 +7,12 @@ import CategoriesList from '../components/CategoriesList';
 import { CreditCard, Truck, Box, Heart } from "lucide-react"
 
 import { useProductStore } from '../store/useProductStore';
-import { Button } from '@/components/ui/button';
 
 function HomePage() {
   const navigate = useNavigate();
 
   const { products, fetchFeaturedProducts } = useProductStore();
+  const [imgLoaded, setImgLoaded] = React.useState(false);
 
   React.useEffect(() => {
     fetchFeaturedProducts();
@@ -23,22 +23,25 @@ function HomePage() {
       {/* Wallpaper / Intro */}
       <div className='absolute top-0 left-0 w-full h-screen z-[-1]'>
         <img
-          src="/images/homePagewallpaper.avif"
+          src="https://res.cloudinary.com/dc3gnvd4e/image/upload/v1748039941/homePagewallpaper_c6s6gf.webp"
           alt='wallpaper'
-          className='object-cover w-full h-full' />
+          className='object-cover w-full h-full'
+          onLoad={() => setImgLoaded(true)}
+        />
       </div>
-      
+
       <section className="min-h-[calc(100vh-5rem)] flex flex-col items-center justify-center text-white transition-all duration-300 ease-in-out -translate-y-16">
         <h1 className='font-pacifico md:text-3xl sm:text-2xl'> WELCOME TO VNWear
         </h1>
         <h1 className='font-pacifico'>Naturally Styled. Authentically You.</h1>
-        <button
-          onClick={() => navigate("/shop")}
-          className={`w-[150px] mt-5 mx-auto bg-lime-600 text-white py-3 px-4 rounded-full hover:bg-lime-700 transition-all duration-500 flex justify-center items-center text-sm`}
-        >
-          Shop Now
-        </button>
-
+        {imgLoaded && (
+          <button
+            onClick={() => navigate("/shop")}
+            className={`w-[150px] mt-5 mx-auto bg-lime-600 text-white py-3 px-4 rounded-full hover:bg-lime-700 transition-all duration-500 flex justify-center items-center text-sm`}
+          >
+            Shop Now
+          </button>
+        )}
       </section>
 
       {/* Actual content */}

@@ -11,7 +11,7 @@ const determineBackendURL = () => {
 }
 
 const axiosInstance = axios.create({
-    baseURL: determineBackendURL(),
+    baseURL: determineBackendURL() || BackendURL, 
     withCredentials: true // send cookies to the server //
 })
 
