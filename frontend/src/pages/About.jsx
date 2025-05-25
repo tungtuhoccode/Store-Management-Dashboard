@@ -25,7 +25,7 @@ export default function About() {
           viewport={{ amount: 0.2 }}
         >
           <img
-            src="/images/AboutPage1.avif"
+            src="https://res.cloudinary.com/dc3gnvd4e/image/upload/v1748097002/AboutPage1_ukj1xi.webp"
             alt=""
             className="w-full max-w-md rounded-lg shadow-lg"
           />
