@@ -51,6 +51,13 @@ Here are some screenshots available for our current website
 ![Login Form](./doc/showcase-images/image-4.jpeg)  
 ![Animated Transition](./doc/showcase-images/image-5.jpeg)
 
+### Admin Product Management Page
+![Login Form](./doc/showcase-images/ProductsPage.jpeg)
+
+### Admin Orders Management Page
+![Login Form](./doc/showcase-images/OrdersPage.jpeg)
+
+
 ---
 
 ## 🛠️ Features
