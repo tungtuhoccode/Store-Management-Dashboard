@@ -72,24 +72,7 @@ Here are some screenshots available for our current website
 
 
 
-## 📦 Installation
-
-```bash
-# 1. Clone the repo
-git clone https://github.com/your-username/react-ecommerce-clothing-store.git
-cd react-ecommerce-clothing-store
-
-# 2. Install dependencies
-npm install
-
-# 3. Start development server
-npm run dev
-
-# 4. Run client server
-cd frontend
-npm run dev
-
-# Docker development
+## 📦 Installation with Docker
 # 1. Clone the repo
 git clone https://github.com/your-username/react-ecommerce-clothing-store.git
 cd react-ecommerce-clothing-store
