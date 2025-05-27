@@ -19,6 +19,13 @@ A modern, responsive online clothing store built with React. Explore products, a
 - **Database:** PostGreSQL, Redis
 
 ---
+
+## ⚙️ Database Schema
+
+![DatabaseSchema Draw.io](./doc/showcase-images/databaseSchema.jpeg) 
+
+---
+
 ## 📸 Screenshots
 
 Here are some screenshots available for our current website
