@@ -31,9 +31,9 @@ A modern, responsive online clothing store built with React. Explore products, a
 Here are some screenshots available for our current website
 
 ### Landing Page & Product Listing
-![Clean Landing Page](./doc/showcase-images/image-2.jpeg)  
-![About](./doc/showcase-images/image17.jpeg)
-![All Products](./doc/showcase-images/image.jpeg)  
+![Clean Home Page](./doc/showcase-images/HomePage.jpeg)  
+![Home Page Featured Products](./doc/showcase-images/HomePageFeaturedProducts.jpeg)
+![Home Page Categories](./doc/showcase-images/HomePageCategories.jpeg)
 
 ### Shopping Experience
 ![Cart Overview](./doc/showcase-images/image-6.jpeg)  
