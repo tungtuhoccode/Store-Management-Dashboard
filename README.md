@@ -19,10 +19,10 @@ A modern, responsive online clothing store built with React. Explore products, a
 - **Database:** PostgreSQL (hosted on Neon), Redis (hosted on Upstash)
 
 - **DevOps & Deployment (Docker, NGINX):**
-      - Dockerized full-stack app with separate containers for frontend and backend, hosted on different domains
-      - Frontend served via NGINX for optimal performance and caching
-      - Production build and Docker/NGINX setup details can be found on the production branch
-      - Docker Compose is used for local development only
+  - Dockerized full-stack app with separate containers for frontend and backend, hosted on different domains
+  - Frontend served via NGINX for optimal performance and caching
+  - Production build and Docker/NGINX setup details can be found on the production branch
+  - Docker Compose is used for local development only
 
 ---
 
