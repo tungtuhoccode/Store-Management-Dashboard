@@ -42,6 +42,8 @@ Here are some screenshots available for our current website
 ![Cart Overview](./doc/showcase-images/image-6.jpeg)  
 ![Checkout Step 1](./doc/showcase-images/image-7.jpeg)  
 ![Order Confirmation](./doc/showcase-images/image-8.jpeg)
+![Stripe checkout](./doc/showcase-images/stripeCheckoutPage.jpeg)
+![Stripe checkout Successfully](./doc/showcase-images/CheckoutSucessfully.jpeg)
 
 ### Smooth Login with Animation
 ![Login Form](./doc/showcase-images/image-4.jpeg)  
