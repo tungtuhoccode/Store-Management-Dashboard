@@ -34,6 +34,8 @@ Here are some screenshots available for our current website
 ![Clean Home Page](./doc/showcase-images/HomePage.jpeg)  
 ![Home Page Featured Products](./doc/showcase-images/HomePageFeaturedProducts.jpeg)
 ![Home Page Categories](./doc/showcase-images/HomePageCategories.jpeg)
+![About Page Categories](./doc/showcase-images/AboutPage.jpeg)
+![Contact Page Categories](./doc/showcase-images/ContactPage.jpeg)
 
 ### Product Listing
 ![Shop Page](./doc/showcase-images/ShopPage.jpeg)  
