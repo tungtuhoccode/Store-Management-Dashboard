@@ -1,5 +1,4 @@
-# React E-Commerce Clothing Store  
-> Under Development
+# Store-Management-Dashboard
 
 A modern, responsive online clothing store built with React. Explore products, add to cart, and manage your store via a full-featured admin dashboard.
 
